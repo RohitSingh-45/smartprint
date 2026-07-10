@@ -32,7 +32,8 @@ SmartPrint is a monorepo SaaS platform for QR-based smart printing.
 - **Stack:** Node.js, Express, TypeScript, Mongoose
 - **Role:** REST API, auth, uploads, payments, printer orchestration (future)
 - **Data:** MongoDB via `MONGODB_URI`
-- **Sprint 1 surface:** `GET /api/health`
+- **Health surface:** `GET /api/health` (readiness; 503 if DB down), `GET /api/health/live` (liveness)
+- **Hardening:** Zod env validation, Helmet, Morgan, JSON body limit, graceful shutdown; production exits if MongoDB is unreachable
 
 ## Data
 

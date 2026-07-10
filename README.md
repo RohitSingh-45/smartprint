@@ -72,10 +72,11 @@ npm run dev:api
 npm run dev:web
 ```
 
-| App        | URL                              |
-| ---------- | -------------------------------- |
-| Web        | http://localhost:3000            |
-| API health | http://localhost:4000/api/health |
+| App           | URL                                   |
+| ------------- | ------------------------------------- |
+| Web           | http://localhost:3000                 |
+| API readiness | http://localhost:4000/api/health      |
+| API liveness  | http://localhost:4000/api/health/live |
 
 ## Scripts
 
@@ -93,14 +94,15 @@ npm run dev:web
 
 See `.env.example` and per-app `.env.example` files.
 
-| Variable               | App | Description                  |
-| ---------------------- | --- | ---------------------------- |
-| `NEXT_PUBLIC_API_URL`  | web | Backend base URL             |
-| `NEXT_PUBLIC_APP_NAME` | web | Display name                 |
-| `PORT`                 | api | API port (default `4000`)    |
-| `MONGODB_URI`          | api | MongoDB connection string    |
-| `CORS_ORIGIN`          | api | Allowed frontend origin      |
-| `NODE_ENV`             | api | `development` / `production` |
+| Variable               | App | Description                                   |
+| ---------------------- | --- | --------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`  | web | Backend base URL                              |
+| `NEXT_PUBLIC_APP_NAME` | web | Display name                                  |
+| `PORT`                 | api | API port (default `4000`)                     |
+| `MONGODB_URI`          | api | MongoDB connection string                     |
+| `CORS_ORIGIN`          | api | Allowed frontend origin (must be a valid URL) |
+| `NODE_ENV`             | api | `development` / `production` / `test`         |
+| `JSON_BODY_LIMIT`      | api | Express JSON body limit (default `100kb`)     |
 
 ## Documentation
 
@@ -111,14 +113,15 @@ See `.env.example` and per-app `.env.example` files.
 
 ## Possible setup errors
 
-| Error                            | Cause                        | Fix                                              |
-| -------------------------------- | ---------------------------- | ------------------------------------------------ |
-| `ECONNREFUSED 127.0.0.1:27017`   | MongoDB not running          | Start MongoDB or update `MONGODB_URI`            |
-| `Port 3000 already in use`       | Another Next.js process      | Stop it or use `next dev -p 3001`                |
-| `Port 4000 already in use`       | Another API process          | Change `PORT` in `apps/api/.env`                 |
-| `Cannot find module` after clone | Dependencies not installed   | Run `npm install` from repo root                 |
-| Workspace package not found      | Install from a nested folder | Always install from the monorepo root            |
-| ESLint / Prettier conflicts      | Mixed configs                | Use root Prettier; app ESLint extends `prettier` |
+| Error                            | Cause                        | Fix                                                                                      |
+| -------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------- |
+| `ECONNREFUSED 127.0.0.1:27017`   | MongoDB not running          | Start MongoDB or update `MONGODB_URI` (dev still boots; `/api/health` → 503; prod exits) |
+| Invalid environment variables    | Bad/missing env values       | Fix `apps/api/.env` using `.env.example`                                                 |
+| `Port 3000 already in use`       | Another Next.js process      | Stop it or use `next dev -p 3001`                                                        |
+| `Port 4000 already in use`       | Another API process          | Change `PORT` in `apps/api/.env`                                                         |
+| `Cannot find module` after clone | Dependencies not installed   | Run `npm install` from repo root                                                         |
+| Workspace package not found      | Install from a nested folder | Always install from the monorepo root                                                    |
+| ESLint / Prettier conflicts      | Mixed configs                | Use root Prettier; app ESLint extends `prettier`                                         |
 
 ## License
 

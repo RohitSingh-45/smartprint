@@ -6,15 +6,16 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 
 ## Sprint 1 (delivered)
 
-| Feature                | Status |
-| ---------------------- | ------ |
-| Monorepo scaffolding   | Done   |
-| Next.js frontend shell | Done   |
-| Express API shell      | Done   |
-| MongoDB connection     | Done   |
-| Health check endpoint  | Done   |
-| ESLint / Prettier      | Done   |
-| Env templates & docs   | Done   |
+| Feature                                                   | Status |
+| --------------------------------------------------------- | ------ |
+| Monorepo scaffolding                                      | Done   |
+| Next.js frontend shell                                    | Done   |
+| Express API shell                                         | Done   |
+| MongoDB connection                                        | Done   |
+| Readiness + liveness health endpoints                     | Done   |
+| API foundation hardening (env, Helmet, logging, shutdown) | Done   |
+| ESLint / Prettier                                         | Done   |
+| Env templates & docs                                      | Done   |
 
 ## Planned (not in Sprint 1)
 
