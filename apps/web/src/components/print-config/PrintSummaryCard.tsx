@@ -16,23 +16,25 @@ export function PrintSummaryCard({ summary, fileName }: Props) {
 
   return (
     <section
-      className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4"
+      className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]"
       aria-live="polite"
       aria-label="Print summary"
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">
             Print summary
           </h2>
           {fileName ? (
             <p className="mt-1 break-all text-xs text-[var(--muted)]">{fileName}</p>
           ) : null}
         </div>
-        <Badge tone="accent">Live</Badge>
+        <Badge tone="accent" dot>
+          Live
+        </Badge>
       </div>
 
-      <dl className="mt-4 space-y-2.5 text-sm">
+      <dl className="mt-5 space-y-2.5 text-sm">
         <Row label="Document pages" value={String(summary.totalPages)} />
         <Row
           label="Pages to print"
@@ -46,9 +48,12 @@ export function PrintSummaryCard({ summary, fileName }: Props) {
           label="Orientation"
           value={summary.orientation === 'portrait' ? 'Portrait' : 'Landscape'}
         />
-        <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
-          <dt className="font-semibold">Estimated cost</dt>
-          <dd className="font-[family-name:var(--font-display)] text-xl font-semibold">
+        <div className="flex items-center justify-between border-t border-[var(--border)] pt-3.5">
+          <dt className="font-semibold tracking-tight">Estimated cost</dt>
+          <dd
+            key={summary.estimatedCost}
+            className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight animate-rise"
+          >
             ₹{summary.estimatedCost}
           </dd>
         </div>
@@ -61,7 +66,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-4">
       <dt className="text-[var(--muted)]">{label}</dt>
-      <dd className="max-w-[60%] text-right font-medium">{value}</dd>
+      <dd className="max-w-[60%] text-right font-medium tabular-nums">{value}</dd>
     </div>
   );
 }

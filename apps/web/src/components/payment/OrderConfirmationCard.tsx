@@ -14,17 +14,19 @@ export function OrderConfirmationCard({ order }: Props) {
 
   return (
     <section
-      className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4"
+      className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]"
       aria-label="Order confirmation"
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">
             Order confirmation
           </h2>
           <p className="mt-1 break-all text-xs text-[var(--muted)]">{print.fileName}</p>
         </div>
-        <Badge tone="success">{order.status}</Badge>
+        <Badge tone="success" dot>
+          {order.status}
+        </Badge>
       </div>
 
       <dl className="mt-4 space-y-2.5 text-sm">

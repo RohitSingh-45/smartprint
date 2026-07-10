@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { ArrowRight, QrCode, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
@@ -7,7 +10,7 @@ export function LandingHero() {
     <section className="relative isolate min-h-dvh overflow-hidden">
       <div className="hero-plane absolute inset-0 -z-10" aria-hidden />
       <div
-        className="paper-grain absolute inset-0 -z-10 opacity-40 mix-blend-multiply dark:opacity-20 dark:mix-blend-soft-light"
+        className="paper-grain absolute inset-0 -z-10 opacity-35 mix-blend-multiply dark:opacity-15 dark:mix-blend-soft-light"
         aria-hidden
       />
 
@@ -24,47 +27,57 @@ export function LandingHero() {
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col justify-end gap-10 pb-12 pt-10 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-end lg:gap-12 lg:pb-16">
+        <div className="flex flex-1 flex-col justify-end gap-10 pb-12 pt-10 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-end lg:gap-14 lg:pb-16">
           <div className="max-w-xl animate-rise">
-            <h1 className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-              Scan. Print. Collect.
-            </h1>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-[var(--muted)] sm:text-lg">
-              The easiest QR print flow for students and campus shops — upload once, pick color
-              pages, pay, and pick up.
+            <p className="mb-4 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--muted)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden />
+              Campus print, simplified
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button href="/print/qr" size="lg">
+            <h1 className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.5rem]">
+              Scan. Print.
+              <br />
+              Collect.
+            </h1>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-[var(--muted)] sm:text-lg">
+              QR-based smart printing for students and shops — upload once, configure pages, pay,
+              and pick up when ready.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button href="/print/qr" size="lg" icon={QrCode} iconRight={ArrowRight}>
                 Start with QR station
               </Button>
-              <Button href="/print/upload" variant="secondary" size="lg">
-                Skip to upload demo
+              <Button href="/print/upload" variant="secondary" size="lg" icon={Upload}>
+                Skip to upload
               </Button>
             </div>
           </div>
 
           <div className="relative animate-float-in" aria-hidden>
             <div className="hero-visual relative mx-auto aspect-[4/3] w-full max-w-xl lg:max-w-none">
-              <div className="absolute inset-[8%] rounded-[1.25rem] border border-white/30 bg-white/55 shadow-[0_30px_80px_rgba(8,28,48,0.18)] backdrop-blur-sm dark:border-white/10 dark:bg-white/5" />
-              <div className="absolute inset-[18%_22%_28%_12%] -rotate-6 rounded-lg bg-[#f3f7fb] shadow-lg dark:bg-[#1b2535]" />
-              <div className="absolute inset-[22%_12%_18%_28%] rotate-3 rounded-lg bg-white shadow-xl dark:bg-[#243247]">
-                <div className="space-y-2 p-5">
-                  <div className="h-2 w-2/3 rounded-full bg-slate-300/80 dark:bg-slate-500/50" />
-                  <div className="h-2 w-full rounded-full bg-slate-200/90 dark:bg-slate-600/40" />
-                  <div className="h-2 w-5/6 rounded-full bg-slate-200/90 dark:bg-slate-600/40" />
-                  <div className="mt-6 grid grid-cols-3 gap-2">
-                    <span className="h-8 rounded bg-cyan-400/70" />
-                    <span className="h-8 rounded bg-fuchsia-400/60" />
-                    <span className="h-8 rounded bg-amber-300/70" />
+              <div className="absolute inset-[8%] rounded-[1.35rem] border border-white/40 bg-white/50 shadow-[var(--shadow-lg)] backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04]" />
+              <div className="absolute inset-[18%_22%_28%_12%] -rotate-6 rounded-[var(--radius-lg)] bg-[var(--surface-2)] shadow-[var(--shadow-md)] dark:bg-[#1b2535]" />
+              <div className="absolute inset-[22%_12%_18%_28%] rotate-3 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-lg)] dark:bg-[#1a2433]">
+                <div className="space-y-2.5 p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="h-2 w-24 rounded-full bg-[var(--surface-3)]" />
+                    <div className="h-5 w-14 rounded-md bg-[var(--accent-soft)]" />
                   </div>
+                  <div className="h-2 w-full rounded-full bg-[var(--surface-2)]" />
+                  <div className="h-2 w-5/6 rounded-full bg-[var(--surface-2)]" />
+                  <div className="mt-5 grid grid-cols-3 gap-2">
+                    <span className="h-9 rounded-[var(--radius-md)] bg-teal-400/50 dark:bg-teal-400/30" />
+                    <span className="h-9 rounded-[var(--radius-md)] bg-slate-300/70 dark:bg-slate-500/40" />
+                    <span className="h-9 rounded-[var(--radius-md)] bg-amber-300/60 dark:bg-amber-400/25" />
+                  </div>
+                  <div className="mt-3 h-8 rounded-[var(--radius-md)] bg-[var(--accent)]/90" />
                 </div>
               </div>
-              <div className="absolute bottom-[10%] right-[8%] flex h-28 w-28 items-center justify-center rounded-2xl bg-[var(--ink)] text-[var(--paper)] shadow-2xl dark:bg-cyan-300 dark:text-slate-950">
+              <div className="absolute bottom-[10%] right-[8%] flex h-28 w-28 items-center justify-center rounded-[1.15rem] bg-[var(--ink)] text-[var(--paper)] shadow-[var(--shadow-lg)] dark:bg-teal-300 dark:text-slate-950">
                 <div className="grid grid-cols-3 gap-1 p-3">
                   {Array.from({ length: 9 }).map((_, i) => (
                     <span
                       key={i}
-                      className={`h-5 w-5 rounded-[3px] ${i % 2 === 0 ? 'bg-current' : 'bg-transparent border border-current/40'}`}
+                      className={`h-5 w-5 rounded-[3px] ${i % 2 === 0 ? 'bg-current' : 'border border-current/35 bg-transparent'}`}
                     />
                   ))}
                 </div>
@@ -74,9 +87,9 @@ export function LandingHero() {
         </div>
 
         <p className="pb-6 text-center text-xs text-[var(--muted)] sm:text-left">
-          Demo UI ·{' '}
-          <Link href="/print/error?kind=printer-offline" className="underline underline-offset-2">
-            View error states
+          Production MVP ·{' '}
+          <Link href="/print/error?kind=printer-offline" className="underline underline-offset-2 hover:text-[var(--foreground)]">
+            Error states
           </Link>
         </p>
       </div>

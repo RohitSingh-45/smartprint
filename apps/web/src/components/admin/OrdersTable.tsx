@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { Inbox } from 'lucide-react';
 import { OrderActions } from '@/components/admin/OrderActions';
 import { OrderStatusBadge } from '@/components/admin/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
+import { EmptyState } from '@/components/ui/EmptyState';
 import {
   formatBytes,
   formatDateTime,
@@ -21,12 +23,12 @@ type Props = {
 export function OrdersTable({ orders, onAction }: Props) {
   if (orders.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface)] px-4 py-10 text-center">
-        <p className="font-medium">No orders match these filters</p>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Paid student orders will appear here for review.
-        </p>
-      </div>
+      <EmptyState
+        icon={Inbox}
+        title="No orders match these filters"
+        description="Paid student orders will appear here for review once checkout completes."
+        action={{ label: 'Clear filters', href: '/admin/orders', variant: 'secondary' }}
+      />
     );
   }
 

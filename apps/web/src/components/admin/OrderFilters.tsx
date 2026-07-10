@@ -25,9 +25,12 @@ type Props = {
   onChange: (next: OrderFiltersValue) => void;
 };
 
+const inputClass =
+  'h-10 w-full rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-[var(--accent)] focus-visible:shadow-[var(--shadow-focus)]';
+
 export function OrderFilters({ value, onChange }: Props) {
   return (
-    <div className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+    <div className="space-y-4 rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-xs)]">
       <div className="grid gap-3 sm:grid-cols-[1fr_auto_auto]">
         <label className="block">
           <span className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
@@ -38,7 +41,7 @@ export function OrderFilters({ value, onChange }: Props) {
             value={value.q}
             onChange={(e) => onChange({ ...value, q: e.target.value })}
             placeholder="e.g. assignment.pdf"
-            className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none focus-visible:border-[var(--accent)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]/30"
+            className={inputClass}
           />
         </label>
         <label className="block">
@@ -47,7 +50,7 @@ export function OrderFilters({ value, onChange }: Props) {
             type="date"
             value={value.from}
             onChange={(e) => onChange({ ...value, from: e.target.value })}
-            className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none focus-visible:border-[var(--accent)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]/30"
+            className={inputClass}
           />
         </label>
         <label className="block">
@@ -56,7 +59,7 @@ export function OrderFilters({ value, onChange }: Props) {
             type="date"
             value={value.to}
             onChange={(e) => onChange({ ...value, to: e.target.value })}
-            className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none focus-visible:border-[var(--accent)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]/30"
+            className={inputClass}
           />
         </label>
       </div>
@@ -70,7 +73,7 @@ export function OrderFilters({ value, onChange }: Props) {
               type="button"
               onClick={() => onChange({ ...value, status: filter.id })}
               className={cn(
-                'rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
+                'rounded-[var(--radius-md)] border px-3 py-1.5 text-sm font-medium transition-colors',
                 active
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)]'
                   : 'border-[var(--border)] bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--foreground)]',

@@ -50,11 +50,11 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
               aria-pressed={isColor}
               aria-label={`Page ${page}, ${isColor ? 'color' : 'black and white'}${inRange ? '' : ', outside range'}`}
               className={cn(
-                'flex min-h-14 flex-col items-center justify-center rounded-xl border px-1 py-2 text-center transition-colors',
-                'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]',
+                'pressable flex min-h-14 flex-col items-center justify-center rounded-[var(--radius-lg)] border px-1 py-2 text-center',
+                'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]',
                 isColor
-                  ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--background)]'
-                  : 'border-[var(--border)] bg-[var(--surface)]',
+                  ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[var(--shadow-xs)]'
+                  : 'border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border-strong)]',
                 !inRange && 'opacity-40',
               )}
             >
