@@ -31,6 +31,9 @@ const envSchema = z.object({
     .max(60 * 60)
     .default(15 * 60),
   ORDER_DIR: z.string().min(1).default('orders'),
+  PRINTER_DIR: z.string().min(1).default('printers'),
+  /** Shared secret for Local Print Agent (never expose to the browser). */
+  PRINT_AGENT_TOKEN: z.string().min(8).default('smartprint-dev-agent-token'),
   PAYMENT_PROVIDER: z.enum(['mock', 'razorpay']).default('mock'),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
@@ -65,6 +68,8 @@ export const env = {
   draftDir: parsed.data.DRAFT_DIR,
   draftTtlSeconds: parsed.data.DRAFT_TTL_SECONDS,
   orderDir: parsed.data.ORDER_DIR,
+  printerDir: parsed.data.PRINTER_DIR,
+  printAgentToken: parsed.data.PRINT_AGENT_TOKEN,
   paymentProvider: parsed.data.PAYMENT_PROVIDER,
   razorpayKeyId: parsed.data.RAZORPAY_KEY_ID,
   razorpayKeySecret: parsed.data.RAZORPAY_KEY_SECRET,

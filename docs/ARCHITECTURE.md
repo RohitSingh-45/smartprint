@@ -69,16 +69,33 @@ HELD
   → resume → QUEUED (appended to end)
   → cancel → CANCELLED
 READY_FOR_PRINT
-  → cancel → CANCELLED
-  → (Sprint 10) PRINTING → COMPLETED
+  → agent claim → PRINTING → COMPLETED
+                 ↘ FAILED (retry → READY_FOR_PRINT)
+                 ↘ CANCELLED (cancel mid-print)
+COMPLETED
+  → reprint → READY_FOR_PRINT
 ```
 
 Shop APIs: `/api/shop/*`. Queue APIs: `/api/queue/*`.
-Sprint 10 should call `listReadyForPrintJobs()` — no printer I/O in Sprint 9.
+Agent APIs: `/api/agent/*` (token). Shop printer view: `/api/printers/*`.
+
+### Local Print Agent (Sprint 10)
+
+```text
+Browser / Admin UI
+    │  (never talks to printers)
+    ▼
+SmartPrint API  ──X-Agent-Token──►  Local Print Agent (shop PC)
+                                         │
+                                         ▼
+                                   OS spooler (CUPS lp / mock)
+```
+
+Agent package: `apps/print-agent`. Multi-printer registration is supported per agent.
 
 ## Packages
 
-`packages/` is reserved for shared libraries (types, UI kit, config) when cross-app reuse is needed.
+`apps/print-agent` is the Local Print Agent. `packages/` remains reserved for shared libraries.
 
 ## Local ports
 

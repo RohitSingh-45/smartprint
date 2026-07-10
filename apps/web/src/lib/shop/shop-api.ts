@@ -3,11 +3,55 @@ import type {
   ListOrdersParams,
   ListQueueParams,
   OrderAction,
+  OrderStatus,
   QueueAction,
   QueueJob,
   QueueSummary,
   ShopOrder,
 } from '@/lib/shop/types';
+
+// Re-export printer types from shop types file after we extend it
+export type PrinterStatus =
+  | 'ONLINE'
+  | 'OFFLINE'
+  | 'PRINTING'
+  | 'PAPER_JAM'
+  | 'OUT_OF_PAPER'
+  | 'LOW_TONER'
+  | 'ERROR';
+
+export type RegisteredPrinter = {
+  id: string;
+  name: string;
+  status: PrinterStatus;
+  defaultPaperSize: string;
+  supportsColor: boolean;
+  systemPrinterName: string;
+  agentId: string;
+  lastSeenAt: string;
+  createdAt: string;
+  updatedAt: string;
+  currentOrderId?: string | null;
+  lastError?: string | null;
+};
+
+export type PrintAgentInfo = {
+  id: string;
+  name: string;
+  lastSeenAt: string;
+  createdAt: string;
+  status: 'ONLINE' | 'OFFLINE';
+  hostname?: string;
+};
+
+export type PrinterDashboard = {
+  printers: RegisteredPrinter[];
+  agents: PrintAgentInfo[];
+  currentPrinting: ShopOrder[];
+  failedJobs: ShopOrder[];
+  recentJobs: ShopOrder[];
+  generatedAt: string;
+};
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -98,6 +142,34 @@ export async function runQueueAction(id: string, action: QueueAction): Promise<Q
   return body.job as QueueJob;
 }
 
+export async function fetchPrinterDashboard(): Promise<PrinterDashboard> {
+  const res = await fetch(`${API_URL}/api/printers/dashboard`, { cache: 'no-store' });
+  const body = await parseJson(res);
+  if (!res.ok || !body.dashboard) throwApiError(res, body, 'Printer dashboard failed');
+  return body.dashboard as PrinterDashboard;
+}
+
+export async function retryPrintJob(id: string): Promise<ShopOrder> {
+  const res = await fetch(`${API_URL}/api/printers/jobs/${id}/retry`, { method: 'POST' });
+  const body = await parseJson(res);
+  if (!res.ok || !body.order) throwApiError(res, body, 'Retry failed');
+  return body.order as ShopOrder;
+}
+
+export async function reprintJob(id: string): Promise<ShopOrder> {
+  const res = await fetch(`${API_URL}/api/printers/jobs/${id}/reprint`, { method: 'POST' });
+  const body = await parseJson(res);
+  if (!res.ok || !body.order) throwApiError(res, body, 'Reprint failed');
+  return body.order as ShopOrder;
+}
+
+export async function cancelPrintJob(id: string): Promise<ShopOrder> {
+  const res = await fetch(`${API_URL}/api/printers/jobs/${id}/cancel`, { method: 'POST' });
+  const body = await parseJson(res);
+  if (!res.ok || !body.order) throwApiError(res, body, 'Cancel print failed');
+  return body.order as ShopOrder;
+}
+
 export function formatBytes(size: number): string {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
@@ -138,6 +210,8 @@ export function statusLabel(status: string): string {
       return 'Printing';
     case 'COMPLETED':
       return 'Completed';
+    case 'FAILED':
+      return 'Failed';
     case 'REJECTED':
       return 'Rejected';
     case 'CANCELLED':
@@ -145,6 +219,10 @@ export function statusLabel(status: string): string {
     default:
       return status;
   }
+}
+
+export function printerStatusLabel(status: string): string {
+  return status.replace(/_/g, ' ');
 }
 
 export function actionLabel(action: OrderAction | QueueAction): string {
@@ -171,3 +249,5 @@ export function actionLabel(action: OrderAction | QueueAction): string {
       return action;
   }
 }
+
+export type { OrderStatus };

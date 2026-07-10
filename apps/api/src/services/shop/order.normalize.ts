@@ -29,8 +29,12 @@ export function normalizeOrder(raw: PaidOrder): PaidOrder {
     readyAt: raw.readyAt,
     printingAt: raw.printingAt,
     completedAt: raw.completedAt,
+    failedAt: raw.failedAt,
     rejectedAt: raw.rejectedAt,
     cancelledAt: raw.cancelledAt,
+    printerId: raw.printerId ?? null,
+    printAttempts: typeof raw.printAttempts === 'number' ? raw.printAttempts : 0,
+    lastPrintError: raw.lastPrintError ?? null,
   };
 }
 
@@ -41,6 +45,7 @@ const POST_ACCEPT = new Set<OrderStatus>([
   'READY_FOR_PRINT',
   'PRINTING',
   'COMPLETED',
+  'FAILED',
 ]);
 
 const POST_QUEUE = new Set<OrderStatus>([
@@ -49,9 +54,10 @@ const POST_QUEUE = new Set<OrderStatus>([
   'READY_FOR_PRINT',
   'PRINTING',
   'COMPLETED',
+  'FAILED',
 ]);
 
-const POST_READY = new Set<OrderStatus>(['READY_FOR_PRINT', 'PRINTING', 'COMPLETED']);
+const POST_READY = new Set<OrderStatus>(['READY_FOR_PRINT', 'PRINTING', 'COMPLETED', 'FAILED']);
 
 export function buildOrderTimeline(order: PaidOrder): OrderTimelineEvent[] {
   const status = canonicalizeStatus(order.status);
@@ -114,7 +120,7 @@ export function buildOrderTimeline(order: PaidOrder): OrderTimelineEvent[] {
       type: 'printing',
       label: 'Printing',
       at: order.printingAt ?? null,
-      done: status === 'PRINTING' || status === 'COMPLETED',
+      done: status === 'PRINTING' || status === 'COMPLETED' || status === 'FAILED',
     },
     {
       type: 'completed',
@@ -123,6 +129,24 @@ export function buildOrderTimeline(order: PaidOrder): OrderTimelineEvent[] {
       done: status === 'COMPLETED',
     },
   ];
+
+  if (status === 'FAILED') {
+    const base = events
+      .filter((event) => event.done && event.type !== 'completed')
+      .map((event) => ({
+        type: event.type,
+        label: event.label,
+        at: event.at,
+        state: 'done' as const,
+      }));
+    base.push({
+      type: 'failed',
+      label: 'Print failed',
+      at: order.failedAt ?? order.updatedAt,
+      state: 'done',
+    });
+    return base;
+  }
 
   if (status === 'CANCELLED') {
     const base = events

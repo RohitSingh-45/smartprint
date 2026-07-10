@@ -66,16 +66,19 @@
 - [x] `listReadyForPrintJobs()` intake interface for Sprint 10
 - [x] PRINTING / COMPLETED statuses reserved (no printer I/O)
 
-## Sprint 10 — Printers & QR job dispatch
+## Sprint 10 — Local Print Agent & printer integration
 
-- Printer registration & connectivity
-- QR code generation for print stations
-- Consume `READY_FOR_PRINT` jobs via queue intake interface
-- Transition READY_FOR_PRINT → PRINTING → COMPLETED
-- Job status tracking on the student side
+- [x] Local Print Agent (`apps/print-agent`) with token auth
+- [x] Printer registration + heartbeat + status model
+- [x] Consume READY_FOR_PRINT → PRINTING → COMPLETED / FAILED
+- [x] Retry / reprint / cancel printing
+- [x] Admin Printers dashboard
+- [ ] QR code generation for print stations (deferred — see TECHNICAL_DEBT)
 
-## Sprint 11 — Hardening & launch prep
+## Sprint 11 — Hardening, student status & launch prep
 
+- Student-facing live job status (printing / ready to collect)
 - Observability, rate limiting, security review
 - E2E tests + deployment pipelines
 - Auth foundation when accounts are required
+- Optional: QR station pairing for multi-printer shops

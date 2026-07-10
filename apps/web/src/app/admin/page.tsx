@@ -116,8 +116,8 @@ export default function AdminDashboardPage() {
               3. <strong className="text-[var(--foreground)]">Move to queue</strong> (FIFO)
             </li>
             <li>
-              4. <strong className="text-[var(--foreground)]">Mark ready for print</strong> — Sprint
-              10 dispatches
+              4. Local Print Agent claims <strong className="text-[var(--foreground)]">READY_FOR_PRINT</strong>{' '}
+              → PRINTING → COMPLETED
             </li>
           </ol>
           <div className="mt-5 flex flex-wrap gap-4">
@@ -132,6 +132,12 @@ export default function AdminDashboardPage() {
               className="text-sm font-medium text-[var(--accent-strong)] underline-offset-2 hover:underline"
             >
               Open print queue →
+            </Link>
+            <Link
+              href="/admin/printers"
+              className="text-sm font-medium text-[var(--accent-strong)] underline-offset-2 hover:underline"
+            >
+              Printers →
             </Link>
           </div>
         </section>
