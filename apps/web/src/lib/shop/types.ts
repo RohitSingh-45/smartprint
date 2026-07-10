@@ -1,21 +1,38 @@
 export type OrderStatus =
   | 'PAID'
   | 'ACCEPTED'
-  | 'READY'
+  | 'QUEUED'
+  | 'HELD'
+  | 'READY_FOR_PRINT'
+  | 'PRINTING'
   | 'COMPLETED'
   | 'REJECTED'
-  | 'CANCELLED';
+  | 'CANCELLED'
+  | 'READY';
 
-export type OrderAction = 'accept' | 'reject' | 'mark_ready' | 'cancel';
+export type OrderAction = 'accept' | 'reject' | 'enqueue' | 'cancel';
+
+export type QueueAction =
+  | 'accept'
+  | 'enqueue'
+  | 'hold'
+  | 'resume'
+  | 'move_up'
+  | 'move_down'
+  | 'cancel'
+  | 'mark_ready_for_print';
 
 export type ShopOrderFilter =
   | 'all'
   | 'pending'
   | 'paid'
   | 'accepted'
+  | 'queued'
   | 'ready'
   | 'completed'
   | 'cancelled';
+
+export type QueueFilter = 'all' | 'queued' | 'held' | 'ready' | 'cancelled';
 
 export type TimelineEvent = {
   type: string;
@@ -54,15 +71,27 @@ export type ShopOrder = {
   paidAt: string;
   createdAt: string;
   updatedAt: string;
+  customerName: string;
+  queuePosition: number | null;
+  priority: number;
   draftCreatedAt?: string;
   acceptedAt?: string;
+  queuedAt?: string;
+  heldAt?: string;
   readyAt?: string;
+  printingAt?: string;
   completedAt?: string;
   rejectedAt?: string;
   cancelledAt?: string;
   print: ShopOrderPrint;
   timeline: TimelineEvent[];
   availableActions: OrderAction[];
+};
+
+export type QueueJob = ShopOrder & {
+  availableQueueActions: QueueAction[];
+  pagesCount: number;
+  waitingMs: number | null;
 };
 
 export type DashboardStats = {
@@ -76,9 +105,25 @@ export type DashboardStats = {
   generatedAt: string;
 };
 
+export type QueueSummary = {
+  totalJobs: number;
+  queuedJobs: number;
+  heldJobs: number;
+  readyJobs: number;
+  cancelledJobs: number;
+  averageWaitingTimeMs: number | null;
+  averageWaitingTimeLabel: string;
+  generatedAt: string;
+};
+
 export type ListOrdersParams = {
   q?: string;
   status?: ShopOrderFilter;
   from?: string;
   to?: string;
+};
+
+export type ListQueueParams = {
+  q?: string;
+  status?: QueueFilter;
 };

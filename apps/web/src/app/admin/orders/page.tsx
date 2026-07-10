@@ -74,7 +74,8 @@ function OrdersPageContent() {
             Orders
           </h1>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            Manage paid print jobs. Actions update shop status only — nothing is sent to a printer.
+            Manage paid print jobs. Accept and move jobs into the print queue — nothing is sent to a
+            printer yet.
           </p>
         </div>
         <Button variant="secondary" onClick={() => void load()} disabled={loading}>

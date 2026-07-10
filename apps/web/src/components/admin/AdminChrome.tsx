@@ -12,6 +12,11 @@ const NAV = [
     label: 'Orders',
     match: (path: string) => path.startsWith('/admin/orders'),
   },
+  {
+    href: '/admin/queue',
+    label: 'Queue',
+    match: (path: string) => path.startsWith('/admin/queue'),
+  },
 ];
 
 export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -50,7 +55,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
       <div className="border-t border-[var(--border)] p-4 text-xs text-[var(--muted)]">
-        Review paid orders before print dispatch (Sprint 9).
+        Queue is the source of truth before printer dispatch (Sprint 10).
       </div>
     </aside>
   );
@@ -74,7 +79,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick?: () => void }) {
         </button>
         <div>
           <p className="text-sm font-medium">Campus Hub</p>
-          <p className="text-xs text-[var(--muted)]">Live paid orders</p>
+          <p className="text-xs text-[var(--muted)]">Orders + print queue</p>
         </div>
       </div>
       <div className="flex items-center gap-2">

@@ -15,6 +15,7 @@ const FILTERS: Array<{ id: ShopOrderFilter; label: string }> = [
   { id: 'pending', label: 'Pending' },
   { id: 'paid', label: 'Paid' },
   { id: 'accepted', label: 'Accepted' },
+  { id: 'queued', label: 'Queued' },
   { id: 'ready', label: 'Ready' },
   { id: 'cancelled', label: 'Cancelled' },
 ];

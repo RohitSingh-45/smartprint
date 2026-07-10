@@ -10,12 +10,16 @@ const toneByStatus: Record<
 > = {
   PAID: 'accent',
   ACCEPTED: 'warning',
+  QUEUED: 'accent',
+  HELD: 'warning',
   READY: 'success',
+  READY_FOR_PRINT: 'success',
+  PRINTING: 'accent',
   COMPLETED: 'success',
   REJECTED: 'danger',
   CANCELLED: 'danger',
 };
 
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {
-  return <Badge tone={toneByStatus[status]}>{statusLabel(status)}</Badge>;
+  return <Badge tone={toneByStatus[status] ?? 'neutral'}>{statusLabel(status)}</Badge>;
 }
