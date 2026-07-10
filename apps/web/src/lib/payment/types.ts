@@ -36,9 +36,10 @@ export type PaidOrderDto = {
   amountPaid: number;
   currency: 'INR';
   paymentStatus: 'paid';
-  status: 'PAID';
+  status: 'PAID' | 'ACCEPTED' | 'READY' | 'COMPLETED' | 'REJECTED' | 'CANCELLED';
   paidAt: string;
   createdAt: string;
+  updatedAt?: string;
   print: PaidOrderPrint;
 };
 

@@ -51,6 +51,23 @@ Draft (valid, not expired)
 
 Failed / cancelled payments leave the draft alive until TTL. Duplicate paid conversions are rejected.
 
+### Shop order lifecycle (Sprint 8)
+
+```text
+PaidOrder status=PAID
+  → shop accept  → ACCEPTED
+  → shop reject  → REJECTED
+  → shop cancel  → CANCELLED
+ACCEPTED
+  → mark_ready   → READY   (ready for future printer dispatch)
+  → cancel       → CANCELLED
+READY
+  → cancel       → CANCELLED
+COMPLETED is reserved for Sprint 9 after physical print.
+```
+
+Shop APIs live under `/api/shop/*` and stay independent of printer hardware.
+
 ## Packages
 
 `packages/` is reserved for shared libraries (types, UI kit, config) when cross-app reuse is needed.
