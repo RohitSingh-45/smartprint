@@ -32,6 +32,9 @@ export function normalizeOrder(raw: PaidOrder): PaidOrder {
     failedAt: raw.failedAt,
     rejectedAt: raw.rejectedAt,
     cancelledAt: raw.cancelledAt,
+    collectedAt: raw.collectedAt,
+    pickupCode: raw.pickupCode ?? null,
+    pickupToken: raw.pickupToken ?? null,
     printerId: raw.printerId ?? null,
     printAttempts: typeof raw.printAttempts === 'number' ? raw.printAttempts : 0,
     lastPrintError: raw.lastPrintError ?? null,
@@ -45,6 +48,7 @@ const POST_ACCEPT = new Set<OrderStatus>([
   'READY_FOR_PRINT',
   'PRINTING',
   'COMPLETED',
+  'COLLECTED',
   'FAILED',
 ]);
 
@@ -54,10 +58,17 @@ const POST_QUEUE = new Set<OrderStatus>([
   'READY_FOR_PRINT',
   'PRINTING',
   'COMPLETED',
+  'COLLECTED',
   'FAILED',
 ]);
 
-const POST_READY = new Set<OrderStatus>(['READY_FOR_PRINT', 'PRINTING', 'COMPLETED', 'FAILED']);
+const POST_READY = new Set<OrderStatus>([
+  'READY_FOR_PRINT',
+  'PRINTING',
+  'COMPLETED',
+  'COLLECTED',
+  'FAILED',
+]);
 
 export function buildOrderTimeline(order: PaidOrder): OrderTimelineEvent[] {
   const status = canonicalizeStatus(order.status);
@@ -120,13 +131,23 @@ export function buildOrderTimeline(order: PaidOrder): OrderTimelineEvent[] {
       type: 'printing',
       label: 'Printing',
       at: order.printingAt ?? null,
-      done: status === 'PRINTING' || status === 'COMPLETED' || status === 'FAILED',
+      done:
+        status === 'PRINTING' ||
+        status === 'COMPLETED' ||
+        status === 'COLLECTED' ||
+        status === 'FAILED',
     },
     {
       type: 'completed',
-      label: 'Completed',
+      label: status === 'COLLECTED' ? 'Ready for pickup' : 'Completed',
       at: order.completedAt ?? null,
-      done: status === 'COMPLETED',
+      done: status === 'COMPLETED' || status === 'COLLECTED',
+    },
+    {
+      type: 'collected',
+      label: 'Collected',
+      at: order.collectedAt ?? null,
+      done: status === 'COLLECTED',
     },
   ];
 

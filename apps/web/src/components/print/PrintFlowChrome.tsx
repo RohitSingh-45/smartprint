@@ -9,10 +9,12 @@ export function PrintFlowChrome({ children }: { children: React.ReactNode }) {
   const current =
     pathname.startsWith('/print/confirmation') || pathname.startsWith('/print/payment')
       ? 'payment'
-      : (FLOW_STEPS.find((step) => pathname.startsWith(step.href))?.id ??
-        (pathname.includes('/error') ? 'upload' : 'qr'));
+      : pathname.startsWith('/print/orders')
+        ? 'status'
+        : (FLOW_STEPS.find((step) => pathname.startsWith(step.href))?.id ??
+          (pathname.includes('/error') ? 'upload' : 'qr'));
 
-  const hideStepper = pathname.includes('/error');
+  const hideStepper = pathname.includes('/error') || pathname.startsWith('/print/orders');
 
   return (
     <div className="min-h-dvh bg-[var(--background)]">

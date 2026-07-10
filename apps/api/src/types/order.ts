@@ -6,6 +6,7 @@ export const ORDER_STATUSES = [
   'READY_FOR_PRINT',
   'PRINTING',
   'COMPLETED',
+  'COLLECTED',
   'FAILED',
   'REJECTED',
   'CANCELLED',
@@ -46,6 +47,8 @@ export const TIMELINE_EVENTS = [
   'ready_for_print',
   'printing',
   'completed',
+  'ready_for_pickup',
+  'collected',
   'failed',
   'held',
   'rejected',
@@ -107,6 +110,11 @@ export type PaidOrder = {
   failedAt?: string;
   rejectedAt?: string;
   cancelledAt?: string;
+  collectedAt?: string;
+  /** Short human pickup code shown to the customer. */
+  pickupCode?: string | null;
+  /** Secret token embedded in pickup QR (shop scan). */
+  pickupToken?: string | null;
   /** Printer that claimed / last handled this job. */
   printerId?: string | null;
   printAttempts?: number;

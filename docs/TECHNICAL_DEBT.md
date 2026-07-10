@@ -45,7 +45,11 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 - [x] Shop owner review dashboard for paid orders (Sprint 8)
 - [x] Print queue engine to READY_FOR_PRINT (Sprint 9)
 - [x] Local Print Agent dispatch READY_FOR_PRINT → COMPLETED/FAILED (Sprint 10)
-- [ ] Student-facing live print / pickup status
+- [x] Student-facing live print / pickup status (Sprint 11)
+- [x] Mark completed + pickup code after print (Sprint 11 student UX)
+- [ ] Real notification adapters (browser / email / WhatsApp)
+- [ ] Receipt PDF download + reprint request
+- [ ] SSE/WebSocket push for tracking instead of polling
 
 ## Print agent (deferred)
 
@@ -59,22 +63,27 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 ## Queue (deferred)
 
 - [ ] Priority scheduling (field reserved, always 0 today)
-- [ ] Real average waiting-time metrics from historical queue events
+- [ ] Real average waiting-time metrics from historical queue events (replace placeholder ETA)
 - [ ] Multi-station / multi-printer queue shards
 - [ ] Optimistic locking for concurrent reorder
 - [ ] Rate-limit `/api/queue/*`
-- [ ] Student-facing live queue position
 
 ## Shop dashboard (deferred)
 
 - [ ] Shop owner authentication / role-based access
 - [ ] Multi-shop / multi-station tenancy
 - [ ] Real printer telemetry extras beyond agent heartbeat
-- [ ] Mark completed + pickup code after print (student UX)
 - [ ] Refunds from rejected/cancelled paid orders
 - [ ] Export orders CSV / daily settlement report
 - [ ] Live updates (SSE/WebSocket) when new paid orders arrive
 - [ ] Rate-limit `/api/shop/*`
+
+## Tracking / pickup (deferred)
+
+- [ ] Authenticated customer order history (replace device-localStorage)
+- [ ] Signed short-lived pickup tokens with expiry enforcement beyond UI flag
+- [ ] Shop-side pickup scanner camera UI
+- [ ] SMS fallback for pickup code
 
 ## Payments (deferred)
 

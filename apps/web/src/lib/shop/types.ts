@@ -6,6 +6,7 @@ export type OrderStatus =
   | 'READY_FOR_PRINT'
   | 'PRINTING'
   | 'COMPLETED'
+  | 'COLLECTED'
   | 'FAILED'
   | 'REJECTED'
   | 'CANCELLED'

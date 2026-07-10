@@ -12,6 +12,7 @@ import {
   verifyPayment,
 } from '@/lib/payment/payment-api';
 import type { PaymentApiError } from '@/lib/payment/types';
+import { rememberOrder } from '@/lib/tracking/history';
 
 export default function PaymentProcessingPage() {
   const router = useRouter();
@@ -35,6 +36,12 @@ export default function PaymentProcessingPage() {
         const order = await verifyPayment(pending);
         savePaymentPending(null);
         saveOrderIdSession(order.id);
+        rememberOrder({
+          id: order.id,
+          fileName: order.print?.fileName,
+          paidAt: order.paidAt,
+          amountPaid: order.amountPaid,
+        });
         saveDraftIdSession(null);
         router.replace(`/print/payment/success?orderId=${order.id}`);
       } catch (err) {

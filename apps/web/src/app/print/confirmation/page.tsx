@@ -11,6 +11,7 @@ import {
   saveOrderIdSession,
 } from '@/lib/payment/payment-api';
 import type { PaidOrderDto } from '@/lib/payment/types';
+import { rememberOrder } from '@/lib/tracking/history';
 
 function ConfirmationContent() {
   const params = useSearchParams();
@@ -28,6 +29,12 @@ function ConfirmationContent() {
       try {
         const next = await getPaidOrder(orderIdParam);
         saveOrderIdSession(next.id);
+        rememberOrder({
+          id: next.id,
+          fileName: next.print?.fileName,
+          paidAt: next.paidAt,
+          amountPaid: next.amountPaid,
+        });
         setOrder(next);
         setError(null);
       } catch (err) {
@@ -67,22 +74,26 @@ function ConfirmationContent() {
   return (
     <ScreenShell
       title="You're all set"
-      subtitle="Payment verified. Order status is PAID. Queue and printer dispatch come in Sprint 8."
+      subtitle="Payment verified. Track live status from queue through pickup."
     >
       <div className="space-y-6">
         <OrderConfirmationCard order={order} />
 
-        <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface-2)] p-4 text-sm text-[var(--muted)]">
-          This order will enter the print queue in a later sprint. Nothing has been sent to a
-          printer yet.
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-sm text-[var(--muted)]">
+          Your order is with the shop now. Open live tracking anytime — status survives refresh on
+          this device.
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button href="/" variant="secondary" fullWidth>
-            Back to home
+          <Button
+            href={`/print/status?orderId=${encodeURIComponent(order.id)}`}
+            size="lg"
+            fullWidth
+          >
+            Track order
           </Button>
-          <Button href="/print/qr" size="lg" fullWidth>
-            Print another file
+          <Button href="/print/orders" variant="secondary" fullWidth>
+            Order history
           </Button>
         </div>
       </div>

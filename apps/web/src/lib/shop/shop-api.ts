@@ -209,7 +209,9 @@ export function statusLabel(status: string): string {
     case 'PRINTING':
       return 'Printing';
     case 'COMPLETED':
-      return 'Completed';
+      return 'Ready for pickup';
+    case 'COLLECTED':
+      return 'Collected';
     case 'FAILED':
       return 'Failed';
     case 'REJECTED':

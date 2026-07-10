@@ -16,6 +16,7 @@ const toneByStatus: Record<
   READY_FOR_PRINT: 'success',
   PRINTING: 'accent',
   COMPLETED: 'success',
+  COLLECTED: 'success',
   FAILED: 'danger',
   REJECTED: 'danger',
   CANCELLED: 'danger',

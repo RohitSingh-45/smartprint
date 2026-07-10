@@ -107,18 +107,31 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Admin Printers dashboard                             | Done   |
 | Mock + CUPS (`lp`) spooler modes                     | Done   |
 
+## Sprint 11 (delivered — customer tracking & pickup)
+
+| Feature                                              | Status |
+| ---------------------------------------------------- | ------ |
+| Live tracking page with status timeline              | Done   |
+| Queue position + placeholder ETA                     | Done   |
+| Pickup QR + shop collect (`COLLECTED`)               | Done   |
+| Duplicate collection prevention                      | Done   |
+| Order history (device-local) + disabled future actions | Done |
+| Notification architecture stub (no sends)            | Done   |
+| Error UIs: cancelled / failure / delayed / expired   | Done   |
+
 ## Planned
 
 | Feature                         | Sprint |
 | ------------------------------- | ------ |
-| Student live print status       | 11     |
-| QR station pairing              | 11     |
-| Authentication                  | 11     |
+| Real notification adapters      | 12     |
+| Receipt PDF + reprint request   | 12     |
+| Hardening / auth foundation     | 12     |
+| QR station pairing              | 12     |
 
-## Explicitly out of scope for Sprint 10
+## Explicitly out of scope for Sprint 11
 
-- Browser-to-printer communication
-- Notifications
 - Authentication / multi-shop
-- New payment features
-- Analytics beyond printer dashboard cards
+- New payment or printer features
+- Analytics
+- Actual browser / email / WhatsApp delivery
+- Production hardening
