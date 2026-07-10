@@ -7,6 +7,7 @@ import { connectDatabase, disconnectDatabase } from './config/database';
 import { env } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import routes from './routes';
+import { getFileStorage } from './services/storage';
 
 let server: Server | undefined;
 let isShuttingDown = false;
@@ -18,6 +19,9 @@ async function bootstrap(): Promise<void> {
   app.use(cors({ origin: env.corsOrigin }));
   app.use(morgan(env.isProduction ? 'combined' : 'dev'));
   app.use(express.json({ limit: env.jsonBodyLimit }));
+
+  await getFileStorage().ensureReady();
+  console.log(`[uploads] Storage ready (${env.storageDriver}) → ${env.uploadDir}`);
 
   app.use('/api', routes);
 

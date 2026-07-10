@@ -105,6 +105,9 @@ See `.env.example` and per-app `.env.example` files.
 | `CORS_ORIGIN`          | api | Allowed frontend origin (must be a valid URL) |
 | `NODE_ENV`             | api | `development` / `production` / `test`         |
 | `JSON_BODY_LIMIT`      | api | Express JSON body limit (default `100kb`)     |
+| `UPLOAD_DIR`           | api | Temp upload directory (default `uploads`)     |
+| `UPLOAD_MAX_BYTES`     | api | Max upload size in bytes (default 25 MB)      |
+| `STORAGE_DRIVER`       | api | Storage backend (`local` only for now)        |
 
 ## Documentation
 

@@ -17,30 +17,29 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | ESLint / Prettier                                         | Done   |
 | Env templates & docs                                      | Done   |
 
-## Sprint 2 (delivered — UI only)
+## Sprint 3 (delivered — upload engine)
 
-| Feature                          | Status |
-| -------------------------------- | ------ |
-| Full print journey screens       | Done   |
-| Clickable navigation + mock data | Done   |
-| Dark mode support                | Done   |
-| Admin sidebar/topbar shell       | Done   |
+| Feature                                      | Status |
+| -------------------------------------------- | ------ |
+| Secure upload API + local temp storage       | Done   |
+| Drag/drop + click upload UI with progress    | Done   |
+| Remove / replace uploaded file               | Done   |
+| Swappable storage interface (local only now) | Done   |
 
 ## Planned
 
-| Feature                               | Sprint |
-| ------------------------------------- | ------ |
-| Authentication                        | 3      |
-| Real file upload (PDF / DOCX / image) | 3      |
-| Persist Color / B&W selection         | 3      |
-| Online payments                       | 4      |
-| Printer connectivity                  | 5      |
-| QR-based job dispatch                 | 5      |
-| Job status tracking                   | 5      |
+| Feature                              | Sprint |
+| ------------------------------------ | ------ |
+| Authentication + protected uploads   | 4      |
+| Real PDF preview + Color/B&W binding | 4      |
+| Online payments                      | 5      |
+| Printer connectivity                 | 6      |
+| QR-based job dispatch                | 6      |
 
-## Explicitly out of scope for Sprint 2
+## Explicitly out of scope for Sprint 3
 
-- Backend business logic
 - Authentication
-- Real file uploads / payments / printer integration
-- Database models for jobs/orders
+- Payments / printer integration
+- PDF preview and page selection
+- Cloud storage (S3/Cloudinary) — interface only
+- MongoDB persistence for uploads

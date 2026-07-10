@@ -17,15 +17,21 @@
 - [x] Admin dashboard layout (sidebar + topbar)
 - [x] Dark mode + reusable components (UI only, no backend)
 
-## Sprint 3 — Auth + real upload wiring
+## Sprint 3 — File upload engine (current)
+
+- [x] Secure upload API (validate type/size, sanitize names, unique ids)
+- [x] Local temp storage behind a swappable `FileStorage` interface
+- [x] Frontend drag/drop + click upload with progress, details, remove/replace
+- [x] Document technical debt for cloud storage and later flow steps
+
+## Sprint 4 — Auth + job draft / page prep
 
 - User registration / login (email + password)
 - JWT session strategy
-- Protected API middleware
-- User Mongoose model
-- Real PDF / DOCX / image upload API
-- Persist page Color / B&W selections on a job draft
-- Shared frontend API client
+- Protected upload routes
+- User model + job draft model
+- Bind uploads to a draft; prepare for page selection / pricing
+- Shared frontend API client with auth
 
 ## Sprint 4 — Payments
 
