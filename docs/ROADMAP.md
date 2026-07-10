@@ -22,40 +22,42 @@
 - [x] Secure upload API (validate type/size, sanitize names, unique ids)
 - [x] Local temp storage behind a swappable `FileStorage` interface
 - [x] Frontend drag/drop + click upload with progress, details, remove/replace
-- [x] Document technical debt for cloud storage and later flow steps
 
 ## Sprint 4 — PDF preview engine
 
-- [x] Serve validated PDF content from existing uploads (`GET /api/uploads/:id/content`)
+- [x] Serve validated PDF content from existing uploads
 - [x] PDF.js viewer with lazy pages, zoom, fit-width, skeletons, errors
 - [x] Auto-open preview after successful PDF upload
-- [x] Capture preview follow-ups in `docs/TECHNICAL_DEBT.md`
 
-## Sprint 5 — Print configuration engine (current)
+## Sprint 5 — Print configuration engine
 
 - [x] Page-wise Color / B&W (default B&W)
 - [x] Copies, page range, paper size, orientation
 - [x] Live print summary + estimated cost + smart warnings
-- [x] Session-persisted config ready for payment handoff
 
-## Sprint 6 — Payments
+## Sprint 6 — Order draft engine (current)
 
-- Checkout flow using saved print config
+- [x] Draft CRUD APIs with 15-minute expiration
+- [x] Auto-sync draft from print configuration
+- [x] Restore draft on refresh + countdown UI
+- [x] Architecture ready for payment handoff
+
+## Sprint 7 — Payments
+
+- Checkout flow using draft id
 - Payment provider integration
 - Order / payment records
 - Receipt / confirmation UI
 
-## Sprint 7 — Printers & QR jobs
+## Sprint 8 — Printers & QR jobs
 
 - Printer registration & connectivity
 - QR code generation for print stations
 - Job dispatch to connected printers
 - Job status tracking
 
-## Sprint 8 — Hardening & launch prep
+## Sprint 9 — Hardening & launch prep
 
-- Observability (logging, metrics)
-- Rate limiting & security review
-- E2E tests for core flows
-- Deployment pipelines
+- Observability, rate limiting, security review
+- E2E tests + deployment pipelines
 - Auth foundation when accounts are required

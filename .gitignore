@@ -53,6 +53,7 @@ out
 .npm
 
 # Uploads / local data (future sprints)
+drafts/
 uploads/
 tmp/
 temp/

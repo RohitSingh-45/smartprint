@@ -22,6 +22,14 @@ const envSchema = z.object({
     .max(100 * 1024 * 1024)
     .default(25 * 1024 * 1024),
   STORAGE_DRIVER: z.enum(['local']).default('local'),
+  DRAFT_DIR: z.string().min(1).default('drafts'),
+  /** Draft lifetime in seconds (default 15 minutes). */
+  DRAFT_TTL_SECONDS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(60 * 60)
+    .default(15 * 60),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -43,5 +51,7 @@ export const env = {
   uploadDir: parsed.data.UPLOAD_DIR,
   uploadMaxBytes: parsed.data.UPLOAD_MAX_BYTES,
   storageDriver: parsed.data.STORAGE_DRIVER,
+  draftDir: parsed.data.DRAFT_DIR,
+  draftTtlSeconds: parsed.data.DRAFT_TTL_SECONDS,
   isProduction: parsed.data.NODE_ENV === 'production',
 } as const;

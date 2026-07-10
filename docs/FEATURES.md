@@ -53,18 +53,26 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Live summary + estimated cost + warnings     | Done   |
 | Session config ready for payment integration | Done   |
 
+## Sprint 6 (delivered — order drafts)
+
+| Feature                              | Status |
+| ------------------------------------ | ------ |
+| Draft CRUD API with expiration       | Done   |
+| Auto-sync from print configuration   | Done   |
+| Countdown + refresh restore          | Done   |
+| Ready for payment handoff (draft id) | Done   |
+
 ## Planned
 
 | Feature               | Sprint |
 | --------------------- | ------ |
-| Online payments       | 6      |
-| Printer connectivity  | 7      |
-| QR-based job dispatch | 7      |
-| Authentication        | 8      |
+| Online payments       | 7      |
+| Printer connectivity  | 8      |
+| QR-based job dispatch | 8      |
+| Authentication        | 9      |
 
-## Explicitly out of scope for Sprint 5
+## Explicitly out of scope for Sprint 6
 
 - Authentication
-- Real payment capture
+- Payment gateway / capture
 - Printer / queue / admin features
-- Duplex and finishing options
