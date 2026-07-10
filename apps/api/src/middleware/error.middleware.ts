@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { MulterError } from 'multer';
+import { DraftValidationError } from '../services/draft/draft.validation';
 import { UploadValidationError } from '../services/upload.service';
 
 type HttpError = Error & {
@@ -19,7 +20,7 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
-  if (err instanceof UploadValidationError) {
+  if (err instanceof UploadValidationError || err instanceof DraftValidationError) {
     res.status(err.status).json({ error: err.message, code: err.code });
     return;
   }

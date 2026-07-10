@@ -2,6 +2,14 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.6.0] — 2026-07-10
+
+### Added
+
+- Order draft engine: `POST/GET/PATCH/DELETE /api/drafts`
+- 15-minute draft TTL with countdown UI and refresh restore
+- Auto-sync draft from print configuration (create/update)
+
 ## [0.5.0] — 2026-07-10
 
 ### Added

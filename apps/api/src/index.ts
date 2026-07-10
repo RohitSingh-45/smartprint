@@ -7,6 +7,7 @@ import { connectDatabase, disconnectDatabase } from './config/database';
 import { env } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import routes from './routes';
+import { getDraftStore } from './services/draft';
 import { getFileStorage } from './services/storage';
 
 let server: Server | undefined;
@@ -27,6 +28,9 @@ async function bootstrap(): Promise<void> {
 
   await getFileStorage().ensureReady();
   console.log(`[uploads] Storage ready (${env.storageDriver}) → ${env.uploadDir}`);
+
+  await getDraftStore().ensureReady();
+  console.log(`[drafts] Store ready → ${env.draftDir} (TTL ${env.draftTtlSeconds}s)`);
 
   app.use('/api', routes);
 

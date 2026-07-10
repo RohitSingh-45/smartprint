@@ -8,6 +8,8 @@ import { PageModeGrid } from '@/components/print-config/PageModeGrid';
 import { PageRangeControl } from '@/components/print-config/PageRangeControl';
 import { PaperSizeControl } from '@/components/print-config/PaperSizeControl';
 import { PrintSummaryCard } from '@/components/print-config/PrintSummaryCard';
+import { DraftStatusCard } from '@/components/draft/DraftStatusCard';
+import { useOrderDraft } from '@/hooks/useOrderDraft';
 import { usePrintConfig } from '@/hooks/usePrintConfig';
 
 export function PrintConfigPanel() {
@@ -23,6 +25,13 @@ export function PrintConfigPanel() {
     setPaperSize,
     setOrientation,
   } = usePrintConfig();
+
+  const draftState = useOrderDraft({
+    config,
+    summary,
+    hydrated,
+    enabled: hydrated && config.totalPages > 0,
+  });
 
   if (!hydrated) {
     return (
@@ -59,6 +68,17 @@ export function PrintConfigPanel() {
 
   return (
     <div className="flex flex-1 flex-col gap-8">
+      <DraftStatusCard
+        draft={draftState.draft}
+        countdownLabel={draftState.countdownLabel}
+        secondsRemaining={draftState.secondsRemaining}
+        expired={draftState.expired}
+        syncing={draftState.syncing}
+        error={draftState.error}
+        onDelete={() => void draftState.removeDraft()}
+        onRefresh={() => void draftState.refresh()}
+      />
+
       <PrintSummaryCard summary={summary} fileName={config.fileName} />
 
       <ConfigWarnings warnings={summary.warnings} />
@@ -89,7 +109,12 @@ export function PrintConfigPanel() {
         <Button href="/print/preview" variant="secondary" fullWidth>
           Back to preview
         </Button>
-        <Button href="/print/summary" size="lg" fullWidth disabled={!summary.canContinue}>
+        <Button
+          href="/print/summary"
+          size="lg"
+          fullWidth
+          disabled={!summary.canContinue || draftState.expired || !draftState.draft}
+        >
           Continue to price
         </Button>
       </div>
