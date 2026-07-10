@@ -65,7 +65,11 @@ export async function getFile(req: Request, res: Response, next: NextFunction): 
   }
 }
 
-export async function getPdfContent(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getPdfContent(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const { metadata, buffer } = await getUploadPdfContent(req.params.id);
 

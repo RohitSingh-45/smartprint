@@ -17,7 +17,9 @@ function PreviewContent() {
   if (!fileId) {
     return (
       <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
-        <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold">No PDF selected</h2>
+        <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold">
+          No PDF selected
+        </h2>
         <p className="mt-2 text-sm text-[var(--muted)]">
           Upload a PDF first. Preview opens automatically after a successful PDF upload.
         </p>

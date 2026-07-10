@@ -44,20 +44,27 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Validated PDF content endpoint      | Done   |
 | Auto-open preview after PDF upload  | Done   |
 
+## Sprint 5 (delivered — print configuration)
+
+| Feature                                      | Status |
+| -------------------------------------------- | ------ |
+| Page-wise Color / B&W selection              | Done   |
+| Copies, range, paper, orientation            | Done   |
+| Live summary + estimated cost + warnings     | Done   |
+| Session config ready for payment integration | Done   |
+
 ## Planned
 
-| Feature                            | Sprint |
-| ---------------------------------- | ------ |
-| Color / B&W page selection + price | 5      |
-| Authentication                     | 5      |
-| Online payments                    | 6      |
-| Printer connectivity               | 7      |
-| QR-based job dispatch              | 7      |
+| Feature               | Sprint |
+| --------------------- | ------ |
+| Online payments       | 6      |
+| Printer connectivity  | 7      |
+| QR-based job dispatch | 7      |
+| Authentication        | 8      |
 
-## Explicitly out of scope for Sprint 4
+## Explicitly out of scope for Sprint 5
 
 - Authentication
-- Payments / printer integration
-- Color / B&W page selection
-- Pricing / queue / admin features
-- DOCX/image preview (PDF only)
+- Real payment capture
+- Printer / queue / admin features
+- Duplex and finishing options

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
-import { buildPriceLines, totalFromLines, MOCK_PAGES } from '@/lib/mock-data';
+import { derivePrintSummary } from '@/lib/print-config/derive';
+import { readPrintConfigSession } from '@/lib/print-config/storage';
 import { cn } from '@/lib/cn';
 
 const METHODS = [
@@ -14,13 +15,29 @@ const METHODS = [
 
 export default function PaymentPage() {
   const [method, setMethod] = useState<(typeof METHODS)[number]['id']>('upi');
-  const total = totalFromLines(buildPriceLines(MOCK_PAGES));
+  const [total, setTotal] = useState<number | null>(null);
+
+  useEffect(() => {
+    const config = readPrintConfigSession();
+    if (!config) {
+      setTotal(null);
+      return;
+    }
+    setTotal(derivePrintSummary(config).estimatedCost);
+  }, []);
+
+  const amountLabel = useMemo(() => (total === null ? '—' : `₹${total}`), [total]);
 
   return (
-    <ScreenShell title="Pay securely" subtitle="UI only — no charges are processed in Sprint 2.">
+    <ScreenShell
+      title="Pay securely"
+      subtitle="UI only — no charges are processed yet. Amount comes from your print settings."
+    >
       <div className="mb-6 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
         <p className="text-sm text-[var(--muted)]">Amount due</p>
-        <p className="font-[family-name:var(--font-display)] text-3xl font-semibold">₹{total}</p>
+        <p className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+          {amountLabel}
+        </p>
       </div>
 
       <fieldset className="space-y-2">
@@ -52,8 +69,8 @@ export default function PaymentPage() {
       </fieldset>
 
       <div className="mt-8 flex flex-col gap-3">
-        <Button href="/print/status" size="lg" fullWidth>
-          Pay ₹{total}
+        <Button href="/print/status" size="lg" fullWidth disabled={total === null}>
+          Pay {amountLabel}
         </Button>
         <Button href="/print/error?kind=payment-failed" variant="secondary" fullWidth>
           Simulate payment failure

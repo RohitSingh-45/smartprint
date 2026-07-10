@@ -8,6 +8,7 @@ import { PdfToolbar } from '@/components/pdf/PdfToolbar';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { loadPdfFromUrl, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from '@/lib/pdf';
+import { savePdfMetaSession } from '@/lib/print-config/storage';
 import { fetchUploadedFile, getUploadContentUrl, type UploadedFileDto } from '@/lib/upload-api';
 
 type Props = {
@@ -65,6 +66,11 @@ export function PdfViewer({ fileId }: Props) {
         }
 
         loadedDoc = document;
+        savePdfMetaSession({
+          fileId,
+          pageCount,
+          fileName: file.originalName,
+        });
         setState({ status: 'ready', file, document, pageCount });
       } catch (error) {
         if (cancelled) return;
@@ -143,7 +149,10 @@ export function PdfViewer({ fileId }: Props) {
 
   if (state.status === 'error') {
     return (
-      <div className="rounded-xl border border-[var(--danger)]/30 bg-[var(--danger-soft)] p-5" role="alert">
+      <div
+        className="rounded-xl border border-[var(--danger)]/30 bg-[var(--danger-soft)] p-5"
+        role="alert"
+      >
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--danger)]">
           Preview unavailable
         </p>
@@ -203,12 +212,9 @@ export function PdfViewer({ fileId }: Props) {
           Replace file
         </Button>
         <Button href="/print/select" size="lg" fullWidth>
-          Continue to page selection
+          Configure print settings
         </Button>
       </div>
-      <p className="mt-3 text-center text-xs text-[var(--muted)]">
-        Page selection arrives in the next sprint — preview only for now.
-      </p>
     </div>
   );
 }

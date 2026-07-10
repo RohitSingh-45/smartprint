@@ -24,23 +24,23 @@
 - [x] Frontend drag/drop + click upload with progress, details, remove/replace
 - [x] Document technical debt for cloud storage and later flow steps
 
-## Sprint 4 — PDF preview engine (current)
+## Sprint 4 — PDF preview engine
 
 - [x] Serve validated PDF content from existing uploads (`GET /api/uploads/:id/content`)
 - [x] PDF.js viewer with lazy pages, zoom, fit-width, skeletons, errors
 - [x] Auto-open preview after successful PDF upload
 - [x] Capture preview follow-ups in `docs/TECHNICAL_DEBT.md`
 
-## Sprint 5 — Page selection + pricing
+## Sprint 5 — Print configuration engine (current)
 
-- Per-page Color / B&W selection on PDF preview pages
-- Persist selections on a job draft
-- Pricing estimate from page modes
-- Auth foundation (register/login) if required for drafts
+- [x] Page-wise Color / B&W (default B&W)
+- [x] Copies, page range, paper size, orientation
+- [x] Live print summary + estimated cost + smart warnings
+- [x] Session-persisted config ready for payment handoff
 
 ## Sprint 6 — Payments
 
-- Checkout flow
+- Checkout flow using saved print config
 - Payment provider integration
 - Order / payment records
 - Receipt / confirmation UI
@@ -58,3 +58,4 @@
 - Rate limiting & security review
 - E2E tests for core flows
 - Deployment pipelines
+- Auth foundation when accounts are required
