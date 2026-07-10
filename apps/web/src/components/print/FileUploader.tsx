@@ -295,7 +295,8 @@ export function FileUploader() {
       </div>
 
       <p className="text-center text-xs text-[var(--muted)]">
-        PDF uploads open the preview automatically. DOCX/JPG/PNG stay here until conversion lands later.
+        PDF uploads open the preview automatically. DOCX/JPG/PNG stay here until conversion lands
+        later.
       </p>
     </div>
   );

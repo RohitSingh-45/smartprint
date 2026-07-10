@@ -76,7 +76,8 @@ export async function fetchUploadedFile(id: string): Promise<UploadedFileDto> {
   const body = await res.json().catch(() => ({}));
   if (!res.ok || !body.file) {
     throw new Error(
-      (body && typeof body.error === 'string' && body.error) || `Could not load file (${res.status})`,
+      (body && typeof body.error === 'string' && body.error) ||
+        `Could not load file (${res.status})`,
     );
   }
   return body.file as UploadedFileDto;

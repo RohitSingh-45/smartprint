@@ -145,11 +145,7 @@ export async function getUploadPdfContent(id: string): Promise<UploadContent> {
 
   const header = buffer.subarray(0, 5).toString('utf8');
   if (!header.startsWith('%PDF-')) {
-    throw new UploadValidationError(
-      'File is not a valid PDF.',
-      422,
-      'PDF_INVALID_HEADER',
-    );
+    throw new UploadValidationError('File is not a valid PDF.', 422, 'PDF_INVALID_HEADER');
   }
 
   return { metadata, buffer };

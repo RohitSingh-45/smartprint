@@ -35,7 +35,7 @@ export const FLOW_STEPS = [
   { id: 'qr', label: 'Station', href: '/print/qr' },
   { id: 'upload', label: 'Upload', href: '/print/upload' },
   { id: 'preview', label: 'Preview', href: '/print/preview' },
-  { id: 'select', label: 'Pages', href: '/print/select' },
+  { id: 'select', label: 'Configure', href: '/print/select' },
   { id: 'summary', label: 'Price', href: '/print/summary' },
   { id: 'payment', label: 'Pay', href: '/print/payment' },
   { id: 'status', label: 'Queue', href: '/print/status' },

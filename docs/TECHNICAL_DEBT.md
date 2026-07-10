@@ -1,6 +1,6 @@
 # Technical Debt
 
-Captured during Sprints 3–4. Do not implement these here unless a future sprint explicitly schedules them.
+Captured during Sprints 3–5. Do not implement these here unless a future sprint explicitly schedules them.
 
 ## Upload / storage
 
@@ -24,14 +24,24 @@ Captured during Sprints 3–4. Do not implement these here unless a future sprin
 - [ ] Password prompt flow for protected PDFs (currently blocked with error)
 - [ ] Virtualize page list more aggressively (unmount offscreen canvases)
 
+## Print configuration
+
+- [ ] Configure color/B&W by tapping pages directly on the PDF preview canvases
+- [ ] Duplex / single-sided toggle
+- [ ] Staple / punch finishing options
+- [ ] Shop-specific price tables (per station) instead of hardcoded demo rates
+- [ ] Persist print config to API/job draft (currently sessionStorage only)
+- [ ] Enable A3 / Letter / Legal when shop inventory supports them
+- [ ] N-up (2-up / 4-up) layout options
+- [ ] Remember last-used settings per student device
+
 ## Product flow (later sprints)
 
-- [ ] Per-page Color / B&W selection bound to upload id + page index
-- [ ] Pricing engine using page counts from the uploaded document
-- [ ] Payment + printer dispatch using stored upload ids
+- [ ] Real payment capture using saved print config + upload id
+- [ ] Printer dispatch using stored upload ids and page modes
 
 ## Platform
 
-- [ ] CI pipeline (lint, typecheck, build, upload/preview smoke tests)
+- [ ] CI pipeline (lint, typecheck, build, upload/preview/config smoke tests)
 - [ ] Structured logging (Pino) with request IDs
 - [ ] Production env fail-closed defaults (no localhost CORS/Mongo fallbacks)

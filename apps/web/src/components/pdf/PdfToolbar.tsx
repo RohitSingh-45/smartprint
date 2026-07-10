@@ -11,14 +11,7 @@ type Props = {
   disabled?: boolean;
 };
 
-export function PdfToolbar({
-  scale,
-  fitWidth,
-  onZoomIn,
-  onZoomOut,
-  onFitWidth,
-  disabled,
-}: Props) {
+export function PdfToolbar({ scale, fitWidth, onZoomIn, onZoomOut, onFitWidth, disabled }: Props) {
   return (
     <div
       className="sticky top-0 z-20 -mx-4 mb-4 border-b border-[var(--border)] bg-[var(--background)]/95 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:px-6"

@@ -2,6 +2,14 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.5.0] — 2026-07-10
+
+### Added
+
+- Print configuration engine: page Color/B&W, copies, page range, paper size, orientation
+- Live print summary card with estimated cost and smart validation warnings
+- Session-persisted config for payment handoff (`smartprint:print-config`)
+
 ## [0.4.0] — 2026-07-10
 
 ### Added
