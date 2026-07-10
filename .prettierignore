@@ -6,3 +6,8 @@ coverage
 package-lock.json
 *.min.js
 *.min.css
+
+# Minified vendor assets
+apps/web/public/**
+*.min.mjs
+*.min.js
