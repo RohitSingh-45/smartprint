@@ -1,48 +1,127 @@
-export const metadata = { title: 'Admin' };
+'use client';
 
-export default function AdminPage() {
+import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { PrinterStatusCard } from '@/components/admin/PrinterStatusCard';
+import { StatCard } from '@/components/admin/StatCard';
+import { Button } from '@/components/ui/Button';
+import { fetchDashboardStats, formatMoney } from '@/lib/shop/shop-api';
+import type { DashboardStats } from '@/lib/shop/types';
+
+export default function AdminDashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const next = await fetchDashboardStats();
+      setStats(next);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not load dashboard.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
   return (
-    <div className="mx-auto max-w-5xl">
-      <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight sm:text-3xl">
-        Dashboard layout
-      </h1>
-      <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-        Sprint 2 ships sidebar + topbar only. Queue, printers, and orders arrive in later sprints —
-        this shell keeps shop navigation ready.
-      </p>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-3" id="queue">
-        {['Jobs in queue', 'Printers online', 'Paid today'].map((label) => (
-          <div
-            key={label}
-            className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface)] px-4 py-6"
-          >
-            <p className="text-xs uppercase tracking-wide text-[var(--muted)]">{label}</p>
-            <p className="mt-3 text-sm text-[var(--muted)]">Placeholder</p>
-          </div>
-        ))}
+    <div className="mx-auto max-w-6xl space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight sm:text-3xl">
+            Shop dashboard
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
+            Review paid student orders, accept work, and mark jobs ready for print — without sending
+            anything to a printer yet.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="secondary" onClick={() => void load()} disabled={loading}>
+            {loading ? 'Refreshing…' : 'Refresh'}
+          </Button>
+          <Button href="/admin/orders">Open orders</Button>
+        </div>
       </div>
 
-      <section className="mt-8" id="printers">
-        <h2 className="text-sm font-semibold">Printers</h2>
-        <p className="mt-2 text-sm text-[var(--muted)]">
-          Layout placeholder — no live printer data yet.
+      {error ? (
+        <p className="rounded-lg border border-[var(--danger)]/40 bg-[var(--danger-soft)] px-3 py-2 text-sm text-[var(--danger)]">
+          {error}
         </p>
-      </section>
+      ) : null}
 
-      <section className="mt-8" id="orders">
-        <h2 className="text-sm font-semibold">Orders</h2>
-        <p className="mt-2 text-sm text-[var(--muted)]">
-          Layout placeholder — order tables come with backend sprints.
-        </p>
-      </section>
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Today's revenue"
+          value={stats ? formatMoney(stats.todayRevenue) : '—'}
+          hint="Sum of amounts paid today"
+          tone="accent"
+        />
+        <StatCard
+          label="Orders today"
+          value={stats ? String(stats.totalOrdersToday) : '—'}
+          hint="Paid orders created today"
+        />
+        <StatCard
+          label="Pending"
+          value={stats ? String(stats.pendingOrders) : '—'}
+          hint="Awaiting accept / reject"
+          tone="warning"
+        />
+        <StatCard
+          label="Paid today"
+          value={stats ? String(stats.paidOrders) : '—'}
+          hint="Payment confirmed today"
+          tone="accent"
+        />
+        <StatCard
+          label="Ready for printing"
+          value={stats ? String(stats.readyOrders) : '—'}
+          hint="Accepted and marked ready"
+          tone="success"
+        />
+        <StatCard
+          label="Completed"
+          value={stats ? String(stats.completedOrders) : '—'}
+          hint="Future print completion"
+        />
+        <StatCard
+          label="Cancelled"
+          value={stats ? String(stats.cancelledOrders) : '—'}
+          hint="Rejected or cancelled"
+          tone="danger"
+        />
+      </div>
 
-      <section className="mt-8" id="settings">
-        <h2 className="text-sm font-semibold">Settings</h2>
-        <p className="mt-2 text-sm text-[var(--muted)]">
-          Layout placeholder — pricing and station config later.
-        </p>
-      </section>
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+        <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+            Today&apos;s workflow
+          </h2>
+          <ol className="mt-4 space-y-3 text-sm text-[var(--muted)]">
+            <li>1. Student pays → order arrives as <strong className="text-[var(--foreground)]">Paid / Pending</strong></li>
+            <li>2. Review file &amp; print config → <strong className="text-[var(--foreground)]">Accept</strong> or Reject</li>
+            <li>3. Prepare the job → <strong className="text-[var(--foreground)]">Mark ready for print</strong></li>
+            <li>4. Printer dispatch arrives in the next sprint</li>
+          </ol>
+          <div className="mt-5">
+            <Link
+              href="/admin/orders?status=pending"
+              className="text-sm font-medium text-[var(--accent-strong)] underline-offset-2 hover:underline"
+            >
+              Review pending orders →
+            </Link>
+          </div>
+        </section>
+
+        <PrinterStatusCard />
+      </div>
     </div>
   );
 }

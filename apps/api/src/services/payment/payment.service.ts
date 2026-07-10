@@ -204,6 +204,8 @@ export async function verifyAndCapturePayment(input: {
     status: 'PAID',
     paidAt: now,
     createdAt: now,
+    updatedAt: now,
+    draftCreatedAt: draft.createdAt,
     print: {
       uploadId: draft.uploadId,
       fileName: draft.fileName,

@@ -50,14 +50,23 @@
 - [x] Payment / processing / success / failed / confirmation screens
 - [x] Reject expired, missing, mismatched, invalid, and duplicate payments
 
-## Sprint 8 — Printers & QR jobs
+## Sprint 8 — Shop owner dashboard
+
+- [x] Dashboard summary cards (revenue, orders, pending/paid/ready/completed/cancelled)
+- [x] Orders list with search, status filters, and date range
+- [x] Order detail + timeline + shop actions (accept / reject / ready / cancel)
+- [x] Validated status transitions (no invalid jumps)
+- [x] Printer status placeholder widget (UI-only pause/resume)
+
+## Sprint 9 — Printers, queue & QR jobs
 
 - Printer registration & connectivity
 - QR code generation for print stations
-- Job dispatch to connected printers (consume `PAID` orders)
+- Job dispatch to connected printers (consume `READY` orders)
 - Job status tracking / print queue
+- Mark completed after physical print
 
-## Sprint 9 — Hardening & launch prep
+## Sprint 10 — Hardening & launch prep
 
 - Observability, rate limiting, security review
 - E2E tests + deployment pipelines

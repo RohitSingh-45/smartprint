@@ -74,19 +74,30 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Order confirmation with print + payment summary | Done   |
 | Reject expired / invalid / duplicate payments   | Done   |
 
+## Sprint 8 (delivered — shop owner dashboard)
+
+| Feature                                              | Status |
+| ---------------------------------------------------- | ------ |
+| Dashboard home with revenue & order summary cards    | Done   |
+| Orders list with search, filters, date range         | Done   |
+| Order detail (file, print, payment, timeline)        | Done   |
+| Accept / reject / ready / cancel with transition rules | Done |
+| Printer status placeholder (UI-only)                 | Done   |
+| Dark mode + responsive shop shell                    | Done   |
+
 ## Planned
 
-| Feature               | Sprint |
-| --------------------- | ------ |
-| Print queue + dispatch| 8      |
-| Printer connectivity  | 8      |
-| QR-based job dispatch | 8      |
-| Authentication        | 9      |
+| Feature                | Sprint |
+| ---------------------- | ------ |
+| Print queue + dispatch | 9      |
+| Printer connectivity   | 9      |
+| QR-based job dispatch  | 9      |
+| Authentication         | 10     |
 
-## Explicitly out of scope for Sprint 7
+## Explicitly out of scope for Sprint 8
 
-- Printer integration / job dispatch
-- Shop dashboard / admin features
-- Queue system / notifications
-- Authentication (unless required by existing architecture)
-- Refunds / webhooks / settlement reports
+- Printer communication / job dispatch
+- Queue engine / notifications
+- Multi-shop support
+- Customer authentication
+- Analytics beyond dashboard summary cards

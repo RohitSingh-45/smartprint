@@ -42,7 +42,19 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 
 - [x] Real payment capture using draft id + upload id (Sprint 7)
 - [x] Convert draft → paid order atomically (Sprint 7 local store)
+- [x] Shop owner review dashboard for paid orders (Sprint 8)
 - [ ] Printer dispatch using stored upload ids and page modes
+
+## Shop dashboard (deferred)
+
+- [ ] Shop owner authentication / role-based access
+- [ ] Multi-shop / multi-station tenancy
+- [ ] Real printer telemetry (replace UI-only printer widget)
+- [ ] Mark completed + pickup code after print
+- [ ] Refunds from rejected/cancelled paid orders
+- [ ] Export orders CSV / daily settlement report
+- [ ] Live updates (SSE/WebSocket) when new paid orders arrive
+- [ ] Rate-limit `/api/shop/*`
 
 ## Payments (deferred)
 

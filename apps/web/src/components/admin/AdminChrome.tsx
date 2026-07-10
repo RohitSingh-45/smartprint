@@ -6,11 +6,12 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { cn } from '@/lib/cn';
 
 const NAV = [
-  { href: '/admin', label: 'Overview' },
-  { href: '/admin#queue', label: 'Print queue' },
-  { href: '/admin#printers', label: 'Printers' },
-  { href: '/admin#orders', label: 'Orders' },
-  { href: '/admin#settings', label: 'Settings' },
+  { href: '/admin', label: 'Overview', match: (path: string) => path === '/admin' },
+  {
+    href: '/admin/orders',
+    label: 'Orders',
+    match: (path: string) => path.startsWith('/admin/orders'),
+  },
 ];
 
 export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -26,11 +27,11 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
         >
           SmartPrint
         </Link>
-        <p className="mt-1 text-xs text-[var(--muted)]">Shop admin</p>
+        <p className="mt-1 text-xs text-[var(--muted)]">Shop owner</p>
       </div>
-      <nav className="flex flex-1 flex-col gap-1 p-3" aria-label="Admin">
+      <nav className="flex flex-1 flex-col gap-1 p-3" aria-label="Shop dashboard">
         {NAV.map((item) => {
-          const active = pathname === '/admin' && item.href === '/admin';
+          const active = item.match(pathname);
           return (
             <Link
               key={item.href}
@@ -48,6 +49,9 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
           );
         })}
       </nav>
+      <div className="border-t border-[var(--border)] p-4 text-xs text-[var(--muted)]">
+        Review paid orders before print dispatch (Sprint 9).
+      </div>
     </aside>
   );
 }
@@ -70,7 +74,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick?: () => void }) {
         </button>
         <div>
           <p className="text-sm font-medium">Campus Hub</p>
-          <p className="text-xs text-[var(--muted)]">Today · layout only</p>
+          <p className="text-xs text-[var(--muted)]">Live paid orders</p>
         </div>
       </div>
       <div className="flex items-center gap-2">
@@ -79,7 +83,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick?: () => void }) {
           className="hidden h-9 items-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 text-xs text-[var(--muted)] sm:inline-flex"
           aria-hidden
         >
-          Admin · demo
+          Shop owner
         </div>
       </div>
     </header>

@@ -2,6 +2,17 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.8.0] — 2026-07-10
+
+### Added
+
+- Shop owner dashboard: summary cards for today's revenue and order pipeline counts
+- Shop APIs: `GET /api/shop/dashboard`, `GET /api/shop/orders`, `GET /api/shop/orders/:id`, `POST /api/shop/orders/:id/actions`
+- Order lifecycle beyond payment: `PAID → ACCEPTED → READY` (+ reject/cancel) with invalid-transition guards
+- Orders list with search (order id / file name), status filters, and date range
+- Order detail page: file, print config, payment, timeline, shop actions, View PDF
+- Printer status placeholder widget (connection/paper/ink/jam + pause/resume UI state only)
+
 ## [0.7.0] — 2026-07-10
 
 ### Added

@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import type { PaidOrder, PaymentIntent } from '../../types/order';
+import { normalizeOrder } from '../shop/order.normalize';
 
 export class LocalOrderStore {
   constructor(private readonly rootDir: string) {}
@@ -20,49 +21,44 @@ export class LocalOrderStore {
 
   async saveOrder(order: PaidOrder): Promise<PaidOrder> {
     await this.ensureReady();
-    await fs.writeFile(this.orderPath(order.id), JSON.stringify(order, null, 2), 'utf8');
-    return order;
+    const normalized = normalizeOrder(order);
+    await fs.writeFile(this.orderPath(normalized.id), JSON.stringify(normalized, null, 2), 'utf8');
+    return normalized;
   }
 
   async getOrder(id: string): Promise<PaidOrder | null> {
     try {
       const raw = await fs.readFile(this.orderPath(id), 'utf8');
-      return JSON.parse(raw) as PaidOrder;
+      return normalizeOrder(JSON.parse(raw) as PaidOrder);
     } catch {
       return null;
     }
   }
 
-  async findOrderByDraftId(draftId: string): Promise<PaidOrder | null> {
+  async listOrders(): Promise<PaidOrder[]> {
     await this.ensureReady();
     const files = await fs.readdir(this.rootDir);
+    const orders: PaidOrder[] = [];
     for (const file of files) {
       if (!file.endsWith('.json')) continue;
       try {
         const raw = await fs.readFile(path.join(this.rootDir, file), 'utf8');
-        const order = JSON.parse(raw) as PaidOrder;
-        if (order.draftId === draftId) return order;
+        orders.push(normalizeOrder(JSON.parse(raw) as PaidOrder));
       } catch {
         // skip corrupt
       }
     }
-    return null;
+    return orders.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+
+  async findOrderByDraftId(draftId: string): Promise<PaidOrder | null> {
+    const orders = await this.listOrders();
+    return orders.find((order) => order.draftId === draftId) ?? null;
   }
 
   async findOrderByRazorpayPaymentId(paymentId: string): Promise<PaidOrder | null> {
-    await this.ensureReady();
-    const files = await fs.readdir(this.rootDir);
-    for (const file of files) {
-      if (!file.endsWith('.json')) continue;
-      try {
-        const raw = await fs.readFile(path.join(this.rootDir, file), 'utf8');
-        const order = JSON.parse(raw) as PaidOrder;
-        if (order.razorpayPaymentId === paymentId) return order;
-      } catch {
-        // skip
-      }
-    }
-    return null;
+    const orders = await this.listOrders();
+    return orders.find((order) => order.razorpayPaymentId === paymentId) ?? null;
   }
 
   async saveIntent(intent: PaymentIntent): Promise<PaymentIntent> {
