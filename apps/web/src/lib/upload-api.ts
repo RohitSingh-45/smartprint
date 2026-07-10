@@ -70,3 +70,33 @@ export async function deleteUploadedFile(id: string): Promise<void> {
     (body && typeof body.error === 'string' && body.error) || `Delete failed (${res.status})`,
   );
 }
+
+export async function fetchUploadedFile(id: string): Promise<UploadedFileDto> {
+  const res = await fetch(`${API_URL}/api/uploads/${id}`);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok || !body.file) {
+    throw new Error(
+      (body && typeof body.error === 'string' && body.error) || `Could not load file (${res.status})`,
+    );
+  }
+  return body.file as UploadedFileDto;
+}
+
+export function getUploadContentUrl(id: string): string {
+  return `${API_URL}/api/uploads/${id}/content`;
+}
+
+export function readUploadSession(): UploadedFileDto | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem('smartprint:upload');
+    if (!raw) return null;
+    return JSON.parse(raw) as UploadedFileDto;
+  } catch {
+    return null;
+  }
+}
+
+export function isPdfUpload(file: UploadedFileDto): boolean {
+  return file.mimeType === 'application/pdf' || file.extension === '.pdf';
+}

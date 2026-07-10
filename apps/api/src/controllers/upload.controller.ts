@@ -3,6 +3,7 @@ import {
   createUpload,
   deleteUpload,
   getUpload,
+  getUploadPdfContent,
   UploadValidationError,
 } from '../services/upload.service';
 import { formatBytes } from '../utils/filename';
@@ -59,6 +60,23 @@ export async function getFile(req: Request, res: Response, next: NextFunction): 
         sizeLabel: formatBytes(metadata.size),
       },
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getPdfContent(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { metadata, buffer } = await getUploadPdfContent(req.params.id);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Length', String(buffer.length));
+    res.setHeader(
+      'Content-Disposition',
+      `inline; filename="${metadata.originalName.replace(/"/g, '')}"`,
+    );
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.status(200).send(buffer);
   } catch (error) {
     next(error);
   }

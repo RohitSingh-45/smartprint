@@ -2,6 +2,14 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.4.0] — 2026-07-10
+
+### Added
+
+- PDF preview engine (PDF.js) with lazy page rendering, zoom, fit-width
+- `GET /api/uploads/:id/content` — validated PDF binary for preview
+- Auto-navigation to preview after successful PDF upload
+
 ## [0.3.0] — 2026-07-10
 
 ### Added

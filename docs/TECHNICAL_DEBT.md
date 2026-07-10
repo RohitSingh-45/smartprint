@@ -1,27 +1,37 @@
 # Technical Debt
 
-Captured during Sprint 3 (File Upload Engine). Do not implement these here unless a future sprint explicitly schedules them.
+Captured during Sprints 3–4. Do not implement these here unless a future sprint explicitly schedules them.
 
 ## Upload / storage
 
 - [ ] Swap `STORAGE_DRIVER=local` for AWS S3 or Cloudinary via the `FileStorage` interface
 - [ ] Virus / malware scanning before accepting files
-- [ ] Stronger content sniffing (magic bytes) beyond MIME + extension checks
+- [ ] Stronger content sniffing (magic bytes) beyond MIME + extension checks (partially done for PDF `%PDF-` on preview)
 - [ ] TTL cleanup job for orphaned temp uploads
 - [ ] Stream uploads to disk instead of buffering entire files in memory (multer memoryStorage)
 - [ ] Authenticated uploads (tie files to a user/session) once auth exists
 - [ ] Rate-limit `/api/uploads` to reduce abuse
 - [ ] Persist upload metadata in MongoDB instead of sidecar `.meta.json` files
+- [ ] Range-request / streaming PDF content for very large files instead of buffering full file in API memory
+
+## PDF preview
+
+- [ ] Server-side page-count extraction cached on upload
+- [ ] Thumbnail strip / jump-to-page navigation
+- [ ] Text-layer selection for accessibility beyond canvas
+- [ ] DOCX → PDF conversion for preview parity
+- [ ] Image preview gallery for JPG/PNG uploads
+- [ ] Password prompt flow for protected PDFs (currently blocked with error)
+- [ ] Virtualize page list more aggressively (unmount offscreen canvases)
 
 ## Product flow (later sprints)
 
-- [ ] Real PDF/DOCX page preview from uploaded files
-- [ ] Per-page Color / B&W selection bound to upload id
+- [ ] Per-page Color / B&W selection bound to upload id + page index
 - [ ] Pricing engine using page counts from the uploaded document
 - [ ] Payment + printer dispatch using stored upload ids
 
 ## Platform
 
-- [ ] CI pipeline (lint, typecheck, build, upload smoke tests)
+- [ ] CI pipeline (lint, typecheck, build, upload/preview smoke tests)
 - [ ] Structured logging (Pino) with request IDs
 - [ ] Production env fail-closed defaults (no localhost CORS/Mongo fallbacks)

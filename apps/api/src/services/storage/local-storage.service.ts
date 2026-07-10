@@ -37,6 +37,14 @@ export class LocalFileStorage implements FileStorage {
     }
   }
 
+  resolvePath(storedName: string): string {
+    return this.filePath(storedName);
+  }
+
+  async readFile(storedName: string): Promise<Buffer> {
+    return fs.readFile(this.filePath(storedName));
+  }
+
   async delete(id: string): Promise<boolean> {
     const metadata = await this.getMetadata(id);
     if (!metadata) {

@@ -108,6 +108,53 @@ export async function getUpload(id: string): Promise<UploadedFileMetadata | null
   return getFileStorage().getMetadata(id);
 }
 
+export type UploadContent = {
+  metadata: UploadedFileMetadata;
+  buffer: Buffer;
+};
+
+/**
+ * Load binary content for preview. PDF-only for Sprint 4.
+ * Validates MIME, extension, and %PDF magic header.
+ */
+export async function getUploadPdfContent(id: string): Promise<UploadContent> {
+  const metadata = await getUpload(id);
+  if (!metadata) {
+    throw new UploadValidationError('File not found.', 404, 'FILE_NOT_FOUND');
+  }
+
+  if (metadata.mimeType !== 'application/pdf' || metadata.extension !== '.pdf') {
+    throw new UploadValidationError(
+      'Preview is only available for PDF files.',
+      415,
+      'PREVIEW_PDF_ONLY',
+    );
+  }
+
+  const storage = getFileStorage();
+  let buffer: Buffer;
+  try {
+    buffer = await storage.readFile(metadata.storedName);
+  } catch {
+    throw new UploadValidationError('Stored file is missing.', 404, 'FILE_MISSING_ON_DISK');
+  }
+
+  if (!buffer.length) {
+    throw new UploadValidationError('PDF file is empty.', 422, 'PDF_EMPTY');
+  }
+
+  const header = buffer.subarray(0, 5).toString('utf8');
+  if (!header.startsWith('%PDF-')) {
+    throw new UploadValidationError(
+      'File is not a valid PDF.',
+      422,
+      'PDF_INVALID_HEADER',
+    );
+  }
+
+  return { metadata, buffer };
+}
+
 export async function deleteUpload(id: string): Promise<boolean> {
   if (!isUuid(id)) {
     throw new UploadValidationError('Invalid file id.', 400, 'INVALID_ID');
