@@ -92,7 +92,7 @@ export function QueueTable({
         {jobs.map((job) => (
           <article
             key={job.id}
-            className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4"
+            className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)]"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
@@ -119,10 +119,6 @@ export function QueueTable({
                 <dt className="text-[var(--muted)]">Added</dt>
                 <dd className="font-medium">{formatDateTime(job.queuedAt || job.createdAt)}</dd>
               </div>
-              <div className="col-span-2">
-                <dt className="text-[var(--muted)]">Priority</dt>
-                <dd className="font-medium">{job.priority} (future)</dd>
-              </div>
             </dl>
             <div className="mt-4">
               <Button href={`/admin/orders/${job.id}`} size="sm" variant="secondary">
@@ -141,9 +137,9 @@ export function QueueTable({
         ))}
       </div>
 
-      <div className="hidden overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] lg:block">
+      <div className="hidden overflow-x-auto rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-xs)] lg:block">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-[var(--border)] bg-[var(--surface-2)] text-xs uppercase tracking-wide text-[var(--muted)]">
+          <thead className="sticky top-0 border-b border-[var(--border)] bg-[var(--surface-2)] text-xs uppercase tracking-wide text-[var(--muted)]">
             <tr>
               <th className="px-4 py-3 font-medium">Pos</th>
               <th className="px-4 py-3 font-medium">Order</th>
@@ -152,13 +148,12 @@ export function QueueTable({
               <th className="px-4 py-3 font-medium">Print</th>
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Added</th>
-              <th className="px-4 py-3 font-medium">Priority</th>
               <th className="px-4 py-3 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
             {jobs.map((job) => (
-              <tr key={job.id} className="border-b border-[var(--border)] last:border-0">
+              <tr key={job.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-2)]/50">
                 <td className="px-4 py-3 align-top font-[family-name:var(--font-display)] text-lg font-semibold">
                   {job.queuePosition ?? '—'}
                 </td>
@@ -185,10 +180,6 @@ export function QueueTable({
                 </td>
                 <td className="px-4 py-3 align-top text-xs text-[var(--muted)]">
                   {formatDateTime(job.queuedAt || job.createdAt)}
-                </td>
-                <td className="px-4 py-3 align-top text-xs text-[var(--muted)]">
-                  {job.priority}
-                  <span className="block">future</span>
                 </td>
                 <td className="px-4 py-3 align-top">
                   <OrderActions

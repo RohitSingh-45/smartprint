@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/Badge';
+import { humanOrderStatus } from '@/lib/labels';
 import type { CustomerTrackingStatus } from '@/lib/tracking/types';
 
 type Props = {
@@ -41,7 +42,7 @@ export function TrackingStatusHero({ title, description, status, delayed }: Prop
     <div className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)] animate-rise sm:p-6">
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone={toneFor(status, delayed)} dot>
-          {status.replace(/_/g, ' ')}
+          {humanOrderStatus(status)}
         </Badge>
         {delayed ? (
           <Badge tone="warning" dot>

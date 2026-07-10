@@ -2,9 +2,10 @@
 
 import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Badge } from '@/components/ui/Badge';
+import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
+import { shortId } from '@/lib/labels';
 
 function PaymentSuccessContent() {
   const router = useRouter();
@@ -21,7 +22,7 @@ function PaymentSuccessContent() {
 
   if (!orderId) {
     return (
-      <ScreenShell title="Payment success" subtitle="Missing order id.">
+      <ScreenShell title="Payment success" subtitle="Missing order id." compact>
         <Button href="/print/payment" fullWidth>
           Back to payment
         </Button>
@@ -32,16 +33,19 @@ function PaymentSuccessContent() {
   return (
     <ScreenShell
       title="Payment successful"
-      subtitle="Your draft is now a paid order. Status is PAID — printing starts in a later sprint."
+      subtitle="Your order is with the shop. Opening confirmation…"
+      compact
     >
       <div className="flex flex-1 flex-col items-center text-center">
-        <Badge tone="success" className="mb-6">
-          Paid
-        </Badge>
-        <div className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-6 py-10 animate-rise">
-          <p className="text-sm text-[var(--muted)]">Order ID</p>
-          <p className="mt-2 break-all font-mono text-sm font-medium">{orderId}</p>
-          <p className="mt-6 text-sm text-[var(--muted)]">Opening confirmation…</p>
+        <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--success-soft)] text-[var(--success)] animate-check-pop">
+          <CheckCircle2 className="h-7 w-7" strokeWidth={1.75} aria-hidden />
+        </div>
+        <div className="w-full rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] px-6 py-8 shadow-[var(--shadow-sm)]">
+          <p className="text-sm text-[var(--muted)]">Order</p>
+          <p className="mt-2 font-mono text-sm font-medium tracking-tight">{shortId(orderId, 12)}</p>
+          <div className="mx-auto mt-6 h-1 w-24 overflow-hidden rounded-full bg-[var(--surface-2)]">
+            <div className="h-full w-1/2 rounded-full bg-[var(--accent)]" style={{ animation: 'progress-indeterminate 1.1s ease-in-out infinite' }} />
+          </div>
         </div>
         <div className="mt-8 w-full">
           <Button href={`/print/confirmation?orderId=${orderId}`} size="lg" fullWidth>
@@ -57,7 +61,7 @@ export default function PaymentSuccessPage() {
   return (
     <Suspense
       fallback={
-        <ScreenShell title="Payment successful" subtitle="Loading…">
+        <ScreenShell title="Payment successful" subtitle="Loading…" compact>
           <p className="text-sm text-[var(--muted)]">Preparing confirmation…</p>
         </ScreenShell>
       }

@@ -54,7 +54,7 @@ export function TrackingTimeline({ steps }: Props) {
                 'relative z-10 mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors',
                 step.state === 'done' && 'border-[var(--success)] bg-[var(--success)] text-white',
                 step.state === 'current' &&
-                  'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)] animate-pulse-soft',
+                  'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)] ring-2 ring-[var(--accent)]/25',
                 step.state === 'upcoming' &&
                   'border-[var(--border)] bg-[var(--surface)] text-[var(--muted)]',
                 step.state === 'error' &&

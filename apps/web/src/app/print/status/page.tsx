@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { NotificationChannelsStub } from '@/components/tracking/NotificationChannelsStub';
+import { RefreshCw } from 'lucide-react';
 import { OrderDetailsCard } from '@/components/tracking/OrderDetailsCard';
 import { PickupQrCard } from '@/components/tracking/PickupQrCard';
 import { QueueInfoCard } from '@/components/tracking/QueueInfoCard';
@@ -11,6 +11,7 @@ import { TrackingStatusHero } from '@/components/tracking/TrackingStatusHero';
 import { TrackingTimeline } from '@/components/tracking/TrackingTimeline';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { readOrderIdSession, saveOrderIdSession } from '@/lib/payment/payment-api';
 import { rememberOrder } from '@/lib/tracking/history';
 import {
@@ -28,34 +29,40 @@ function TrackingContent() {
   const [error, setError] = useState<string | null>(null);
   const [origin, setOrigin] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     setOrigin(window.location.origin);
   }, []);
 
-  const load = useCallback(async (silent = false) => {
-    if (!orderIdParam) {
-      setError('No order found for this session. Open tracking from confirmation or order history.');
-      return;
-    }
-    if (!silent) setRefreshing(true);
-    try {
-      const next = await getOrderTracking(orderIdParam);
-      saveOrderIdSession(next.orderId);
-      rememberOrder({
-        id: next.orderId,
-        fileName: next.order.fileName,
-        paidAt: next.order.paidAt,
-        amountPaid: next.order.amountPaid,
-      });
-      setTracking(next);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load tracking.');
-    } finally {
-      setRefreshing(false);
-    }
-  }, [orderIdParam]);
+  const load = useCallback(
+    async (silent = false) => {
+      if (!orderIdParam) {
+        setError(
+          'No order found for this session. Open tracking from confirmation or order history.',
+        );
+        return;
+      }
+      if (!silent) setRefreshing(true);
+      try {
+        const next = await getOrderTracking(orderIdParam);
+        saveOrderIdSession(next.orderId);
+        rememberOrder({
+          id: next.orderId,
+          fileName: next.order.fileName,
+          paidAt: next.order.paidAt,
+          amountPaid: next.order.amountPaid,
+        });
+        setTracking(next);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not load tracking.');
+      } finally {
+        setRefreshing(false);
+      }
+    },
+    [orderIdParam],
+  );
 
   useEffect(() => {
     void load();
@@ -64,7 +71,6 @@ function TrackingContent() {
   useEffect(() => {
     if (!tracking || isTerminalTrackingStatus(tracking.customerStatus)) return;
     if (tracking.flags.cancelled || tracking.flags.printerFailure) {
-      // Still poll printer failure in case shop retries.
       if (!tracking.flags.printerFailure) return;
     }
     const id = window.setInterval(() => {
@@ -75,8 +81,8 @@ function TrackingContent() {
 
   if (error && !tracking) {
     return (
-      <ScreenShell title="Order tracking" subtitle="Live status after payment.">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
+      <ScreenShell title="Order tracking" subtitle="Live status after payment." compact>
+        <div className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5">
           <p className="text-sm text-[var(--danger)]">{error}</p>
           <div className="mt-5 flex flex-col gap-3">
             <Button href="/print/confirmation" fullWidth>
@@ -93,8 +99,12 @@ function TrackingContent() {
 
   if (!tracking) {
     return (
-      <ScreenShell title="Order tracking" subtitle="Loading live status…">
-        <p className="animate-pulse text-sm text-[var(--muted)]">Fetching order…</p>
+      <ScreenShell title="Order tracking" subtitle="Loading live status…" compact>
+        <div className="space-y-4" aria-busy="true">
+          <Skeleton className="h-28 rounded-[var(--radius-xl)]" />
+          <Skeleton className="h-24 rounded-[var(--radius-xl)]" />
+          <Skeleton className="h-48 rounded-[var(--radius-xl)]" />
+        </div>
       </ScreenShell>
     );
   }
@@ -106,8 +116,10 @@ function TrackingContent() {
 
   return (
     <ScreenShell
+      eyebrow="Live tracking"
       title="Track your print"
-      subtitle="Live updates from payment through pickup. This page recovers after refresh."
+      subtitle="Status updates automatically from payment through pickup."
+      compact
     >
       <div className="space-y-5">
         <TrackingStatusHero
@@ -119,41 +131,57 @@ function TrackingContent() {
 
         <TrackingErrorState tracking={tracking} onRefresh={() => void load()} />
 
-        <QueueInfoCard queue={tracking.queue} show={showQueue} />
-
         <PickupQrCard tracking={tracking} origin={origin} />
+
+        <QueueInfoCard queue={tracking.queue} show={showQueue} />
 
         <section
           aria-label="Live timeline"
-          className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4"
+          className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)]"
         >
-          <h2 className="mb-4 text-sm font-semibold">Live timeline</h2>
+          <h2 className="mb-4 text-sm font-semibold tracking-tight">Progress</h2>
           <TrackingTimeline steps={tracking.timeline} />
         </section>
 
-        <OrderDetailsCard tracking={tracking} />
-
-        <NotificationChannelsStub
-          channels={tracking.notifications.channels}
-          note={tracking.notifications.note}
-        />
-
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
+        <div>
+          <button
             type="button"
-            variant="secondary"
-            fullWidth
-            disabled={refreshing}
-            onClick={() => void load()}
+            className="text-sm font-medium text-[var(--muted)] underline-offset-2 hover:text-[var(--foreground)] hover:underline"
+            onClick={() => setShowDetails((v) => !v)}
+            aria-expanded={showDetails}
           >
-            {refreshing ? 'Refreshing…' : 'Refresh now'}
-          </Button>
-          <Button href="/print/orders" variant="secondary" fullWidth>
-            Order history
-          </Button>
+            {showDetails ? 'Hide order details' : 'View order details'}
+          </button>
+          {showDetails ? (
+            <div className="mt-3">
+              <OrderDetailsCard tracking={tracking} />
+            </div>
+          ) : null}
+        </div>
+
+        <p className="text-xs text-[var(--muted)]">
+          Status alerts by email and WhatsApp are coming soon.
+        </p>
+
+        <div className="flex flex-col gap-3">
           <Button href="/print/qr" size="lg" fullWidth>
             Print another
           </Button>
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              fullWidth
+              disabled={refreshing}
+              onClick={() => void load()}
+              icon={RefreshCw}
+            >
+              {refreshing ? 'Refreshing…' : 'Refresh'}
+            </Button>
+            <Button href="/print/orders" variant="secondary" fullWidth>
+              History
+            </Button>
+          </div>
         </div>
       </div>
     </ScreenShell>
@@ -164,8 +192,8 @@ export default function StatusPage() {
   return (
     <Suspense
       fallback={
-        <ScreenShell title="Order tracking" subtitle="Loading…">
-          <p className="text-sm text-[var(--muted)]">Loading tracking…</p>
+        <ScreenShell title="Order tracking" subtitle="Loading…" compact>
+          <Skeleton className="h-40 rounded-[var(--radius-xl)]" />
         </ScreenShell>
       }
     >

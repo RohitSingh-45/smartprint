@@ -259,9 +259,6 @@ export function FileUploader() {
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   <Badge>{displaySize}</Badge>
                   <Badge tone="neutral">{displayType}</Badge>
-                  <Badge tone="accent" dot>
-                    ID {uploaded.id.slice(0, 8)}
-                  </Badge>
                 </div>
               </div>
             </div>
@@ -301,17 +298,18 @@ export function FileUploader() {
           >
             Open PDF preview
           </Button>
-        ) : (
-          <Button href="/print/preview" fullWidth size="lg" disabled>
-            PDF preview (upload a PDF)
-          </Button>
-        )}
+        ) : uploaded ? (
+          <p className="w-full rounded-[var(--radius-md)] bg-[var(--surface-2)] px-3 py-3 text-center text-sm text-[var(--muted)]">
+            PDF preview opens automatically for PDF uploads. Other formats stay here for now.
+          </p>
+        ) : null}
       </div>
 
-      <p className="text-center text-xs text-[var(--muted)]">
-        PDF uploads open the preview automatically. DOCX/JPG/PNG stay here until conversion lands
-        later.
-      </p>
+      {!uploaded ? (
+        <p className="text-center text-xs text-[var(--muted)]">
+          PDF recommended for the full preview and print flow.
+        </p>
+      ) : null}
     </div>
   );
 }

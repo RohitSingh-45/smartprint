@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/cn';
 import type { PageModeMap, PagePrintMode } from '@/lib/print-config/types';
 
@@ -67,9 +66,18 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
         })}
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <Badge tone="accent">Color = highlighted</Badge>
-        <Badge>Dimmed = outside page range</Badge>
+      <div className="flex flex-wrap gap-3 text-xs text-[var(--muted)]">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm bg-[var(--accent)]" aria-hidden />
+          Color
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm border border-[var(--border-strong)] bg-[var(--surface)]" aria-hidden />
+          Black & white
+        </span>
+        <span className="inline-flex items-center gap-1.5 opacity-50">
+          Dimmed = outside page range
+        </span>
       </div>
     </section>
   );

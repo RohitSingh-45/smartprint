@@ -1,8 +1,9 @@
 'use client';
 
 import { Badge } from '@/components/ui/Badge';
-import type { PaidOrderDto } from '@/lib/payment/types';
+import { humanOrderStatus, shortId } from '@/lib/labels';
 import { PRICE_PER_BW, PRICE_PER_COLOR } from '@/lib/print-config/constants';
+import type { PaidOrderDto } from '@/lib/payment/types';
 
 type Props = {
   order: PaidOrderDto;
@@ -10,52 +11,65 @@ type Props = {
 
 export function OrderConfirmationCard({ order }: Props) {
   const { print } = order;
-  const paidAt = new Date(order.paidAt).toLocaleString();
+  const paidAt = new Date(order.paidAt).toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <section
-      className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]"
+      className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-sm)]"
       aria-label="Order confirmation"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">
-            Order confirmation
-          </h2>
-          <p className="mt-1 break-all text-xs text-[var(--muted)]">{print.fileName}</p>
+      <div className="border-b border-[var(--success)]/20 bg-[var(--success-soft)]/60 px-5 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-label text-[var(--success)]">Payment confirmed</p>
+            <h2 className="mt-1 font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">
+              {print.fileName}
+            </h2>
+          </div>
+          <Badge tone="success" dot>
+            {humanOrderStatus(order.status)}
+          </Badge>
         </div>
-        <Badge tone="success" dot>
-          {order.status}
-        </Badge>
       </div>
 
-      <dl className="mt-4 space-y-2.5 text-sm">
-        <Row label="Order ID" value={order.id} mono />
-        <Row label="Draft ID" value={order.draftId} mono />
-        <Row label="Payment status" value={order.paymentStatus.toUpperCase()} />
-        <Row label="Paid at" value={paidAt} />
-        <Row label="Razorpay order" value={order.razorpayOrderId} mono />
-        <Row label="Razorpay payment" value={order.razorpayPaymentId} mono />
-        <Row
-          label="Pages to print"
-          value={`${print.pageRange.pages.length} · ${print.pageRange.mode}`}
-        />
-        <Row label="Color pages" value={`${print.colorPages.length} × ₹${PRICE_PER_COLOR}`} />
-        <Row label="Black & white" value={`${print.bwPages.length} × ₹${PRICE_PER_BW}`} />
-        <Row label="Copies" value={String(print.copies)} />
-        <Row label="Paper" value={print.paperSize.toUpperCase()} />
-        <Row
-          label="Orientation"
-          value={print.orientation === 'portrait' ? 'Portrait' : 'Landscape'}
-        />
-        <Row label="Estimated print cost" value={`₹${print.estimatedPrice}`} />
-        <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
-          <dt className="font-semibold">Amount paid</dt>
-          <dd className="font-[family-name:var(--font-display)] text-xl font-semibold">
-            ₹{order.amountPaid}
-          </dd>
+      <div className="grid gap-0 sm:grid-cols-[1.2fr_0.8fr]">
+        <dl className="space-y-2.5 border-b border-[var(--border)] p-5 text-sm sm:border-b-0 sm:border-r">
+          <Row label="Pages" value={`${print.pageRange.pages.length} · ${print.pageRange.mode}`} />
+          <Row label="Color" value={`${print.colorPages.length} × ₹${PRICE_PER_COLOR}`} />
+          <Row label="Black & white" value={`${print.bwPages.length} × ₹${PRICE_PER_BW}`} />
+          <Row label="Copies" value={String(print.copies)} />
+          <Row
+            label="Paper"
+            value={`${print.paperSize.toUpperCase()} · ${
+              print.orientation === 'portrait' ? 'Portrait' : 'Landscape'
+            }`}
+          />
+          <Row label="Paid at" value={paidAt} />
+        </dl>
+
+        <div className="flex flex-col justify-between p-5">
+          <div>
+            <p className="text-xs text-[var(--muted)]">Amount paid</p>
+            <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight">
+              ₹{order.amountPaid}
+            </p>
+          </div>
+          <details className="mt-5 group">
+            <summary className="cursor-pointer list-none text-xs font-medium text-[var(--muted)] underline-offset-2 hover:text-[var(--foreground)] hover:underline [&::-webkit-details-marker]:hidden">
+              Payment details
+            </summary>
+            <dl className="mt-3 space-y-2 text-xs text-[var(--muted)]">
+              <Row label="Order" value={shortId(order.id, 12)} mono />
+              <Row label="Payment" value={shortId(order.razorpayPaymentId, 12)} mono />
+            </dl>
+          </details>
         </div>
-      </dl>
+      </div>
     </section>
   );
 }
@@ -73,7 +87,7 @@ function Row({
     <div className="flex items-start justify-between gap-4">
       <dt className="text-[var(--muted)]">{label}</dt>
       <dd
-        className={`max-w-[62%] break-all text-right font-medium ${mono ? 'font-mono text-xs' : ''}`}
+        className={`max-w-[62%] break-all text-right font-medium ${mono ? 'font-mono text-[11px]' : ''}`}
       >
         {value}
       </dd>

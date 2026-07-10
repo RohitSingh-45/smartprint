@@ -46,17 +46,20 @@ export function LandingHero() {
               <Button href="/print/qr" size="lg" icon={QrCode} iconRight={ArrowRight}>
                 Start with QR station
               </Button>
-              <Button href="/print/upload" variant="secondary" size="lg" icon={Upload}>
+              <Button href="/print/upload" variant="ghost" size="lg" icon={Upload}>
                 Skip to upload
               </Button>
             </div>
+            <p className="mt-6 text-xs text-[var(--muted)]">
+              No account required · Secure checkout · Live pickup tracking
+            </p>
           </div>
 
           <div className="relative animate-float-in" aria-hidden>
             <div className="hero-visual relative mx-auto aspect-[4/3] w-full max-w-xl lg:max-w-none">
               <div className="absolute inset-[8%] rounded-[1.35rem] border border-white/40 bg-white/50 shadow-[var(--shadow-lg)] backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04]" />
-              <div className="absolute inset-[18%_22%_28%_12%] -rotate-6 rounded-[var(--radius-lg)] bg-[var(--surface-2)] shadow-[var(--shadow-md)] dark:bg-[#1b2535]" />
-              <div className="absolute inset-[22%_12%_18%_28%] rotate-3 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-lg)] dark:bg-[#1a2433]">
+              <div className="absolute inset-[18%_22%_28%_12%] -rotate-6 rounded-[var(--radius-lg)] bg-[var(--surface-2)] shadow-[var(--shadow-md)]" />
+              <div className="absolute inset-[22%_12%_18%_28%] rotate-3 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-lg)]">
                 <div className="space-y-2.5 p-5">
                   <div className="flex items-center justify-between">
                     <div className="h-2 w-24 rounded-full bg-[var(--surface-3)]" />
@@ -65,33 +68,26 @@ export function LandingHero() {
                   <div className="h-2 w-full rounded-full bg-[var(--surface-2)]" />
                   <div className="h-2 w-5/6 rounded-full bg-[var(--surface-2)]" />
                   <div className="mt-5 grid grid-cols-3 gap-2">
-                    <span className="h-9 rounded-[var(--radius-md)] bg-teal-400/50 dark:bg-teal-400/30" />
-                    <span className="h-9 rounded-[var(--radius-md)] bg-slate-300/70 dark:bg-slate-500/40" />
-                    <span className="h-9 rounded-[var(--radius-md)] bg-amber-300/60 dark:bg-amber-400/25" />
+                    <span className="h-9 rounded-[var(--radius-md)] bg-[var(--accent)]/35" />
+                    <span className="h-9 rounded-[var(--radius-md)] bg-[var(--surface-3)]" />
+                    <span className="h-9 rounded-[var(--radius-md)] bg-[var(--warning-soft)]" />
                   </div>
-                  <div className="mt-3 h-8 rounded-[var(--radius-md)] bg-[var(--accent)]/90" />
+                  <div className="mt-3 h-8 rounded-[var(--radius-md)] bg-[var(--accent)]" />
                 </div>
               </div>
-              <div className="absolute bottom-[10%] right-[8%] flex h-28 w-28 items-center justify-center rounded-[1.15rem] bg-[var(--ink)] text-[var(--paper)] shadow-[var(--shadow-lg)] dark:bg-teal-300 dark:text-slate-950">
-                <div className="grid grid-cols-3 gap-1 p-3">
-                  {Array.from({ length: 9 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className={`h-5 w-5 rounded-[3px] ${i % 2 === 0 ? 'bg-current' : 'border border-current/35 bg-transparent'}`}
-                    />
-                  ))}
-                </div>
+              <div className="absolute bottom-[10%] right-[8%] flex h-28 w-28 items-center justify-center rounded-[1.15rem] bg-[var(--ink)] text-[var(--paper)] shadow-[var(--shadow-lg)] dark:bg-[var(--accent)] dark:text-[var(--accent-ink)]">
+                <QrCode className="h-12 w-12" strokeWidth={1.5} />
               </div>
             </div>
           </div>
         </div>
 
-        <p className="pb-6 text-center text-xs text-[var(--muted)] sm:text-left">
-          Production MVP ·{' '}
-          <Link href="/print/error?kind=printer-offline" className="underline underline-offset-2 hover:text-[var(--foreground)]">
-            Error states
+        <footer className="flex items-center justify-between gap-4 border-t border-[var(--border)]/60 py-5 text-xs text-[var(--muted)]">
+          <span>SmartPrint</span>
+          <Link href="/admin" className="hover:text-[var(--foreground)] underline-offset-2 hover:underline">
+            Shop console
           </Link>
-        </p>
+        </footer>
       </div>
     </section>
   );

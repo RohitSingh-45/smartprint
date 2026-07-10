@@ -20,27 +20,11 @@ export default async function ErrorPage({ searchParams }: Props) {
   const kind = resolveKind(params.kind);
 
   return (
-    <ScreenShell title="Let’s fix this" subtitle="Recover and get back into the print flow.">
-      <div className="mb-4 flex flex-wrap gap-2 text-xs">
-        <a
-          className="underline underline-offset-2 text-[var(--muted)]"
-          href="/print/error?kind=printer-offline"
-        >
-          Printer offline
-        </a>
-        <a
-          className="underline underline-offset-2 text-[var(--muted)]"
-          href="/print/error?kind=payment-failed"
-        >
-          Payment failed
-        </a>
-        <a
-          className="underline underline-offset-2 text-[var(--muted)]"
-          href="/print/error?kind=upload-failed"
-        >
-          Upload failed
-        </a>
-      </div>
+    <ScreenShell
+      title="Something went wrong"
+      subtitle="Recover and get back into the print flow."
+      compact
+    >
       <ErrorPanel kind={kind} />
     </ScreenShell>
   );

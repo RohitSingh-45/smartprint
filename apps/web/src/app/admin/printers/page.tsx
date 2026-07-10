@@ -122,10 +122,11 @@ export default function AdminPrintersPage() {
           Connected printers
         </h2>
         {!dashboard?.printers.length ? (
-          <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface)] px-4 py-8 text-sm text-[var(--muted)]">
-            No printers registered yet. Start <code className="text-xs">apps/print-agent</code> on
-            the shop PC.
-          </div>
+          <EmptyState
+            icon={Printer}
+            title="No printers connected"
+            description="Start apps/print-agent on the shop PC to register a printer with the API."
+          />
         ) : (
           <div className="grid gap-3 md:grid-cols-2">
             {dashboard.printers.map((printer) => (
