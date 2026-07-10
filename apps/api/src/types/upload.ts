@@ -30,5 +30,8 @@ export type FileStorage = {
   ensureReady(): Promise<void>;
   save(input: StorageSaveInput): Promise<UploadedFileMetadata>;
   getMetadata(id: string): Promise<UploadedFileMetadata | null>;
+  /** Absolute path to the stored binary (local driver). */
+  resolvePath(storedName: string): string;
+  readFile(storedName: string): Promise<Buffer>;
   delete(id: string): Promise<boolean>;
 };

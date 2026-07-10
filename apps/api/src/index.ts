@@ -15,7 +15,12 @@ let isShuttingDown = false;
 async function bootstrap(): Promise<void> {
   const app = express();
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      // Allow the Next.js app (different origin/port) to fetch PDF bytes for preview.
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.use(cors({ origin: env.corsOrigin }));
   app.use(morgan(env.isProduction ? 'combined' : 'dev'));
   app.use(express.json({ limit: env.jsonBodyLimit }));

@@ -17,6 +17,15 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | ESLint / Prettier                                         | Done   |
 | Env templates & docs                                      | Done   |
 
+## Sprint 2 (delivered — UI foundation)
+
+| Feature                          | Status |
+| -------------------------------- | ------ |
+| Full print journey screens       | Done   |
+| Clickable navigation + mock data | Done   |
+| Dark mode support                | Done   |
+| Admin sidebar/topbar shell       | Done   |
+
 ## Sprint 3 (delivered — upload engine)
 
 | Feature                                      | Status |
@@ -26,20 +35,29 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Remove / replace uploaded file               | Done   |
 | Swappable storage interface (local only now) | Done   |
 
+## Sprint 4 (delivered — PDF preview)
+
+| Feature                             | Status |
+| ----------------------------------- | ------ |
+| PDF.js multi-page preview           | Done   |
+| Zoom / fit-width / lazy page render | Done   |
+| Validated PDF content endpoint      | Done   |
+| Auto-open preview after PDF upload  | Done   |
+
 ## Planned
 
-| Feature                              | Sprint |
-| ------------------------------------ | ------ |
-| Authentication + protected uploads   | 4      |
-| Real PDF preview + Color/B&W binding | 4      |
-| Online payments                      | 5      |
-| Printer connectivity                 | 6      |
-| QR-based job dispatch                | 6      |
+| Feature                            | Sprint |
+| ---------------------------------- | ------ |
+| Color / B&W page selection + price | 5      |
+| Authentication                     | 5      |
+| Online payments                    | 6      |
+| Printer connectivity               | 7      |
+| QR-based job dispatch              | 7      |
 
-## Explicitly out of scope for Sprint 3
+## Explicitly out of scope for Sprint 4
 
 - Authentication
 - Payments / printer integration
-- PDF preview and page selection
-- Cloud storage (S3/Cloudinary) — interface only
-- MongoDB persistence for uploads
+- Color / B&W page selection
+- Pricing / queue / admin features
+- DOCX/image preview (PDF only)

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useCallback, useId, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -9,6 +10,7 @@ import {
   UPLOAD_ALLOWED_LABEL,
   deleteUploadedFile,
   formatBytes,
+  isPdfUpload,
   uploadFileWithProgress,
   type UploadedFileDto,
 } from '@/lib/upload-api';
@@ -34,6 +36,7 @@ function clientValidate(file: File): string | null {
 }
 
 export function FileUploader() {
+  const router = useRouter();
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -57,41 +60,49 @@ export function FileUploader() {
     window.sessionStorage.setItem('smartprint:upload', JSON.stringify(file));
   };
 
-  const startUpload = useCallback(async (file: File, previousId?: string) => {
-    const validationError = clientValidate(file);
-    if (validationError) {
+  const startUpload = useCallback(
+    async (file: File, previousId?: string) => {
+      const validationError = clientValidate(file);
+      if (validationError) {
+        setLocalFile(file);
+        setUploaded(null);
+        setStatus('error');
+        setError(validationError);
+        setProgress(0);
+        return;
+      }
+
       setLocalFile(file);
       setUploaded(null);
-      setStatus('error');
-      setError(validationError);
+      setError(null);
+      setStatus('uploading');
       setProgress(0);
-      return;
-    }
+      setBusy(true);
 
-    setLocalFile(file);
-    setUploaded(null);
-    setError(null);
-    setStatus('uploading');
-    setProgress(0);
-    setBusy(true);
+      try {
+        if (previousId) {
+          await deleteUploadedFile(previousId).catch(() => undefined);
+        }
+        const result = await uploadFileWithProgress(file, setProgress);
+        setUploaded(result);
+        setStatus('success');
+        persistSession(result);
 
-    try {
-      if (previousId) {
-        await deleteUploadedFile(previousId).catch(() => undefined);
+        if (isPdfUpload(result)) {
+          router.push(`/print/preview?fileId=${encodeURIComponent(result.id)}`);
+          return;
+        }
+      } catch (err) {
+        setStatus('error');
+        setError(err instanceof Error ? err.message : 'Upload failed.');
+        persistSession(null);
+      } finally {
+        setBusy(false);
+        resetInput();
       }
-      const result = await uploadFileWithProgress(file, setProgress);
-      setUploaded(result);
-      setStatus('success');
-      persistSession(result);
-    } catch (err) {
-      setStatus('error');
-      setError(err instanceof Error ? err.message : 'Upload failed.');
-      persistSession(null);
-    } finally {
-      setBusy(false);
-      resetInput();
-    }
-  }, []);
+    },
+    [router],
+  );
 
   const onFiles = (files: FileList | null) => {
     const file = files?.[0];
@@ -268,18 +279,23 @@ export function FileUploader() {
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button
-          href="/print/preview"
-          fullWidth
-          size="lg"
-          disabled={!uploaded || status !== 'success'}
-        >
-          Continue to preview
-        </Button>
+        {uploaded && isPdfUpload(uploaded) ? (
+          <Button
+            href={`/print/preview?fileId=${encodeURIComponent(uploaded.id)}`}
+            fullWidth
+            size="lg"
+          >
+            Open PDF preview
+          </Button>
+        ) : (
+          <Button href="/print/preview" fullWidth size="lg" disabled>
+            PDF preview (upload a PDF)
+          </Button>
+        )}
       </div>
 
       <p className="text-center text-xs text-[var(--muted)]">
-        Preview still uses mock pages in this sprint — your file is stored for the next steps.
+        PDF uploads open the preview automatically. DOCX/JPG/PNG stay here until conversion lands later.
       </p>
     </div>
   );
