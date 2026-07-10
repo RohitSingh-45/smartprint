@@ -13,6 +13,15 @@ const envSchema = z.object({
     .default('mongodb://127.0.0.1:27017/smartprint'),
   CORS_ORIGIN: z.string().url('CORS_ORIGIN must be a valid URL').default('http://localhost:3000'),
   JSON_BODY_LIMIT: z.string().default('100kb'),
+  UPLOAD_DIR: z.string().min(1).default('uploads'),
+  /** Max upload size in bytes (default 25 MB). */
+  UPLOAD_MAX_BYTES: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(100 * 1024 * 1024)
+    .default(25 * 1024 * 1024),
+  STORAGE_DRIVER: z.enum(['local']).default('local'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -31,5 +40,8 @@ export const env = {
   mongodbUri: parsed.data.MONGODB_URI,
   corsOrigin: parsed.data.CORS_ORIGIN,
   jsonBodyLimit: parsed.data.JSON_BODY_LIMIT,
+  uploadDir: parsed.data.UPLOAD_DIR,
+  uploadMaxBytes: parsed.data.UPLOAD_MAX_BYTES,
+  storageDriver: parsed.data.STORAGE_DRIVER,
   isProduction: parsed.data.NODE_ENV === 'production',
 } as const;

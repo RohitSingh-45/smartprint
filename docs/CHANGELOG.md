@@ -2,6 +2,15 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.3.0] — 2026-07-10
+
+### Added
+
+- File upload engine: `POST/GET/DELETE /api/uploads`
+- Local temp storage with metadata sidecars and swappable storage interface
+- Upload UI with drag/drop, progress, file details, remove/replace
+- `docs/TECHNICAL_DEBT.md` for deferred cloud storage and flow work
+
 ## [0.2.0] — 2026-07-10
 
 ### Added
