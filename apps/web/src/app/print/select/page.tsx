@@ -7,7 +7,8 @@ export default function SelectPagesPage() {
   return (
     <ScreenShell
       title="Print settings"
-      subtitle="Choose color pages, copies, range, paper, and orientation. The summary updates as you tap."
+      subtitle="Set page color, range, and paper. Your estimate updates as you go."
+      compact
     >
       <PrintConfigPanel />
     </ScreenShell>

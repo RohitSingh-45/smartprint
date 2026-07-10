@@ -119,7 +119,7 @@ export default function SummaryPage() {
           </Button>
         </div>
         <p className="text-center text-xs text-[var(--muted)]">
-          Continue only with a live draft. Payment converts this draft into a paid order.
+          A live draft is required before checkout.
         </p>
       </div>
     </ScreenShell>

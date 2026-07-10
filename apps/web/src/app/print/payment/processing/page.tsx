@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { ScreenShell } from '@/components/ui/ScreenShell';
 import { saveDraftIdSession } from '@/lib/draft/draft-api';
 import {
@@ -32,7 +33,7 @@ export default function PaymentProcessingPage() {
 
     void (async () => {
       try {
-        setMessage('Confirming signature and converting draft to paid order…');
+        setMessage('Confirming payment and creating your order…');
         const order = await verifyPayment(pending);
         savePaymentPending(null);
         saveOrderIdSession(order.id);
@@ -64,14 +65,13 @@ export default function PaymentProcessingPage() {
   return (
     <ScreenShell
       title="Processing payment"
-      subtitle="Do not close this page. We only mark an order paid after server-side verification."
+      subtitle="Please keep this page open while we confirm your payment."
+      compact
     >
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 text-center">
-        <div
-          className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]"
-          aria-hidden
-        />
-        <p className="text-sm text-[var(--muted)]">{message}</p>
+      <div className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 text-center shadow-[var(--shadow-sm)]">
+        <ProgressBar indeterminate className="mx-auto max-w-xs" />
+        <p className="mt-5 text-[15px] font-medium tracking-tight">{message}</p>
+        <p className="mt-2 text-sm text-[var(--muted)]">This usually takes a few seconds.</p>
         {error ? (
           <div className="mt-5 space-y-3">
             <p className="text-sm text-[var(--danger)]">{error}</p>

@@ -75,6 +75,7 @@ function ConfirmationContent() {
     <ScreenShell
       title="You're all set"
       subtitle="Payment verified. Track live status from queue through pickup."
+      compact
     >
       <div className="space-y-6">
         <OrderConfirmationCard order={order} />
