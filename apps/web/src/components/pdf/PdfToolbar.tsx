@@ -1,5 +1,6 @@
 'use client';
 
+import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 type Props = {
@@ -14,34 +15,40 @@ type Props = {
 export function PdfToolbar({ scale, fitWidth, onZoomIn, onZoomOut, onFitWidth, disabled }: Props) {
   return (
     <div
-      className="sticky top-0 z-20 -mx-4 mb-4 border-b border-[var(--border)] bg-[var(--background)]/95 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:px-6"
+      className="sticky top-0 z-20 -mx-4 mb-4 border-b border-[var(--border)] bg-[var(--background)]/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6"
       role="toolbar"
       aria-label="PDF preview controls"
     >
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={onZoomOut}
-          disabled={disabled}
-          aria-label="Zoom out"
-        >
-          −
-        </Button>
-        <span className="min-w-14 text-center text-xs font-medium tabular-nums text-[var(--muted)]">
-          {Math.round(scale * 100)}%
-        </span>
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={onZoomIn}
-          disabled={disabled}
-          aria-label="Zoom in"
-        >
-          +
-        </Button>
+        <div className="inline-flex items-center gap-1 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-[var(--shadow-xs)]">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onZoomOut}
+            disabled={disabled}
+            aria-label="Zoom out"
+            icon={ZoomOut}
+            className="h-8 w-8 px-0"
+          >
+            <span className="sr-only">Zoom out</span>
+          </Button>
+          <span className="min-w-12 text-center text-xs font-medium tabular-nums text-[var(--muted)]">
+            {Math.round(scale * 100)}%
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onZoomIn}
+            disabled={disabled}
+            aria-label="Zoom in"
+            icon={ZoomIn}
+            className="h-8 w-8 px-0"
+          >
+            <span className="sr-only">Zoom in</span>
+          </Button>
+        </div>
         <Button
           type="button"
           variant={fitWidth ? 'primary' : 'secondary'}
@@ -49,6 +56,7 @@ export function PdfToolbar({ scale, fitWidth, onZoomIn, onZoomOut, onFitWidth, d
           onClick={onFitWidth}
           disabled={disabled}
           aria-pressed={fitWidth}
+          icon={Maximize2}
         >
           Fit width
         </Button>

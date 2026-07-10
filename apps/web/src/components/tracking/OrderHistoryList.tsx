@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { History } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { formatInr, formatTrackingTime } from '@/lib/tracking/tracking-api';
 import type { CustomerTrackingStatus, OrderHistoryEntry } from '@/lib/tracking/types';
 
@@ -23,9 +25,12 @@ const ACTIVE = new Set([
 export function OrderHistoryList({ entries, currentIds, statusById }: Props) {
   if (entries.length === 0) {
     return (
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-sm text-[var(--muted)]">
-        No previous orders on this device yet. Paid orders appear here after checkout.
-      </div>
+      <EmptyState
+        icon={History}
+        title="No previous orders"
+        description="Paid orders on this device appear here after checkout. Start a print to create your first order."
+        action={{ label: 'Start a print', href: '/print/qr' }}
+      />
     );
   }
 
@@ -53,7 +58,7 @@ function HistorySection({
 }) {
   return (
     <section aria-label={title}>
-      <h2 className="text-sm font-semibold">{title}</h2>
+      <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
       {items.length === 0 ? (
         <p className="mt-2 text-sm text-[var(--muted)]">None right now.</p>
       ) : (
@@ -61,11 +66,13 @@ function HistorySection({
           {items.map((item) => (
             <li
               key={item.id}
-              className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4"
+              className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-xs)] transition-shadow hover:shadow-[var(--shadow-sm)]"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="truncate font-medium">{item.fileName || 'Print order'}</p>
+                  <p className="truncate font-medium tracking-tight">
+                    {item.fileName || 'Print order'}
+                  </p>
                   <p className="mt-0.5 font-mono text-xs text-[var(--muted)]">{item.id}</p>
                   <p className="mt-1 text-xs text-[var(--muted)]">
                     {formatTrackingTime(item.paidAt || item.savedAt)}

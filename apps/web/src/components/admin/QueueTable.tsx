@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { ListOrdered } from 'lucide-react';
 import { OrderActions } from '@/components/admin/OrderActions';
 import { OrderStatusBadge } from '@/components/admin/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { formatDateTime, formatMoney } from '@/lib/shop/shop-api';
 import type { QueueAction, QueueFilter, QueueJob } from '@/lib/shop/types';
 import { cn } from '@/lib/cn';
@@ -29,7 +31,7 @@ export function QueueFilters({
   onChange: (next: QueueFiltersValue) => void;
 }) {
   return (
-    <div className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+    <div className="space-y-4 rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-xs)]">
       <label className="block">
         <span className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
           Search order ID or file name
@@ -39,7 +41,7 @@ export function QueueFilters({
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
           placeholder="e.g. lab-report.pdf"
-          className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none focus-visible:border-[var(--accent)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]/30"
+          className="h-10 w-full rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-[var(--accent)] focus-visible:shadow-[var(--shadow-focus)]"
         />
       </label>
       <div className="flex flex-wrap gap-2" role="group" aria-label="Queue filters">
@@ -51,7 +53,7 @@ export function QueueFilters({
               type="button"
               onClick={() => onChange({ ...value, status: filter.id })}
               className={cn(
-                'rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
+                'rounded-[var(--radius-md)] border px-3 py-1.5 text-sm font-medium transition-colors',
                 active
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-strong)]'
                   : 'border-[var(--border)] bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--foreground)]',
@@ -75,12 +77,12 @@ export function QueueTable({
 }) {
   if (jobs.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface)] px-4 py-10 text-center">
-        <p className="font-medium">Queue is empty for these filters</p>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Accept a paid order, then move it to the queue.
-        </p>
-      </div>
+      <EmptyState
+        icon={ListOrdered}
+        title="Queue is empty for these filters"
+        description="Accept a paid order, then move it to the queue to start printing."
+        action={{ label: 'Open orders', href: '/admin/orders', variant: 'secondary' }}
+      />
     );
   }
 

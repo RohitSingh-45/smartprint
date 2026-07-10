@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -13,6 +14,8 @@ type Common = {
   size?: Size;
   className?: string;
   fullWidth?: boolean;
+  icon?: LucideIcon;
+  iconRight?: LucideIcon;
 };
 
 type ButtonAsButton = Common &
@@ -27,18 +30,25 @@ type ButtonAsLink = Common & {
 
 const variantClass: Record<Variant, string> = {
   primary:
-    'bg-[var(--accent)] text-[var(--accent-ink)] hover:bg-[var(--accent-strong)] focus-visible:outline-[var(--accent)]',
+    'bg-[var(--accent)] text-[var(--accent-ink)] shadow-[var(--shadow-xs)] hover:bg-[var(--accent-strong)] hover:shadow-[var(--shadow-sm)]',
   secondary:
-    'bg-[var(--surface-2)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--surface-3)] focus-visible:outline-[var(--accent)]',
+    'bg-[var(--surface)] text-[var(--foreground)] border border-[var(--border)] shadow-[var(--shadow-xs)] hover:bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
   ghost:
-    'bg-transparent text-[var(--foreground)] hover:bg-[var(--surface-2)] focus-visible:outline-[var(--accent)]',
-  danger: 'bg-[var(--danger)] text-white hover:opacity-90 focus-visible:outline-[var(--danger)]',
+    'bg-transparent text-[var(--muted-strong)] hover:bg-[var(--surface-2)] hover:text-[var(--foreground)]',
+  danger:
+    'bg-[var(--danger)] text-white shadow-[var(--shadow-xs)] hover:opacity-90',
 };
 
 const sizeClass: Record<Size, string> = {
-  sm: 'h-9 px-3 text-sm',
-  md: 'h-11 px-4 text-sm',
-  lg: 'h-12 px-5 text-base',
+  sm: 'h-9 px-3 text-sm gap-1.5 rounded-[var(--radius-md)]',
+  md: 'h-10 px-4 text-sm gap-2 rounded-[var(--radius-md)]',
+  lg: 'h-11 px-5 text-[15px] gap-2 rounded-[var(--radius-lg)]',
+};
+
+const iconSize: Record<Size, string> = {
+  sm: 'h-3.5 w-3.5',
+  md: 'h-4 w-4',
+  lg: 'h-4 w-4',
 };
 
 export function Button({
@@ -47,16 +57,26 @@ export function Button({
   size = 'md',
   className,
   fullWidth,
+  icon: Icon,
+  iconRight: IconRight,
   ...props
 }: ButtonAsButton | ButtonAsLink) {
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-200',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
+    'pressable inline-flex items-center justify-center font-medium',
+    'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]',
+    'disabled:pointer-events-none disabled:opacity-45',
     variantClass[variant],
     sizeClass[size],
     fullWidth && 'w-full',
     className,
+  );
+
+  const content = (
+    <>
+      {Icon ? <Icon className={iconSize[size]} strokeWidth={1.85} aria-hidden /> : null}
+      {children}
+      {IconRight ? <IconRight className={iconSize[size]} strokeWidth={1.85} aria-hidden /> : null}
+    </>
   );
 
   if ('href' in props && props.href) {
@@ -64,13 +84,13 @@ export function Button({
     if (disabled) {
       return (
         <span className={classes} aria-disabled="true">
-          {children}
+          {content}
         </span>
       );
     }
     return (
       <Link href={href} className={classes} {...rest}>
-        {children}
+        {content}
       </Link>
     );
   }
@@ -78,7 +98,7 @@ export function Button({
   const buttonProps = props as ButtonAsButton;
   return (
     <button type={buttonProps.type ?? 'button'} className={classes} {...buttonProps}>
-      {children}
+      {content}
     </button>
   );
 }

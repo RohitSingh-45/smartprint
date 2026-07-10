@@ -2,8 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useId, useRef, useState } from 'react';
+import { CheckCircle2, FileUp, Replace, Trash2, UploadCloud } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { cn } from '@/lib/cn';
 import {
   UPLOAD_ACCEPT,
@@ -174,18 +176,28 @@ export function FileUploader() {
             onFiles(e.dataTransfer.files);
           }}
           className={cn(
-            'flex min-h-52 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-6 py-10 text-center transition-colors',
-            'border-[var(--border-strong)] bg-[var(--surface)]',
-            dragActive && 'border-[var(--accent)] bg-[var(--accent-soft)]',
+            'group flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border border-dashed px-6 py-12 text-center transition-all duration-200',
+            'border-[var(--border-strong)] bg-[var(--surface)] shadow-[var(--shadow-xs)]',
+            'hover:border-[var(--accent)]/50 hover:bg-[var(--accent-soft)]/30 hover:shadow-[var(--shadow-sm)]',
+            dragActive &&
+              'scale-[1.01] border-[var(--accent)] bg-[var(--accent-soft)]/50 shadow-[var(--shadow-md)]',
             status === 'error' && 'border-[var(--danger)]/50',
           )}
           aria-label="Upload file. Drag and drop or click to browse."
         >
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--surface-2)] font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--accent-strong)]">
-            ↑
+          <div
+            className={cn(
+              'mb-4 flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--surface-2)] text-[var(--accent-strong)] transition-transform duration-200',
+              'group-hover:scale-105',
+              dragActive && 'scale-110 bg-[var(--accent-soft)]',
+            )}
+          >
+            <UploadCloud className="h-6 w-6" strokeWidth={1.75} aria-hidden />
           </div>
-          <p className="font-medium text-[var(--foreground)]">Drop file here or click to browse</p>
-          <p className="mt-1 max-w-xs text-sm text-[var(--muted)]">
+          <p className="text-[15px] font-medium text-[var(--foreground)]">
+            Drop your file here, or click to browse
+          </p>
+          <p className="mt-2 max-w-xs text-sm text-[var(--muted)]">
             {UPLOAD_ALLOWED_LABEL} · max 25 MB
           </p>
         </div>
@@ -193,34 +205,26 @@ export function FileUploader() {
 
       {status === 'uploading' ? (
         <div
-          className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5"
+          className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]"
           aria-live="polite"
         >
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-medium">Uploading {localFile?.name}</p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+              <FileUp className="h-4 w-4 animate-pulse" strokeWidth={1.75} aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">Uploading {localFile?.name}</p>
+              <p className="text-xs text-[var(--muted)]">Keep this tab open until it finishes.</p>
+            </div>
             <Badge tone="accent">{progress}%</Badge>
           </div>
-          <div
-            className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--surface-2)]"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={progress}
-          >
-            <div
-              className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-200"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="mt-3 text-xs text-[var(--muted)]">
-            Keep this tab open until the upload finishes.
-          </p>
+          <ProgressBar className="mt-4" value={progress} />
         </div>
       ) : null}
 
       {status === 'error' && error ? (
         <div
-          className="rounded-xl border border-[var(--danger)]/30 bg-[var(--danger-soft)] p-4"
+          className="rounded-[var(--radius-xl)] border border-[var(--danger)]/25 bg-[var(--danger-soft)] p-4"
           role="alert"
         >
           <p className="text-sm font-semibold text-[var(--danger)]">Upload failed</p>
@@ -232,6 +236,7 @@ export function FileUploader() {
               variant="secondary"
               onClick={openPicker}
               disabled={busy}
+              icon={Replace}
             >
               Try another file
             </Button>
@@ -240,17 +245,24 @@ export function FileUploader() {
       ) : null}
 
       {uploaded && status === 'success' ? (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 animate-rise">
+        <div className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)] animate-rise">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--success)]">
-                Uploaded
-              </p>
-              <p className="mt-1 break-all text-sm font-medium">{displayName}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Badge>{displaySize}</Badge>
-                <Badge tone="neutral">{displayType}</Badge>
-                <Badge tone="accent">ID {uploaded.id.slice(0, 8)}</Badge>
+            <div className="flex gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--success-soft)] text-[var(--success)] animate-check-pop">
+                <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--success)]">
+                  Uploaded
+                </p>
+                <p className="mt-1 break-all text-sm font-medium">{displayName}</p>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  <Badge>{displaySize}</Badge>
+                  <Badge tone="neutral">{displayType}</Badge>
+                  <Badge tone="accent" dot>
+                    ID {uploaded.id.slice(0, 8)}
+                  </Badge>
+                </div>
               </div>
             </div>
           </div>
@@ -262,6 +274,7 @@ export function FileUploader() {
               fullWidth
               onClick={openPicker}
               disabled={busy}
+              icon={Replace}
             >
               Replace file
             </Button>
@@ -271,6 +284,7 @@ export function FileUploader() {
               fullWidth
               onClick={() => void removeFile()}
               disabled={busy}
+              icon={Trash2}
             >
               Remove
             </Button>

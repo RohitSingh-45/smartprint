@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="fixed inset-0 z-40 lg:hidden">
             <button
               type="button"
-              className="absolute inset-0 bg-black/40"
+              className="absolute inset-0 bg-[var(--overlay)] backdrop-blur-[2px]"
               aria-label="Close menu overlay"
               onClick={() => setOpen(false)}
             />
@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="flex min-w-0 flex-1 flex-col">
           <AdminTopbar onMenuClick={() => setOpen(true)} />
-          <main className="flex-1 p-4 sm:p-6">{children}</main>
+          <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
         </div>
       </div>
     </div>

@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { Printer } from 'lucide-react';
 import { OrderStatusBadge } from '@/components/admin/OrderStatusBadge';
 import { StatCard } from '@/components/admin/StatCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { EmptyState } from '@/components/ui/EmptyState';
 import {
   cancelPrintJob,
   fetchPrinterDashboard,

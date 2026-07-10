@@ -1,5 +1,6 @@
 'use client';
 
+import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
 
@@ -35,23 +36,18 @@ export function ThemeToggle({ className }: { className?: string }) {
       type="button"
       onClick={toggle}
       className={cn(
-        'inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] transition-colors hover:bg-[var(--surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]',
+        'pressable inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-[var(--muted-strong)] shadow-[var(--shadow-xs)] hover:bg-[var(--surface-2)] hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]',
         className,
       )}
       aria-label={
         mounted ? `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode` : 'Toggle color theme'
       }
     >
-      <span aria-hidden className="relative block h-4 w-4">
-        {theme === 'dark' ? (
-          <span className="absolute inset-0 rounded-full border-2 border-current" />
-        ) : (
-          <>
-            <span className="absolute inset-[3px] rounded-full bg-current" />
-            <span className="absolute inset-0 rounded-full border border-current opacity-40" />
-          </>
-        )}
-      </span>
+      {theme === 'dark' ? (
+        <Sun className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+      ) : (
+        <Moon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+      )}
     </button>
   );
 }

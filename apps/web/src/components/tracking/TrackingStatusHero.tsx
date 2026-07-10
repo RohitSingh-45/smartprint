@@ -13,7 +13,7 @@ type Props = {
 function toneFor(
   status: CustomerTrackingStatus,
   delayed?: boolean,
-): 'neutral' | 'accent' | 'success' | 'warning' | 'danger' {
+): 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info' {
   if (delayed) return 'warning';
   switch (status) {
     case 'READY_FOR_PICKUP':
@@ -38,15 +38,21 @@ function toneFor(
 
 export function TrackingStatusHero({ title, description, status, delayed }: Props) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 animate-rise">
+    <div className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)] animate-rise sm:p-6">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge tone={toneFor(status, delayed)}>{status.replace(/_/g, ' ')}</Badge>
-        {delayed ? <Badge tone="warning">Delayed</Badge> : null}
+        <Badge tone={toneFor(status, delayed)} dot>
+          {status.replace(/_/g, ' ')}
+        </Badge>
+        {delayed ? (
+          <Badge tone="warning" dot>
+            Delayed
+          </Badge>
+        ) : null}
       </div>
-      <h2 className="mt-3 font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight sm:text-2xl">
+      <h2 className="mt-3.5 font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight sm:text-2xl">
         {title}
       </h2>
-      <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{description}</p>
+      <p className="mt-2 text-[15px] leading-relaxed text-[var(--muted)]">{description}</p>
     </div>
   );
 }
