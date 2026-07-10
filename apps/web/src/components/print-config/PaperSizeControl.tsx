@@ -7,18 +7,19 @@ import { cn } from '@/lib/cn';
 type Props = {
   value: PaperSizeId;
   onChange: (value: PaperSizeId) => void;
+  compact?: boolean;
 };
 
-export function PaperSizeControl({ value, onChange }: Props) {
+export function PaperSizeControl({ value, onChange, compact = false }: Props) {
   return (
-    <section className="space-y-3" aria-label="Paper size">
+    <section className="space-y-2.5" aria-label="Paper size">
       <div>
-        <h2 className="text-sm font-semibold">Paper size</h2>
-        <p className="text-xs text-[var(--muted)]">
-          A4 is in stock. Other sizes are reserved for later.
-        </p>
+        <h2 className="text-sm font-semibold tracking-tight">Paper</h2>
+        {!compact ? (
+          <p className="text-xs text-[var(--muted)]">A4 is in stock. Other sizes come later.</p>
+        ) : null}
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className={cn('grid gap-1.5', compact ? 'grid-cols-2' : 'grid-cols-2 gap-2')}>
         {PAPER_SIZES.map((size) => (
           <button
             key={size.id}
@@ -27,8 +28,9 @@ export function PaperSizeControl({ value, onChange }: Props) {
             onClick={() => size.enabled && onChange(size.id)}
             aria-pressed={value === size.id}
             className={cn(
-              'min-h-14 rounded-xl border px-3 py-2 text-left transition-colors',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]',
+              'rounded-[var(--radius-md)] border px-3 text-left transition-colors',
+              'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]',
+              compact ? 'min-h-10 py-1.5' : 'min-h-14 py-2 rounded-xl',
               value === size.id
                 ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
                 : 'border-[var(--border)] bg-[var(--surface)]',
@@ -36,7 +38,7 @@ export function PaperSizeControl({ value, onChange }: Props) {
             )}
           >
             <span className="block text-sm font-semibold">{size.label}</span>
-            {size.hint ? (
+            {!compact && size.hint ? (
               <span className="block text-xs text-[var(--muted)]">{size.hint}</span>
             ) : null}
           </button>

@@ -15,6 +15,7 @@ type Props = {
   error: string | null;
   onDelete: () => void;
   onRefresh: () => void;
+  compact?: boolean;
 };
 
 export function DraftStatusCard({
@@ -26,8 +27,77 @@ export function DraftStatusCard({
   error,
   onDelete,
   onRefresh,
+  compact = false,
 }: Props) {
   const urgent = secondsRemaining > 0 && secondsRemaining <= 60;
+
+  if (compact) {
+    return (
+      <section
+        className={cn(
+          'flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-lg)] border px-3.5 py-2.5',
+          expired
+            ? 'border-[var(--danger)]/30 bg-[var(--danger-soft)]'
+            : urgent
+              ? 'border-[var(--warning)]/30 bg-[var(--warning-soft)]'
+              : 'border-[var(--border)] bg-[var(--surface)]',
+        )}
+        aria-live="polite"
+        aria-label="Order draft status"
+      >
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Clock3 className="h-4 w-4 shrink-0 text-[var(--muted)]" strokeWidth={1.75} aria-hidden />
+          <div className="min-w-0">
+            <p className="text-sm font-medium tracking-tight">
+              {expired ? 'Draft expired' : syncing ? 'Saving draft…' : 'Draft saved'}
+            </p>
+            <p
+              className={cn(
+                'text-xs tabular-nums',
+                expired && 'text-[var(--danger)]',
+                urgent && !expired && 'text-[var(--warning)]',
+                !expired && !urgent && 'text-[var(--muted)]',
+              )}
+            >
+              {expired ? 'Create a new draft to continue' : `${countdownLabel} left`}
+              {draft ? ` · ₹${draft.estimatedPrice}` : ''}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onRefresh}
+            disabled={syncing}
+            icon={RefreshCw}
+            aria-label="Sync draft"
+            className="h-8 w-8 px-0"
+          >
+            <span className="sr-only">Sync</span>
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onDelete}
+            disabled={syncing || !draft}
+            icon={Trash2}
+            aria-label="Delete draft"
+            className="h-8 w-8 px-0"
+          >
+            <span className="sr-only">Delete</span>
+          </Button>
+        </div>
+        {error ? (
+          <p className="w-full text-xs text-[var(--danger)]" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </section>
+    );
+  }
 
   return (
     <section

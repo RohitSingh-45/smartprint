@@ -2,10 +2,13 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { ExternalLink, FileText, RefreshCw } from 'lucide-react';
 import { OrderActions } from '@/components/admin/OrderActions';
 import { OrderStatusBadge } from '@/components/admin/OrderStatusBadge';
 import { OrderTimeline } from '@/components/admin/OrderTimeline';
 import { Button } from '@/components/ui/Button';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { humanOrderStatus, shortId } from '@/lib/labels';
 import {
   fetchShopOrder,
   formatBytes,
@@ -49,7 +52,15 @@ export default function AdminOrderDetailPage() {
   }
 
   if (loading && !order) {
-    return <p className="text-sm text-[var(--muted)]">Loading order…</p>;
+    return (
+      <div className="mx-auto max-w-5xl space-y-4" aria-busy="true">
+        <Skeleton className="h-20 rounded-[var(--radius-xl)]" />
+        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <Skeleton className="h-64 rounded-[var(--radius-xl)]" />
+          <Skeleton className="h-64 rounded-[var(--radius-xl)]" />
+        </div>
+      </div>
+    );
   }
 
   if (error || !order) {
@@ -64,105 +75,114 @@ export default function AdminOrderDetailPage() {
   }
 
   const { print } = order;
+  const pdfUrl = `${API_URL}/api/uploads/${print.uploadId}/content`;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-[var(--muted)]">Order detail</p>
-          <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight">
+    <div className="mx-auto max-w-5xl space-y-5">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)]">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <OrderStatusBadge status={order.status} />
+            <span className="font-mono text-xs text-[var(--muted)]">{shortId(order.id, 10)}</span>
+          </div>
+          <h1 className="mt-2 truncate font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight">
             {print.fileName}
           </h1>
-          <p className="mt-2 font-mono text-xs text-[var(--muted)]">{order.id}</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            {formatMoney(order.amountPaid)} · {print.pageRange.pages.length} pages · {print.copies}×
+            · {formatDateTime(order.paidAt)}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <OrderStatusBadge status={order.status} />
           <Button href="/admin/orders" variant="secondary" size="sm">
             All orders
           </Button>
-          <a
-            href={`${API_URL}/api/uploads/${print.uploadId}/content`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex h-9 items-center justify-center rounded-lg bg-[var(--accent)] px-3 text-sm font-medium text-[var(--accent-ink)]"
+          <Button
+            type="button"
+            size="sm"
+            icon={ExternalLink}
+            onClick={() => window.open(pdfUrl, '_blank', 'noopener,noreferrer')}
           >
             View PDF
-          </a>
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            icon={RefreshCw}
+            onClick={() => void load()}
+            aria-label="Refresh order"
+          >
+            <span className="sr-only">Refresh</span>
+          </Button>
         </div>
-      </div>
+      </header>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-6">
-          <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
-            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
-              File information
-            </h2>
-            <dl className="mt-4 space-y-2.5 text-sm">
-              <Row label="File name" value={print.fileName} />
-              <Row label="File size" value={formatBytes(print.fileSize)} />
-              <Row label="Upload ID" value={print.uploadId} mono />
-              <Row label="Total pages" value={String(print.totalPages)} />
-            </dl>
-          </section>
-
-          <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
-            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
-              Print configuration
-            </h2>
-            <dl className="mt-4 space-y-2.5 text-sm">
-              <Row label="Pages to print" value={String(print.pageRange.pages.length)} />
-              <Row label="Range mode" value={print.pageRange.mode} />
-              <Row label="Color pages" value={String(print.colorPages.length)} />
-              <Row label="Black & white pages" value={String(print.bwPages.length)} />
-              <Row label="Copies" value={String(print.copies)} />
-              <Row label="Paper" value={print.paperSize.toUpperCase()} />
-              <Row
-                label="Orientation"
-                value={print.orientation === 'portrait' ? 'Portrait' : 'Landscape'}
+      <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="space-y-5">
+          <section className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)]">
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-[var(--muted)]" strokeWidth={1.75} aria-hidden />
+              <h2 className="text-sm font-semibold tracking-tight">Print job</h2>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <Metric label="Pages" value={`${print.pageRange.pages.length} · ${print.pageRange.mode}`} />
+              <Metric label="Color / B&W" value={`${print.colorPages.length} / ${print.bwPages.length}`} />
+              <Metric label="Copies" value={String(print.copies)} />
+              <Metric
+                label="Paper"
+                value={`${print.paperSize.toUpperCase()} · ${
+                  print.orientation === 'portrait' ? 'Portrait' : 'Landscape'
+                }`}
               />
-              <Row label="Estimated price" value={formatMoney(print.estimatedPrice)} />
-            </dl>
-          </section>
-
-          <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
-            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
-              Payment information
-            </h2>
-            <dl className="mt-4 space-y-2.5 text-sm">
-              <Row label="Amount paid" value={formatMoney(order.amountPaid)} />
-              <Row label="Payment status" value={order.paymentStatus.toUpperCase()} />
-              <Row label="Paid at" value={formatDateTime(order.paidAt)} />
-              <Row label="Razorpay order" value={order.razorpayOrderId} mono />
-              <Row label="Razorpay payment" value={order.razorpayPaymentId} mono />
-              <Row label="Draft ID" value={order.draftId} mono />
-            </dl>
-          </section>
-        </div>
-
-        <div className="space-y-6">
-          <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
-            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
-              Timeline
-            </h2>
-            <div className="mt-4">
-              <OrderTimeline events={order.timeline} />
+              <Metric label="File size" value={formatBytes(print.fileSize)} />
+              <Metric label="Estimate" value={formatMoney(print.estimatedPrice)} />
             </div>
           </section>
 
-          <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
-            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
-              Shop actions
-            </h2>
+          <details className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)]">
+            <summary className="cursor-pointer list-none text-sm font-semibold tracking-tight [&::-webkit-details-marker]:hidden">
+              Payment details
+              <span className="ml-2 text-xs font-normal text-[var(--muted)]">
+                {formatMoney(order.amountPaid)} · {humanOrderStatus(order.status)}
+              </span>
+            </summary>
+            <dl className="mt-4 space-y-2.5 border-t border-[var(--border)] pt-4 text-sm">
+              <Row label="Paid at" value={formatDateTime(order.paidAt)} />
+              <Row label="Payment" value={shortId(order.razorpayPaymentId, 14)} mono />
+              <Row label="Gateway order" value={shortId(order.razorpayOrderId, 14)} mono />
+            </dl>
+          </details>
+        </div>
+
+        <div className="space-y-5 lg:sticky lg:top-20 lg:self-start">
+          <section className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)]">
+            <h2 className="text-sm font-semibold tracking-tight">Actions</h2>
             <p className="mt-1 text-xs text-[var(--muted)]">
-              Invalid transitions are blocked by the API. Use Queue to reorder and mark ready for
-              print.
+              Use Queue to reorder and mark ready for print.
             </p>
             <div className="mt-4">
               <OrderActions order={order} onAction={handleAction} />
             </div>
           </section>
+
+          <section className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)]">
+            <h2 className="text-sm font-semibold tracking-tight">Timeline</h2>
+            <div className="mt-4">
+              <OrderTimeline events={order.timeline} />
+            </div>
+          </section>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)]/70 px-3 py-2.5">
+      <p className="text-xs text-[var(--muted)]">{label}</p>
+      <p className="mt-0.5 text-sm font-medium tracking-tight">{value}</p>
     </div>
   );
 }

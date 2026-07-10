@@ -1,11 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { AdminSidebar, AdminTopbar } from '@/components/admin/AdminChrome';
 import { cn } from '@/lib/cn';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const isPickup = pathname.startsWith('/admin/pickup');
+
+  if (isPickup) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-dvh bg-[var(--background)] text-[var(--foreground)]">
