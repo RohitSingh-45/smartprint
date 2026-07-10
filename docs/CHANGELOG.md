@@ -2,6 +2,30 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.2.0] — 2026-07-10
+
+### Added
+
+- Sprint 2 UI foundation: landing, QR entry, upload, preview, page mode selection, price summary, payment, order status, complete, error states, admin shell
+- Shared print-flow stepper, dark mode toggle, reusable UI components, mock journey data
+- Mobile-first responsive screens with clickable navigation (no backend)
+
+## [0.1.1] — 2026-07-10
+
+### Added
+
+- `GET /api/health/live` liveness probe (process up; no DB check)
+- Zod validation for API environment variables at startup
+- Helmet security headers
+- Morgan HTTP request logging
+- Configurable JSON body size limit (`JSON_BODY_LIMIT`, default `100kb`)
+- Graceful shutdown on `SIGINT` / `SIGTERM` (and fatal process errors)
+
+### Changed
+
+- `GET /api/health` is now a readiness probe: returns **503** when MongoDB is disconnected
+- Production boot **exits** if MongoDB cannot connect
+
 ## [0.1.0] — 2026-07-10
 
 ### Added

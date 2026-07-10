@@ -1,16 +1,26 @@
 import { Router, type Request, type Response } from 'express';
-import mongoose from 'mongoose';
+import { getDatabaseStatus, isDatabaseConnected } from '../config/database';
 
 const healthRouter = Router();
 
+/** Readiness: process is up and MongoDB is connected. */
 healthRouter.get('/', (_req: Request, res: Response) => {
-  const dbState = mongoose.connection.readyState;
-  const dbStatus = dbState === 1 ? 'connected' : dbState === 2 ? 'connecting' : 'disconnected';
+  const database = getDatabaseStatus();
+  const ready = isDatabaseConnected();
 
+  res.status(ready ? 200 : 503).json({
+    status: ready ? 'ok' : 'unavailable',
+    service: 'smartprint-api',
+    database,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+/** Liveness: process is running (does not check MongoDB). */
+healthRouter.get('/live', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     service: 'smartprint-api',
-    database: dbStatus,
     timestamp: new Date().toISOString(),
   });
 });

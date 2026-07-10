@@ -1,6 +1,6 @@
 # SmartPrint Roadmap
 
-## Sprint 1 — Project initialization (current)
+## Sprint 1 — Project initialization
 
 - [x] Monorepo with npm workspaces
 - [x] Next.js App Router + TypeScript + Tailwind (`apps/web`)
@@ -9,21 +9,23 @@
 - [x] ESLint, Prettier, environment templates
 - [x] Git ignore, README, docs
 
-## Sprint 2 — Auth foundation & API scaffolding
+## Sprint 2 — User flow & UI foundation (current)
+
+- [x] Landing page
+- [x] QR entry → upload → preview → color/B&W → price → payment → queue → complete
+- [x] Error state screens (printer / payment / upload)
+- [x] Admin dashboard layout (sidebar + topbar)
+- [x] Dark mode + reusable components (UI only, no backend)
+
+## Sprint 3 — Auth + real upload wiring
 
 - User registration / login (email + password)
 - JWT session strategy
 - Protected API middleware
 - User Mongoose model
-- Basic auth UI pages (sign in / sign up)
-- Shared API client on the frontend
-
-## Sprint 3 — File upload & page selection
-
-- PDF / DOCX / image upload
-- Page preview & Color vs B&W selection
-- Job draft persistence
-- Storage strategy (local or object storage)
+- Real PDF / DOCX / image upload API
+- Persist page Color / B&W selections on a job draft
+- Shared frontend API client
 
 ## Sprint 4 — Payments
 
