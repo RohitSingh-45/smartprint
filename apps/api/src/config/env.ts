@@ -30,6 +30,10 @@ const envSchema = z.object({
     .positive()
     .max(60 * 60)
     .default(15 * 60),
+  ORDER_DIR: z.string().min(1).default('orders'),
+  PAYMENT_PROVIDER: z.enum(['mock', 'razorpay']).default('mock'),
+  RAZORPAY_KEY_ID: z.string().optional(),
+  RAZORPAY_KEY_SECRET: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -40,6 +44,13 @@ if (!parsed.success) {
     console.error(`  - ${issue.path.join('.') || 'env'}: ${issue.message}`);
   }
   process.exit(1);
+}
+
+if (parsed.data.PAYMENT_PROVIDER === 'razorpay') {
+  if (!parsed.data.RAZORPAY_KEY_ID || !parsed.data.RAZORPAY_KEY_SECRET) {
+    console.error('[env] RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are required when PAYMENT_PROVIDER=razorpay');
+    process.exit(1);
+  }
 }
 
 export const env = {
@@ -53,5 +64,9 @@ export const env = {
   storageDriver: parsed.data.STORAGE_DRIVER,
   draftDir: parsed.data.DRAFT_DIR,
   draftTtlSeconds: parsed.data.DRAFT_TTL_SECONDS,
+  orderDir: parsed.data.ORDER_DIR,
+  paymentProvider: parsed.data.PAYMENT_PROVIDER,
+  razorpayKeyId: parsed.data.RAZORPAY_KEY_ID,
+  razorpayKeySecret: parsed.data.RAZORPAY_KEY_SECRET,
   isProduction: parsed.data.NODE_ENV === 'production',
 } as const;

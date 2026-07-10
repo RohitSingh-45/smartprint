@@ -8,6 +8,7 @@ import { env } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import routes from './routes';
 import { getDraftStore } from './services/draft';
+import { getOrderStore } from './services/order';
 import { getFileStorage } from './services/storage';
 
 let server: Server | undefined;
@@ -31,6 +32,9 @@ async function bootstrap(): Promise<void> {
 
   await getDraftStore().ensureReady();
   console.log(`[drafts] Store ready → ${env.draftDir} (TTL ${env.draftTtlSeconds}s)`);
+
+  await getOrderStore().ensureReady();
+  console.log(`[orders] Store ready → ${env.orderDir} (provider ${env.paymentProvider})`);
 
   app.use('/api', routes);
 

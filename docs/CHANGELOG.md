@@ -2,6 +2,21 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.7.0] — 2026-07-10
+
+### Added
+
+- Payment module: `POST /api/payments/checkout`, `POST /api/payments/verify`, `GET /api/payments/orders/:id`
+- Razorpay order creation + HMAC signature verification (secret never exposed to the client)
+- Local `PAYMENT_PROVIDER=mock` mode for end-to-end checkout without Razorpay keys
+- Paid order store (local JSON) with draft → `PAID` conversion and print snapshot
+- Frontend: payment, processing, success, failed, and order confirmation screens
+
+### Security
+
+- Frontend payment status is never trusted; only verified signatures create paid orders
+- Duplicate payment ids are idempotent; duplicate draft conversion is rejected
+
 ## [0.6.0] — 2026-07-10
 
 ### Added
