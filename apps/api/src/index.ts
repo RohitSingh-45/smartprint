@@ -9,6 +9,7 @@ import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import routes from './routes';
 import { getDraftStore } from './services/draft';
 import { getOrderStore } from './services/order';
+import { getPrinterStore } from './services/printer';
 import { getFileStorage } from './services/storage';
 
 let server: Server | undefined;
@@ -35,6 +36,9 @@ async function bootstrap(): Promise<void> {
 
   await getOrderStore().ensureReady();
   console.log(`[orders] Store ready → ${env.orderDir} (provider ${env.paymentProvider})`);
+
+  await getPrinterStore().ensureReady();
+  console.log(`[printers] Store ready → ${env.printerDir}`);
 
   app.use('/api', routes);
 

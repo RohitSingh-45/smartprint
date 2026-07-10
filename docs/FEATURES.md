@@ -96,19 +96,29 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Duplicate / invalid transition guards             | Done   |
 | `listReadyForPrintJobs()` for Sprint 10 intake    | Done   |
 
+## Sprint 10 (delivered — Local Print Agent)
+
+| Feature                                              | Status |
+| ---------------------------------------------------- | ------ |
+| Local Print Agent with shared-secret token           | Done   |
+| Printer register + heartbeat + status model          | Done   |
+| Claim READY_FOR_PRINT → PRINTING → COMPLETED/FAILED  | Done   |
+| Retry / reprint / cancel printing                    | Done   |
+| Admin Printers dashboard                             | Done   |
+| Mock + CUPS (`lp`) spooler modes                     | Done   |
+
 ## Planned
 
-| Feature                | Sprint |
-| ---------------------- | ------ |
-| Printer connectivity   | 10     |
-| QR-based job dispatch  | 10     |
-| READY → PRINTING → COMPLETED | 10 |
-| Authentication         | 11     |
+| Feature                         | Sprint |
+| ------------------------------- | ------ |
+| Student live print status       | 11     |
+| QR station pairing              | 11     |
+| Authentication                  | 11     |
 
-## Explicitly out of scope for Sprint 9
+## Explicitly out of scope for Sprint 10
 
-- Printer communication / hardware APIs
+- Browser-to-printer communication
 - Notifications
-- Authentication changes
-- Multi-shop support
-- Real average waiting-time analytics
+- Authentication / multi-shop
+- New payment features
+- Analytics beyond printer dashboard cards

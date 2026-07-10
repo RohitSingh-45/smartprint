@@ -56,8 +56,11 @@ out
 /drafts/
 /uploads/
 /orders/
+/printers/
 apps/api/drafts/
 apps/api/uploads/
 apps/api/orders/
+apps/api/printers/
+apps/print-agent/agent-jobs/
 tmp/
 temp/

@@ -90,7 +90,11 @@ export function PrinterStatusCard() {
             Printer status
           </h2>
           <p className="mt-1 text-xs text-[var(--muted)]">
-            Placeholder only — no printer connection in this sprint.
+            Legacy UI toy — live agent status is on{' '}
+            <a href="/admin/printers" className="text-[var(--accent-strong)] underline-offset-2 hover:underline">
+              Printers
+            </a>
+            .
           </p>
         </div>
         <Badge

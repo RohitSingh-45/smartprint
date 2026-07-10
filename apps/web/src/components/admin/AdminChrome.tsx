@@ -17,6 +17,11 @@ const NAV = [
     label: 'Queue',
     match: (path: string) => path.startsWith('/admin/queue'),
   },
+  {
+    href: '/admin/printers',
+    label: 'Printers',
+    match: (path: string) => path.startsWith('/admin/printers'),
+  },
 ];
 
 export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -55,7 +60,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
       <div className="border-t border-[var(--border)] p-4 text-xs text-[var(--muted)]">
-        Queue is the source of truth before printer dispatch (Sprint 10).
+        Print jobs leave the browser at the API — only the Local Print Agent talks to printers.
       </div>
     </aside>
   );

@@ -2,6 +2,21 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.10.0] — 2026-07-10
+
+### Added
+
+- Local Print Agent (`apps/print-agent`) — polls READY_FOR_PRINT, downloads PDF, sends to OS spooler (mock or CUPS `lp`)
+- Agent APIs under `/api/agent/*` authenticated with `PRINT_AGENT_TOKEN` / `X-Agent-Token`
+- Printer registration, heartbeat, claim job, update status, retry, reprint, cancel
+- Shop printer dashboard APIs under `/api/printers/*`
+- Order statuses `PRINTING`, `COMPLETED`, `FAILED` with print attempt metadata
+- Admin `/admin/printers` page (connected printers, current job, failed, recent)
+
+### Security
+
+- Browser never receives the agent token and never talks to printers directly
+
 ## [0.9.0] — 2026-07-10
 
 ### Added

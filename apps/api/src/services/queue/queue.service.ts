@@ -244,6 +244,7 @@ export async function listReadyForPrintJobs(): Promise<ReadyForPrintJob[]> {
       amountPaid: o.amountPaid,
       readyAt: o.readyAt ?? null,
       priority: o.priority,
+      printAttempts: o.printAttempts ?? 0,
     }));
 }
 

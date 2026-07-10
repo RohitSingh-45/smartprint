@@ -6,6 +6,7 @@ export type OrderStatus =
   | 'READY_FOR_PRINT'
   | 'PRINTING'
   | 'COMPLETED'
+  | 'FAILED'
   | 'REJECTED'
   | 'CANCELLED'
   | 'READY';
@@ -81,8 +82,12 @@ export type ShopOrder = {
   readyAt?: string;
   printingAt?: string;
   completedAt?: string;
+  failedAt?: string;
   rejectedAt?: string;
   cancelledAt?: string;
+  printerId?: string | null;
+  printAttempts?: number;
+  lastPrintError?: string | null;
   print: ShopOrderPrint;
   timeline: TimelineEvent[];
   availableActions: OrderAction[];

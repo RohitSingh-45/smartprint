@@ -6,6 +6,7 @@ export const ORDER_STATUSES = [
   'READY_FOR_PRINT',
   'PRINTING',
   'COMPLETED',
+  'FAILED',
   'REJECTED',
   'CANCELLED',
   /** @deprecated Sprint 8 alias — normalized to READY_FOR_PRINT */
@@ -33,6 +34,10 @@ export const QUEUE_ACTIONS = [
 ] as const;
 export type QueueAction = (typeof QUEUE_ACTIONS)[number];
 
+/** Print-agent / shop print actions (Sprint 10). */
+export const PRINT_ACTIONS = ['retry', 'reprint', 'cancel_print'] as const;
+export type PrintAction = (typeof PRINT_ACTIONS)[number];
+
 export const TIMELINE_EVENTS = [
   'draft_created',
   'payment_completed',
@@ -41,6 +46,7 @@ export const TIMELINE_EVENTS = [
   'ready_for_print',
   'printing',
   'completed',
+  'failed',
   'held',
   'rejected',
   'cancelled',
@@ -98,8 +104,13 @@ export type PaidOrder = {
   readyAt?: string;
   printingAt?: string;
   completedAt?: string;
+  failedAt?: string;
   rejectedAt?: string;
   cancelledAt?: string;
+  /** Printer that claimed / last handled this job. */
+  printerId?: string | null;
+  printAttempts?: number;
+  lastPrintError?: string | null;
   print: PaidOrderSnapshot;
 };
 
@@ -118,14 +129,13 @@ export type PaymentIntent = {
 /**
  * Shop-side transitions.
  * `enqueue` places an accepted order into the print queue (FIFO).
- * Printer dispatch is intentionally excluded.
  */
 export const ORDER_TRANSITIONS: Record<OrderAction, { from: OrderStatus[]; to: OrderStatus }> = {
   accept: { from: ['PAID'], to: 'ACCEPTED' },
   reject: { from: ['PAID'], to: 'REJECTED' },
   enqueue: { from: ['ACCEPTED'], to: 'QUEUED' },
   cancel: {
-    from: ['PAID', 'ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'READY'],
+    from: ['PAID', 'ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'READY', 'FAILED'],
     to: 'CANCELLED',
   },
 };
@@ -143,7 +153,7 @@ export const QUEUE_TRANSITIONS: Record<
   hold: { from: ['QUEUED'], to: 'HELD' },
   resume: { from: ['HELD'], to: 'QUEUED' },
   cancel: {
-    from: ['PAID', 'ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'READY'],
+    from: ['PAID', 'ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'READY', 'FAILED'],
     to: 'CANCELLED',
   },
   mark_ready_for_print: { from: ['QUEUED'], to: 'READY_FOR_PRINT' },
@@ -164,4 +174,5 @@ export type ReadyForPrintJob = {
   amountPaid: number;
   readyAt: string | null;
   priority: number;
+  printAttempts: number;
 };

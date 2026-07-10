@@ -44,7 +44,17 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 - [x] Convert draft → paid order atomically (Sprint 7 local store)
 - [x] Shop owner review dashboard for paid orders (Sprint 8)
 - [x] Print queue engine to READY_FOR_PRINT (Sprint 9)
-- [ ] Printer dispatch using stored upload ids and page modes
+- [x] Local Print Agent dispatch READY_FOR_PRINT → COMPLETED/FAILED (Sprint 10)
+- [ ] Student-facing live print / pickup status
+
+## Print agent (deferred)
+
+- [ ] QR code pairing for print stations / multi-shop agent enrollment
+- [ ] Signed short-lived URLs for PDF download (instead of open upload content)
+- [ ] Windows Print Spooler + macOS CUPS parity beyond Linux `lp`
+- [ ] Automatic toner/paper sensors from printer SNMP/IPP
+- [ ] Agent auto-update channel
+- [ ] Rate-limit `/api/agent/*` and rotate agent tokens per shop
 
 ## Queue (deferred)
 
@@ -59,8 +69,8 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 
 - [ ] Shop owner authentication / role-based access
 - [ ] Multi-shop / multi-station tenancy
-- [ ] Real printer telemetry (replace UI-only printer widget)
-- [ ] Mark completed + pickup code after print
+- [ ] Real printer telemetry extras beyond agent heartbeat
+- [ ] Mark completed + pickup code after print (student UX)
 - [ ] Refunds from rejected/cancelled paid orders
 - [ ] Export orders CSV / daily settlement report
 - [ ] Live updates (SSE/WebSocket) when new paid orders arrive
