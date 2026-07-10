@@ -62,17 +62,31 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Countdown + refresh restore          | Done   |
 | Ready for payment handoff (draft id) | Done   |
 
+## Sprint 7 (delivered — payments)
+
+| Feature                                         | Status |
+| ----------------------------------------------- | ------ |
+| Razorpay checkout from draft id                 | Done   |
+| Mock provider for local testing                 | Done   |
+| HMAC signature verification on backend          | Done   |
+| Draft → Paid Order (`status: PAID`)             | Done   |
+| Payment / processing / success / failed screens | Done   |
+| Order confirmation with print + payment summary | Done   |
+| Reject expired / invalid / duplicate payments   | Done   |
+
 ## Planned
 
 | Feature               | Sprint |
 | --------------------- | ------ |
-| Online payments       | 7      |
+| Print queue + dispatch| 8      |
 | Printer connectivity  | 8      |
 | QR-based job dispatch | 8      |
 | Authentication        | 9      |
 
-## Explicitly out of scope for Sprint 6
+## Explicitly out of scope for Sprint 7
 
-- Authentication
-- Payment gateway / capture
-- Printer / queue / admin features
+- Printer integration / job dispatch
+- Shop dashboard / admin features
+- Queue system / notifications
+- Authentication (unless required by existing architecture)
+- Refunds / webhooks / settlement reports

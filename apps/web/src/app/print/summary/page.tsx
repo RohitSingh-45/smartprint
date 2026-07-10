@@ -119,7 +119,7 @@ export default function SummaryPage() {
           </Button>
         </div>
         <p className="text-center text-xs text-[var(--muted)]">
-          Payment is still UI-only — the draft holds your order until the next sprint.
+          Continue only with a live draft. Payment converts this draft into a paid order.
         </p>
       </div>
     </ScreenShell>

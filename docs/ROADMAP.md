@@ -35,7 +35,7 @@
 - [x] Copies, page range, paper size, orientation
 - [x] Live print summary + estimated cost + smart warnings
 
-## Sprint 6 — Order draft engine (current)
+## Sprint 6 — Order draft engine
 
 - [x] Draft CRUD APIs with 15-minute expiration
 - [x] Auto-sync draft from print configuration
@@ -44,17 +44,18 @@
 
 ## Sprint 7 — Payments
 
-- Checkout flow using draft id
-- Payment provider integration
-- Order / payment records
-- Receipt / confirmation UI
+- [x] Checkout flow using draft id (Razorpay + local mock provider)
+- [x] Server-side signature verification (never trust frontend status)
+- [x] Convert draft → paid order (`status: PAID`)
+- [x] Payment / processing / success / failed / confirmation screens
+- [x] Reject expired, missing, mismatched, invalid, and duplicate payments
 
 ## Sprint 8 — Printers & QR jobs
 
 - Printer registration & connectivity
 - QR code generation for print stations
-- Job dispatch to connected printers
-- Job status tracking
+- Job dispatch to connected printers (consume `PAID` orders)
+- Job status tracking / print queue
 
 ## Sprint 9 — Hardening & launch prep
 

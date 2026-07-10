@@ -37,7 +37,19 @@ SmartPrint is a monorepo SaaS platform for QR-based smart printing.
 
 ## Data
 
-Sprint 1 establishes a MongoDB connection only. Models (User, Job, Payment, Printer, etc.) are deferred to later sprints.
+Sprint 1 establishes a MongoDB connection only. Domain persistence for early sprints uses local JSON stores (uploads, drafts, paid orders) behind service interfaces so Mongo models can replace them later.
+
+### Payment flow (Sprint 7)
+
+```text
+Draft (valid, not expired)
+  → POST /api/payments/checkout  (Razorpay/mock order + payment intent)
+  → Client checkout (Razorpay.js or mock UI)
+  → POST /api/payments/verify    (HMAC signature; never trust client status)
+  → PaidOrder status=PAID        (print snapshot stored; no printer dispatch yet)
+```
+
+Failed / cancelled payments leave the draft alive until TTL. Duplicate paid conversions are rejected.
 
 ## Packages
 

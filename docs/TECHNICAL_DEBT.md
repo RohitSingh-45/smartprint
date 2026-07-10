@@ -40,9 +40,19 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 
 ## Product flow (later sprints)
 
-- [ ] Real payment capture using draft id + upload id
-- [ ] Convert draft → paid order atomically
+- [x] Real payment capture using draft id + upload id (Sprint 7)
+- [x] Convert draft → paid order atomically (Sprint 7 local store)
 - [ ] Printer dispatch using stored upload ids and page modes
+
+## Payments (deferred)
+
+- [ ] Razorpay webhooks for async capture / reconciliation of orphaned gateway payments
+- [ ] Move paid orders + payment intents from local JSON to MongoDB
+- [ ] Refunds / partial refunds API
+- [ ] Idempotency keys on checkout to collapse rapid double-clicks into one Razorpay order
+- [ ] Rate-limit `/api/payments/*`
+- [ ] Settlement / receipt PDF download
+- [ ] Multi-currency (currently INR only)
 
 ## Platform
 

@@ -7,8 +7,10 @@ import { FLOW_STEPS } from '@/lib/mock-data';
 export function PrintFlowChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const current =
-    FLOW_STEPS.find((step) => pathname.startsWith(step.href))?.id ??
-    (pathname.includes('/error') ? 'upload' : 'qr');
+    pathname.startsWith('/print/confirmation') || pathname.startsWith('/print/payment')
+      ? 'payment'
+      : (FLOW_STEPS.find((step) => pathname.startsWith(step.href))?.id ??
+        (pathname.includes('/error') ? 'upload' : 'qr'));
 
   const hideStepper = pathname.includes('/error');
 
