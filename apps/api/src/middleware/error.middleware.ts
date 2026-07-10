@@ -5,6 +5,7 @@ import { PaymentError } from '../services/payment/payment.service';
 import { PrintError } from '../services/printer/print.service';
 import { QueueError } from '../services/queue/queue.service';
 import { ShopError } from '../services/shop/shop.service';
+import { TrackingError } from '../services/tracking/tracking.service';
 import { UploadValidationError } from '../services/upload.service';
 
 type HttpError = Error & {
@@ -30,7 +31,8 @@ export function errorHandler(
     err instanceof PaymentError ||
     err instanceof ShopError ||
     err instanceof QueueError ||
-    err instanceof PrintError
+    err instanceof PrintError ||
+    err instanceof TrackingError
   ) {
     res.status(err.status).json({ error: err.message, code: err.code });
     return;

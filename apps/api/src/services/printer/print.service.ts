@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import { env } from '../../config/env';
 import type { PaidOrder } from '../../types/order';
 import type {
@@ -354,12 +354,24 @@ export async function updateJobStatus(input: {
     if (current.status !== 'PRINTING' && current.status !== 'READY_FOR_PRINT') {
       throw new PrintError('Only printing jobs can complete.', 409, 'INVALID_TRANSITION');
     }
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let pickupCode = current.pickupCode;
+    if (!pickupCode) {
+      const bytes = randomBytes(4);
+      let code = '';
+      for (let i = 0; i < 4; i += 1) {
+        code += alphabet[bytes[i]! % alphabet.length]!;
+      }
+      pickupCode = `${code.slice(0, 2)}-${code.slice(2)}`;
+    }
     next = {
       ...next,
       status: 'COMPLETED',
       completedAt: now,
       lastPrintError: null,
       failedAt: undefined,
+      pickupCode,
+      pickupToken: current.pickupToken || randomUUID(),
     };
   } else if (input.status === 'FAILED') {
     if (current.status !== 'PRINTING' && current.status !== 'READY_FOR_PRINT') {

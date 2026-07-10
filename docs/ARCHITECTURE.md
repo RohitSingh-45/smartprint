@@ -73,11 +73,27 @@ READY_FOR_PRINT
                  ↘ FAILED (retry → READY_FOR_PRINT)
                  ↘ CANCELLED (cancel mid-print)
 COMPLETED
+  → customer pickup QR (pickupCode + pickupToken)
+  → shop collect → COLLECTED
   → reprint → READY_FOR_PRINT
 ```
 
 Shop APIs: `/api/shop/*`. Queue APIs: `/api/queue/*`.
 Agent APIs: `/api/agent/*` (token). Shop printer view: `/api/printers/*`.
+Customer tracking: `/api/tracking/*` (read order/queue; collect via pickup token).
+
+### Customer tracking (Sprint 11)
+
+```text
+PaidOrder (internal statuses)
+  → CustomerTrackingView (PAYMENT_RECEIVED … COLLECTED)
+  → /print/status polls GET /api/tracking/orders/:id
+  → READY_FOR_PICKUP exposes pickup QR → /admin/pickup/:token
+  → POST collect → COLLECTED (409 if already collected)
+```
+
+Tracking is independent of printer I/O: it only reads order + queue fields and writes `COLLECTED`.
+Notification channels are stubbed in the DTO and `docs/NOTIFICATIONS.md`.
 
 ### Local Print Agent (Sprint 10)
 

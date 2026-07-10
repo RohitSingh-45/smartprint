@@ -75,10 +75,22 @@
 - [x] Admin Printers dashboard
 - [ ] QR code generation for print stations (deferred — see TECHNICAL_DEBT)
 
-## Sprint 11 — Hardening, student status & launch prep
+## Sprint 11 — Customer order tracking & pickup
 
-- Student-facing live job status (printing / ready to collect)
+- [x] Live customer tracking page (polls tracking API)
+- [x] Status map: PAYMENT_RECEIVED → … → READY_FOR_PICKUP → COLLECTED
+- [x] Queue position + placeholder ETA
+- [x] Pickup QR for shop scan; duplicate collect prevented
+- [x] Order history (device-local) with disabled receipt/reprint
+- [x] Notification architecture stub (no integrations)
+- [x] Friendly error states (cancelled / failure / delayed / expired / unknown)
+
+## Sprint 12 — Hardening, notifications & launch prep
+
+- Real waiting-time metrics (replace placeholder ETA)
+- Browser / email / WhatsApp notification adapters (see `docs/NOTIFICATIONS.md`)
 - Observability, rate limiting, security review
 - E2E tests + deployment pipelines
 - Auth foundation when accounts are required
 - Optional: QR station pairing for multi-printer shops
+- Receipt PDF download + reprint request flows

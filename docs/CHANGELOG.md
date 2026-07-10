@@ -2,6 +2,26 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.11.0] — 2026-07-10
+
+### Added
+
+- Customer live order tracking (`GET /api/tracking/orders/:id`) with mapped statuses:
+  `PAYMENT_RECEIVED → ORDER_ACCEPTED → IN_QUEUE → PRINTING → READY_FOR_PICKUP → COLLECTED`
+- Live timeline, queue position / placeholder ETA, order details, and error states
+  (cancelled, printer failure, delayed, expired pickup, unknown)
+- Pickup QR + short code when print completes; shop collect via
+  `GET/POST /api/tracking/pickup/:token` and `/admin/pickup/[token]`
+- Duplicate collection blocked (`409 ALREADY_COLLECTED`)
+- Order history on-device (`/print/orders`) with disabled receipt/reprint placeholders
+- Notification channel architecture stub (`docs/NOTIFICATIONS.md`) — no integrations
+- Order status `COLLECTED` with `pickupCode` / `pickupToken` / `collectedAt`
+
+### Changed
+
+- `/print/status` and `/print/complete` use live tracking instead of mock data
+- Confirmation screen links to live tracking after payment
+
 ## [0.10.0] — 2026-07-10
 
 ### Added
