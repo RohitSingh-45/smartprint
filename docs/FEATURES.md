@@ -17,23 +17,30 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | ESLint / Prettier                                         | Done   |
 | Env templates & docs                                      | Done   |
 
-## Planned (not in Sprint 1)
+## Sprint 2 (delivered — UI only)
 
-| Feature                          | Sprint |
+| Feature                          | Status |
 | -------------------------------- | ------ |
-| Authentication                   | 2      |
-| File upload (PDF / DOCX / image) | 3      |
-| Per-page Color / B&W selection   | 3      |
-| Online payments                  | 4      |
-| Printer connectivity             | 5      |
-| QR-based job dispatch            | 5      |
-| Job status tracking              | 5      |
+| Full print journey screens       | Done   |
+| Clickable navigation + mock data | Done   |
+| Dark mode support                | Done   |
+| Admin sidebar/topbar shell       | Done   |
 
-## Explicitly out of scope for Sprint 1
+## Planned
 
+| Feature                               | Sprint |
+| ------------------------------------- | ------ |
+| Authentication                        | 3      |
+| Real file upload (PDF / DOCX / image) | 3      |
+| Persist Color / B&W selection         | 3      |
+| Online payments                       | 4      |
+| Printer connectivity                  | 5      |
+| QR-based job dispatch                 | 5      |
+| Job status tracking                   | 5      |
+
+## Explicitly out of scope for Sprint 2
+
+- Backend business logic
 - Authentication
-- UI beyond a minimal placeholder page
-- Upload
-- Payment
-- Printer integration
-- Database models
+- Real file uploads / payments / printer integration
+- Database models for jobs/orders

@@ -75,6 +75,8 @@ npm run dev:web
 | App           | URL                                   |
 | ------------- | ------------------------------------- |
 | Web           | http://localhost:3000                 |
+| Print flow    | http://localhost:3000/print/qr        |
+| Admin shell   | http://localhost:3000/admin           |
 | API readiness | http://localhost:4000/api/health      |
 | API liveness  | http://localhost:4000/api/health/live |
 

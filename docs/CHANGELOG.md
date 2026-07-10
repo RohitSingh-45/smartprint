@@ -2,6 +2,14 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.2.0] — 2026-07-10
+
+### Added
+
+- Sprint 2 UI foundation: landing, QR entry, upload, preview, page mode selection, price summary, payment, order status, complete, error states, admin shell
+- Shared print-flow stepper, dark mode toggle, reusable UI components, mock journey data
+- Mobile-first responsive screens with clickable navigation (no backend)
+
 ## [0.1.1] — 2026-07-10
 
 ### Added
