@@ -205,6 +205,9 @@ export async function verifyAndCapturePayment(input: {
     paidAt: now,
     createdAt: now,
     updatedAt: now,
+    customerName: 'Guest',
+    queuePosition: null,
+    priority: 0,
     draftCreatedAt: draft.createdAt,
     print: {
       uploadId: draft.uploadId,

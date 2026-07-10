@@ -2,6 +2,21 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [0.9.0] — 2026-07-10
+
+### Added
+
+- Queue management engine: `GET /api/queue/summary`, `GET /api/queue/jobs`, `GET /api/queue/jobs/:id`, `POST /api/queue/jobs/:id/actions`, `GET /api/queue/jobs/ready`
+- FIFO queue positions with hold / resume / move up / move down
+- Status flow `PAID → ACCEPTED → QUEUED → READY_FOR_PRINT` (+ `HELD`, `CANCELLED`; `PRINTING`/`COMPLETED` reserved)
+- Admin Queue page with summary cards, search, filters, and queue actions
+- `listReadyForPrintJobs()` intake interface for Sprint 10 printer dispatch
+
+### Changed
+
+- Shop `mark_ready` replaced by `enqueue` (accepted orders enter the queue instead of skipping it)
+- Legacy `READY` status normalizes to `READY_FOR_PRINT`
+
 ## [0.8.0] — 2026-07-10
 
 ### Added

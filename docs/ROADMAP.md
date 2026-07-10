@@ -58,15 +58,23 @@
 - [x] Validated status transitions (no invalid jumps)
 - [x] Printer status placeholder widget (UI-only pause/resume)
 
-## Sprint 9 — Printers, queue & QR jobs
+## Sprint 9 — Queue management engine
+
+- [x] FIFO print queue with hold / resume / reorder
+- [x] Status flow: PAID → ACCEPTED → QUEUED → READY_FOR_PRINT (+ HELD / CANCELLED)
+- [x] Queue summary, search, filters
+- [x] `listReadyForPrintJobs()` intake interface for Sprint 10
+- [x] PRINTING / COMPLETED statuses reserved (no printer I/O)
+
+## Sprint 10 — Printers & QR job dispatch
 
 - Printer registration & connectivity
 - QR code generation for print stations
-- Job dispatch to connected printers (consume `READY` orders)
-- Job status tracking / print queue
-- Mark completed after physical print
+- Consume `READY_FOR_PRINT` jobs via queue intake interface
+- Transition READY_FOR_PRINT → PRINTING → COMPLETED
+- Job status tracking on the student side
 
-## Sprint 10 — Hardening & launch prep
+## Sprint 11 — Hardening & launch prep
 
 - Observability, rate limiting, security review
 - E2E tests + deployment pipelines

@@ -14,6 +14,7 @@ const FILTERS = new Set([
   'pending',
   'paid',
   'accepted',
+  'queued',
   'ready',
   'completed',
   'cancelled',

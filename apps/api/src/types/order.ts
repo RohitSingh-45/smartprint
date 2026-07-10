@@ -1,25 +1,47 @@
 export const ORDER_STATUSES = [
   'PAID',
   'ACCEPTED',
-  'READY',
+  'QUEUED',
+  'HELD',
+  'READY_FOR_PRINT',
+  'PRINTING',
   'COMPLETED',
   'REJECTED',
   'CANCELLED',
+  /** @deprecated Sprint 8 alias — normalized to READY_FOR_PRINT */
+  'READY',
 ] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export const PAYMENT_STATUSES = ['created', 'paid', 'failed'] as const;
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
-export const ORDER_ACTIONS = ['accept', 'reject', 'mark_ready', 'cancel'] as const;
+/** Shop review actions (orders page). */
+export const ORDER_ACTIONS = ['accept', 'reject', 'enqueue', 'cancel'] as const;
 export type OrderAction = (typeof ORDER_ACTIONS)[number];
+
+/** Queue engine actions (queue page). */
+export const QUEUE_ACTIONS = [
+  'accept',
+  'enqueue',
+  'hold',
+  'resume',
+  'move_up',
+  'move_down',
+  'cancel',
+  'mark_ready_for_print',
+] as const;
+export type QueueAction = (typeof QUEUE_ACTIONS)[number];
 
 export const TIMELINE_EVENTS = [
   'draft_created',
   'payment_completed',
   'order_accepted',
+  'queued',
   'ready_for_print',
+  'printing',
   'completed',
+  'held',
   'rejected',
   'cancelled',
 ] as const;
@@ -32,7 +54,7 @@ export type OrderTimelineEvent = {
   state: 'done' | 'current' | 'upcoming';
 };
 
-/** Snapshot of print config captured at payment time (queue-ready later). */
+/** Snapshot of print config captured at payment time. */
 export type PaidOrderSnapshot = {
   uploadId: string;
   fileName: string;
@@ -63,10 +85,18 @@ export type PaidOrder = {
   paidAt: string;
   createdAt: string;
   updatedAt: string;
-  /** Draft creation time when known (from draft snapshot at pay time). */
+  /** Guest until customer auth exists. */
+  customerName: string;
+  /** FIFO position among QUEUED jobs only; null when not actively queued. */
+  queuePosition: number | null;
+  /** Reserved for future priority scheduling (0 = normal). */
+  priority: number;
   draftCreatedAt?: string;
   acceptedAt?: string;
+  queuedAt?: string;
+  heldAt?: string;
   readyAt?: string;
+  printingAt?: string;
   completedAt?: string;
   rejectedAt?: string;
   cancelledAt?: string;
@@ -85,10 +115,53 @@ export type PaymentIntent = {
   updatedAt: string;
 };
 
-/** Valid shop-side transitions. Printer dispatch is intentionally excluded. */
+/**
+ * Shop-side transitions.
+ * `enqueue` places an accepted order into the print queue (FIFO).
+ * Printer dispatch is intentionally excluded.
+ */
 export const ORDER_TRANSITIONS: Record<OrderAction, { from: OrderStatus[]; to: OrderStatus }> = {
   accept: { from: ['PAID'], to: 'ACCEPTED' },
   reject: { from: ['PAID'], to: 'REJECTED' },
-  mark_ready: { from: ['ACCEPTED'], to: 'READY' },
-  cancel: { from: ['PAID', 'ACCEPTED', 'READY'], to: 'CANCELLED' },
+  enqueue: { from: ['ACCEPTED'], to: 'QUEUED' },
+  cancel: {
+    from: ['PAID', 'ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'READY'],
+    to: 'CANCELLED',
+  },
+};
+
+/**
+ * Queue-side transitions / actions.
+ * move_up / move_down keep status QUEUED and only change position.
+ */
+export const QUEUE_TRANSITIONS: Record<
+  Exclude<QueueAction, 'move_up' | 'move_down'>,
+  { from: OrderStatus[]; to: OrderStatus }
+> = {
+  accept: { from: ['PAID'], to: 'ACCEPTED' },
+  enqueue: { from: ['ACCEPTED'], to: 'QUEUED' },
+  hold: { from: ['QUEUED'], to: 'HELD' },
+  resume: { from: ['HELD'], to: 'QUEUED' },
+  cancel: {
+    from: ['PAID', 'ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'READY'],
+    to: 'CANCELLED',
+  },
+  mark_ready_for_print: { from: ['QUEUED'], to: 'READY_FOR_PRINT' },
+};
+
+/** Sprint 10 intake shape — READY_FOR_PRINT jobs only. */
+export type ReadyForPrintJob = {
+  orderId: string;
+  uploadId: string;
+  fileName: string;
+  copies: number;
+  pages: number[];
+  colorPages: number[];
+  bwPages: number[];
+  paperSize: string;
+  orientation: string;
+  customerName: string;
+  amountPaid: number;
+  readyAt: string | null;
+  priority: number;
 };

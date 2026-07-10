@@ -81,23 +81,34 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 | Dashboard home with revenue & order summary cards    | Done   |
 | Orders list with search, filters, date range         | Done   |
 | Order detail (file, print, payment, timeline)        | Done   |
-| Accept / reject / ready / cancel with transition rules | Done |
+| Accept / reject / enqueue / cancel with transition rules | Done |
 | Printer status placeholder (UI-only)                 | Done   |
 | Dark mode + responsive shop shell                    | Done   |
+
+## Sprint 9 (delivered — queue management)
+
+| Feature                                           | Status |
+| ------------------------------------------------- | ------ |
+| FIFO print queue with positions                    | Done   |
+| Hold / resume / move up / move down               | Done   |
+| QUEUED → READY_FOR_PRINT                          | Done   |
+| Queue summary + search/filters                    | Done   |
+| Duplicate / invalid transition guards             | Done   |
+| `listReadyForPrintJobs()` for Sprint 10 intake    | Done   |
 
 ## Planned
 
 | Feature                | Sprint |
 | ---------------------- | ------ |
-| Print queue + dispatch | 9      |
-| Printer connectivity   | 9      |
-| QR-based job dispatch  | 9      |
-| Authentication         | 10     |
+| Printer connectivity   | 10     |
+| QR-based job dispatch  | 10     |
+| READY → PRINTING → COMPLETED | 10 |
+| Authentication         | 11     |
 
-## Explicitly out of scope for Sprint 8
+## Explicitly out of scope for Sprint 9
 
-- Printer communication / job dispatch
-- Queue engine / notifications
+- Printer communication / hardware APIs
+- Notifications
+- Authentication changes
 - Multi-shop support
-- Customer authentication
-- Analytics beyond dashboard summary cards
+- Real average waiting-time analytics

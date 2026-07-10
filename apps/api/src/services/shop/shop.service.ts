@@ -6,7 +6,8 @@ import type {
 } from '../../types/order';
 import { ORDER_ACTIONS, ORDER_TRANSITIONS } from '../../types/order';
 import { getOrderStore } from '../order';
-import { buildOrderTimeline, normalizeOrder } from './order.normalize';
+import { enqueueAcceptedOrder, QueueError } from '../queue/queue.service';
+import { buildOrderTimeline, canonicalizeStatus, normalizeOrder } from './order.normalize';
 
 export class ShopError extends Error {
   status: number;
@@ -25,6 +26,7 @@ export type ShopOrderFilter =
   | 'pending'
   | 'paid'
   | 'accepted'
+  | 'queued'
   | 'ready'
   | 'completed'
   | 'cancelled';
@@ -87,21 +89,24 @@ function toDto(order: PaidOrder): ShopOrderDto {
 }
 
 function matchesFilter(order: PaidOrder, filter: ShopOrderFilter): boolean {
+  const status = canonicalizeStatus(order.status);
   switch (filter) {
     case 'all':
       return true;
     case 'pending':
-      return order.status === 'PAID';
+      return status === 'PAID';
     case 'paid':
-      return order.status === 'PAID' && order.paymentStatus === 'paid';
+      return status === 'PAID' && order.paymentStatus === 'paid';
     case 'accepted':
-      return order.status === 'ACCEPTED';
+      return status === 'ACCEPTED';
+    case 'queued':
+      return status === 'QUEUED' || status === 'HELD';
     case 'ready':
-      return order.status === 'READY';
+      return status === 'READY_FOR_PRINT';
     case 'completed':
-      return order.status === 'COMPLETED';
+      return status === 'COMPLETED';
     case 'cancelled':
-      return order.status === 'CANCELLED' || order.status === 'REJECTED';
+      return status === 'CANCELLED' || status === 'REJECTED';
     default:
       return true;
   }
@@ -113,7 +118,8 @@ function matchesSearch(order: PaidOrder, q: string): boolean {
   return (
     order.id.toLowerCase().includes(needle) ||
     order.print.fileName.toLowerCase().includes(needle) ||
-    order.draftId.toLowerCase().includes(needle)
+    order.draftId.toLowerCase().includes(needle) ||
+    order.customerName.toLowerCase().includes(needle)
   );
 }
 
@@ -131,19 +137,20 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   let cancelledOrders = 0;
 
   for (const order of orders) {
-    const paidAt = new Date(order.paidAt).getTime();
+    const normalized = normalizeOrder(order);
+    const paidAt = new Date(normalized.paidAt).getTime();
     const isToday = paidAt >= dayStart && paidAt <= dayEnd;
 
     if (isToday) {
       totalOrdersToday += 1;
-      todayRevenue += order.amountPaid;
+      todayRevenue += normalized.amountPaid;
     }
 
-    if (order.status === 'PAID') pendingOrders += 1;
-    if (order.paymentStatus === 'paid' && isToday) paidOrders += 1;
-    if (order.status === 'READY') readyOrders += 1;
-    if (order.status === 'COMPLETED') completedOrders += 1;
-    if (order.status === 'CANCELLED' || order.status === 'REJECTED') cancelledOrders += 1;
+    if (normalized.status === 'PAID') pendingOrders += 1;
+    if (normalized.paymentStatus === 'paid' && isToday) paidOrders += 1;
+    if (normalized.status === 'READY_FOR_PRINT') readyOrders += 1;
+    if (normalized.status === 'COMPLETED') completedOrders += 1;
+    if (normalized.status === 'CANCELLED' || normalized.status === 'REJECTED') cancelledOrders += 1;
   }
 
   return {
@@ -169,6 +176,7 @@ export async function listShopOrders(query: ShopOrderQuery = {}): Promise<ShopOr
 
   const orders = await getOrderStore().listOrders();
   return orders
+    .map(normalizeOrder)
     .filter((order) => matchesFilter(order, filter))
     .filter((order) => matchesSearch(order, query.q ?? ''))
     .filter((order) => {
@@ -201,10 +209,24 @@ export async function applyOrderAction(id: string, action: OrderAction): Promise
     throw new ShopError('Order not found.', 404, 'ORDER_NOT_FOUND');
   }
 
+  const current = normalizeOrder(order);
+
+  if (action === 'enqueue') {
+    try {
+      const saved = await enqueueAcceptedOrder(current);
+      return toDto(saved);
+    } catch (error) {
+      if (error instanceof QueueError) {
+        throw new ShopError(error.message, error.status, error.code);
+      }
+      throw error;
+    }
+  }
+
   const transition = ORDER_TRANSITIONS[action];
-  if (!transition.from.includes(order.status)) {
+  if (!transition.from.includes(current.status)) {
     throw new ShopError(
-      `Cannot ${action.replace('_', ' ')} an order with status ${order.status}.`,
+      `Cannot ${action.replace('_', ' ')} an order with status ${current.status}.`,
       409,
       'INVALID_TRANSITION',
     );
@@ -212,15 +234,17 @@ export async function applyOrderAction(id: string, action: OrderAction): Promise
 
   const now = new Date().toISOString();
   const next: PaidOrder = {
-    ...order,
+    ...current,
     status: transition.to,
     updatedAt: now,
   };
 
   if (action === 'accept') next.acceptedAt = now;
   if (action === 'reject') next.rejectedAt = now;
-  if (action === 'mark_ready') next.readyAt = now;
-  if (action === 'cancel') next.cancelledAt = now;
+  if (action === 'cancel') {
+    next.cancelledAt = now;
+    next.queuePosition = null;
+  }
 
   const saved = await getOrderStore().saveOrder(next);
   return toDto(saved);

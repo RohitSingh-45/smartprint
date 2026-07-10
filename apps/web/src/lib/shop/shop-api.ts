@@ -1,7 +1,11 @@
 import type {
   DashboardStats,
   ListOrdersParams,
+  ListQueueParams,
   OrderAction,
+  QueueAction,
+  QueueJob,
+  QueueSummary,
   ShopOrder,
 } from '@/lib/shop/types';
 
@@ -63,6 +67,37 @@ export async function runOrderAction(id: string, action: OrderAction): Promise<S
   return body.order as ShopOrder;
 }
 
+export async function fetchQueueSummary(): Promise<QueueSummary> {
+  const res = await fetch(`${API_URL}/api/queue/summary`, { cache: 'no-store' });
+  const body = await parseJson(res);
+  if (!res.ok || !body.summary) throwApiError(res, body, 'Queue summary failed');
+  return body.summary as QueueSummary;
+}
+
+export async function fetchQueueJobs(params: ListQueueParams = {}): Promise<QueueJob[]> {
+  const search = new URLSearchParams();
+  if (params.q) search.set('q', params.q);
+  if (params.status && params.status !== 'all') search.set('status', params.status);
+  const qs = search.toString();
+  const res = await fetch(`${API_URL}/api/queue/jobs${qs ? `?${qs}` : ''}`, {
+    cache: 'no-store',
+  });
+  const body = await parseJson(res);
+  if (!res.ok || !Array.isArray(body.jobs)) throwApiError(res, body, 'Queue jobs failed');
+  return body.jobs as QueueJob[];
+}
+
+export async function runQueueAction(id: string, action: QueueAction): Promise<QueueJob> {
+  const res = await fetch(`${API_URL}/api/queue/jobs/${id}/actions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action }),
+  });
+  const body = await parseJson(res);
+  if (!res.ok || !body.job) throwApiError(res, body, 'Queue action failed');
+  return body.job as QueueJob;
+}
+
 export function formatBytes(size: number): string {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
@@ -92,8 +127,15 @@ export function statusLabel(status: string): string {
       return 'Paid';
     case 'ACCEPTED':
       return 'Accepted';
+    case 'QUEUED':
+      return 'Queued';
+    case 'HELD':
+      return 'Held';
     case 'READY':
-      return 'Ready';
+    case 'READY_FOR_PRINT':
+      return 'Ready for print';
+    case 'PRINTING':
+      return 'Printing';
     case 'COMPLETED':
       return 'Completed';
     case 'REJECTED':
@@ -105,16 +147,26 @@ export function statusLabel(status: string): string {
   }
 }
 
-export function actionLabel(action: OrderAction): string {
+export function actionLabel(action: OrderAction | QueueAction): string {
   switch (action) {
     case 'accept':
-      return 'Accept order';
+      return 'Accept';
     case 'reject':
-      return 'Reject order';
-    case 'mark_ready':
+      return 'Reject';
+    case 'enqueue':
+      return 'Move to queue';
+    case 'hold':
+      return 'Hold';
+    case 'resume':
+      return 'Resume';
+    case 'move_up':
+      return 'Move up';
+    case 'move_down':
+      return 'Move down';
+    case 'mark_ready_for_print':
       return 'Mark ready for print';
     case 'cancel':
-      return 'Cancel order';
+      return 'Cancel';
     default:
       return action;
   }

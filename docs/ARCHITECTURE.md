@@ -51,22 +51,30 @@ Draft (valid, not expired)
 
 Failed / cancelled payments leave the draft alive until TTL. Duplicate paid conversions are rejected.
 
-### Shop order lifecycle (Sprint 8)
+### Shop order lifecycle (Sprint 8–9)
 
 ```text
 PaidOrder status=PAID
-  → shop accept  → ACCEPTED
-  → shop reject  → REJECTED
-  → shop cancel  → CANCELLED
+  → accept   → ACCEPTED
+  → reject   → REJECTED
+  → cancel   → CANCELLED
 ACCEPTED
-  → mark_ready   → READY   (ready for future printer dispatch)
-  → cancel       → CANCELLED
-READY
-  → cancel       → CANCELLED
-COMPLETED is reserved for Sprint 9 after physical print.
+  → enqueue  → QUEUED   (FIFO position assigned)
+QUEUED
+  → hold                 → HELD
+  → move_up / move_down  (reorder positions)
+  → mark_ready_for_print → READY_FOR_PRINT
+  → cancel               → CANCELLED
+HELD
+  → resume → QUEUED (appended to end)
+  → cancel → CANCELLED
+READY_FOR_PRINT
+  → cancel → CANCELLED
+  → (Sprint 10) PRINTING → COMPLETED
 ```
 
-Shop APIs live under `/api/shop/*` and stay independent of printer hardware.
+Shop APIs: `/api/shop/*`. Queue APIs: `/api/queue/*`.
+Sprint 10 should call `listReadyForPrintJobs()` — no printer I/O in Sprint 9.
 
 ## Packages
 

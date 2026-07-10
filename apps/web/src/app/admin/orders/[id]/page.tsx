@@ -154,7 +154,8 @@ export default function AdminOrderDetailPage() {
               Shop actions
             </h2>
             <p className="mt-1 text-xs text-[var(--muted)]">
-              Invalid transitions are blocked by the API (e.g. Completed → Pending).
+              Invalid transitions are blocked by the API. Use Queue to reorder and mark ready for
+              print.
             </p>
             <div className="mt-4">
               <OrderActions order={order} onAction={handleAction} />

@@ -105,17 +105,33 @@ export default function AdminDashboardPage() {
             Today&apos;s workflow
           </h2>
           <ol className="mt-4 space-y-3 text-sm text-[var(--muted)]">
-            <li>1. Student pays → order arrives as <strong className="text-[var(--foreground)]">Paid / Pending</strong></li>
-            <li>2. Review file &amp; print config → <strong className="text-[var(--foreground)]">Accept</strong> or Reject</li>
-            <li>3. Prepare the job → <strong className="text-[var(--foreground)]">Mark ready for print</strong></li>
-            <li>4. Printer dispatch arrives in the next sprint</li>
+            <li>
+              1. Student pays → order arrives as{' '}
+              <strong className="text-[var(--foreground)]">Paid / Pending</strong>
+            </li>
+            <li>
+              2. Review file → <strong className="text-[var(--foreground)]">Accept</strong>
+            </li>
+            <li>
+              3. <strong className="text-[var(--foreground)]">Move to queue</strong> (FIFO)
+            </li>
+            <li>
+              4. <strong className="text-[var(--foreground)]">Mark ready for print</strong> — Sprint
+              10 dispatches
+            </li>
           </ol>
-          <div className="mt-5">
+          <div className="mt-5 flex flex-wrap gap-4">
             <Link
               href="/admin/orders?status=pending"
               className="text-sm font-medium text-[var(--accent-strong)] underline-offset-2 hover:underline"
             >
               Review pending orders →
+            </Link>
+            <Link
+              href="/admin/queue"
+              className="text-sm font-medium text-[var(--accent-strong)] underline-offset-2 hover:underline"
+            >
+              Open print queue →
             </Link>
           </div>
         </section>

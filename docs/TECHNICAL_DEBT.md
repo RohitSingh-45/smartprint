@@ -43,7 +43,17 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 - [x] Real payment capture using draft id + upload id (Sprint 7)
 - [x] Convert draft → paid order atomically (Sprint 7 local store)
 - [x] Shop owner review dashboard for paid orders (Sprint 8)
+- [x] Print queue engine to READY_FOR_PRINT (Sprint 9)
 - [ ] Printer dispatch using stored upload ids and page modes
+
+## Queue (deferred)
+
+- [ ] Priority scheduling (field reserved, always 0 today)
+- [ ] Real average waiting-time metrics from historical queue events
+- [ ] Multi-station / multi-printer queue shards
+- [ ] Optimistic locking for concurrent reorder
+- [ ] Rate-limit `/api/queue/*`
+- [ ] Student-facing live queue position
 
 ## Shop dashboard (deferred)
 
