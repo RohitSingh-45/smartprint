@@ -1,6 +1,6 @@
 {
   "name": "smartprint",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "SmartPrint — QR-based smart printing platform",
   "workspaces": [
@@ -20,6 +20,7 @@
     "start:api": "npm run start -w @smartprint/api",
     "start:agent": "npm run start -w @smartprint/print-agent",
     "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

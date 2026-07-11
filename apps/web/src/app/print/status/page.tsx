@@ -73,10 +73,21 @@ function TrackingContent() {
     if (tracking.flags.cancelled || tracking.flags.printerFailure) {
       if (!tracking.flags.printerFailure) return;
     }
-    const id = window.setInterval(() => {
+
+    const tick = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       void load(true);
-    }, POLL_MS);
-    return () => window.clearInterval(id);
+    };
+
+    const id = window.setInterval(tick, POLL_MS);
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void load(true);
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [tracking, load]);
 
   if (error && !tracking) {

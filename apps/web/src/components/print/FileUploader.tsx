@@ -20,7 +20,7 @@ import {
 type Status = 'idle' | 'uploading' | 'success' | 'error';
 
 const CLIENT_MAX_BYTES = 25 * 1024 * 1024;
-const ALLOWED_EXT = ['.pdf', '.docx', '.jpg', '.jpeg', '.png'];
+const ALLOWED_EXT = ['.pdf'];
 
 function clientValidate(file: File): string | null {
   const name = file.name.toLowerCase();

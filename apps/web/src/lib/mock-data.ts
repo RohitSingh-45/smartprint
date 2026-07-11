@@ -1,11 +1,4 @@
-export type PageMode = 'bw' | 'color';
-
-export type PrintPage = {
-  id: number;
-  label: string;
-  mode: PageMode;
-  previewTone: 'light' | 'mid' | 'dark';
-};
+export type ErrorKind = 'printer-offline' | 'payment-failed' | 'upload-failed';
 
 export type ShopStation = {
   id: string;
@@ -15,22 +8,7 @@ export type ShopStation = {
   queueLength: number;
 };
 
-export type PriceLine = {
-  id: string;
-  label: string;
-  detail: string;
-  amount: number;
-};
-
-export type OrderStatusStep = {
-  id: string;
-  label: string;
-  description: string;
-  state: 'done' | 'current' | 'upcoming';
-};
-
-export type ErrorKind = 'printer-offline' | 'payment-failed' | 'upload-failed';
-
+/** Print journey step chrome (customer flow). */
 export const FLOW_STEPS = [
   { id: 'qr', label: 'Station', href: '/print/qr' },
   { id: 'upload', label: 'Upload', href: '/print/upload' },
@@ -42,93 +20,17 @@ export const FLOW_STEPS = [
   { id: 'complete', label: 'Collect', href: '/print/complete' },
 ] as const;
 
-export const MOCK_STATION: ShopStation = {
+/**
+ * Default single-shop station shown after QR entry (v1.0).
+ * Multi-station pairing is deferred — see docs/KNOWN_LIMITATIONS.md.
+ */
+export const DEFAULT_STATION: ShopStation = {
   id: 'st-204',
   name: 'Campus Hub · Printer B',
   location: 'Library Level 2 · Near study pods',
   printerStatus: 'online',
   queueLength: 3,
 };
-
-export const MOCK_FILE = {
-  name: 'CS101-Assignment-3.pdf',
-  sizeLabel: '2.4 MB',
-  pages: 8,
-  uploadedAt: 'Just now',
-};
-
-export const MOCK_PAGES: PrintPage[] = [
-  { id: 1, label: 'Cover', mode: 'color', previewTone: 'mid' },
-  { id: 2, label: 'Abstract', mode: 'bw', previewTone: 'light' },
-  { id: 3, label: 'Intro', mode: 'bw', previewTone: 'light' },
-  { id: 4, label: 'Diagram', mode: 'color', previewTone: 'dark' },
-  { id: 5, label: 'Methods', mode: 'bw', previewTone: 'mid' },
-  { id: 6, label: 'Results', mode: 'color', previewTone: 'mid' },
-  { id: 7, label: 'Discussion', mode: 'bw', previewTone: 'light' },
-  { id: 8, label: 'References', mode: 'bw', previewTone: 'light' },
-];
-
-export const PRICE_PER_BW = 2;
-export const PRICE_PER_COLOR = 8;
-
-export function buildPriceLines(pages: PrintPage[]): PriceLine[] {
-  const bwCount = pages.filter((p) => p.mode === 'bw').length;
-  const colorCount = pages.filter((p) => p.mode === 'color').length;
-
-  return [
-    {
-      id: 'bw',
-      label: 'Black & white pages',
-      detail: `${bwCount} × ₹${PRICE_PER_BW}`,
-      amount: bwCount * PRICE_PER_BW,
-    },
-    {
-      id: 'color',
-      label: 'Color pages',
-      detail: `${colorCount} × ₹${PRICE_PER_COLOR}`,
-      amount: colorCount * PRICE_PER_COLOR,
-    },
-  ];
-}
-
-export function totalFromLines(lines: PriceLine[]): number {
-  return lines.reduce((sum, line) => sum + line.amount, 0);
-}
-
-export const MOCK_ORDER = {
-  id: 'SP-78421',
-  pickupCode: 'A4-29',
-  etaMinutes: 6,
-  copies: 1,
-  paper: 'A4 · Single-sided',
-};
-
-export const MOCK_STATUS_STEPS: OrderStatusStep[] = [
-  {
-    id: 'paid',
-    label: 'Payment confirmed',
-    description: 'UPI · ₹38',
-    state: 'done',
-  },
-  {
-    id: 'queued',
-    label: 'In print queue',
-    description: 'Position 2 of 4',
-    state: 'current',
-  },
-  {
-    id: 'printing',
-    label: 'Printing',
-    description: 'Campus Hub · Printer B',
-    state: 'upcoming',
-  },
-  {
-    id: 'ready',
-    label: 'Ready to collect',
-    description: 'Pickup counter · Code A4-29',
-    state: 'upcoming',
-  },
-];
 
 export const ERROR_COPY: Record<
   ErrorKind,
@@ -143,11 +45,11 @@ export const ERROR_COPY: Record<
 > = {
   'printer-offline': {
     title: 'Printer is offline',
-    body: 'Campus Hub · Printer B is not accepting jobs right now. Try another station or wait a few minutes.',
+    body: 'This station is not accepting jobs right now. Try again in a few minutes or ask the counter.',
     primaryHref: '/print/qr',
-    primaryLabel: 'Choose another station',
+    primaryLabel: 'Back to station',
     secondaryHref: '/print/status',
-    secondaryLabel: 'Check queue later',
+    secondaryLabel: 'Check order status',
   },
   'payment-failed': {
     title: 'Payment failed',
@@ -159,7 +61,7 @@ export const ERROR_COPY: Record<
   },
   'upload-failed': {
     title: 'Upload failed',
-    body: 'We could not read that file. Use a PDF, DOCX, JPG, or PNG under 25 MB and try again.',
+    body: 'We could not read that file. Use a PDF under 25 MB and try again.',
     primaryHref: '/print/upload',
     primaryLabel: 'Try another file',
     secondaryHref: '/print/qr',

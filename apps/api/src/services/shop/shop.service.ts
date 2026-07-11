@@ -49,6 +49,7 @@ export type DashboardStats = {
   pendingOrders: number;
   paidOrders: number;
   readyOrders: number;
+  printingOrders: number;
   completedOrders: number;
   cancelledOrders: number;
   generatedAt: string;
@@ -133,6 +134,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   let pendingOrders = 0;
   let paidOrders = 0;
   let readyOrders = 0;
+  let printingOrders = 0;
   let completedOrders = 0;
   let cancelledOrders = 0;
 
@@ -149,6 +151,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     if (normalized.status === 'PAID') pendingOrders += 1;
     if (normalized.paymentStatus === 'paid' && isToday) paidOrders += 1;
     if (normalized.status === 'READY_FOR_PRINT') readyOrders += 1;
+    if (normalized.status === 'PRINTING') printingOrders += 1;
     if (normalized.status === 'COMPLETED') completedOrders += 1;
     if (normalized.status === 'CANCELLED' || normalized.status === 'REJECTED') cancelledOrders += 1;
   }
@@ -159,6 +162,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     pendingOrders,
     paidOrders,
     readyOrders,
+    printingOrders,
     completedOrders,
     cancelledOrders,
     generatedAt: new Date().toISOString(),

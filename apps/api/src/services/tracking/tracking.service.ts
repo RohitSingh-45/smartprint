@@ -399,6 +399,15 @@ export async function collectByPickupToken(token: string): Promise<CustomerTrack
     throw new TrackingError('Order is not ready for pickup yet.', 409, 'NOT_READY');
   }
 
+  const completedAt = match.completedAt ? new Date(match.completedAt).getTime() : NaN;
+  if (!Number.isNaN(completedAt) && Date.now() - completedAt > PICKUP_EXPIRE_MS) {
+    throw new TrackingError(
+      'This pickup window has expired. Ask the counter for help.',
+      410,
+      'PICKUP_EXPIRED',
+    );
+  }
+
   const now = new Date().toISOString();
   const next: PaidOrder = {
     ...match,

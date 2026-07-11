@@ -56,6 +56,44 @@ if (parsed.data.PAYMENT_PROVIDER === 'razorpay') {
   }
 }
 
+const WEAK_AGENT_TOKENS = new Set([
+  'smartprint-dev-agent-token',
+  'changeme',
+  'secret',
+  'password',
+  'print-agent',
+]);
+
+if (parsed.data.NODE_ENV === 'production') {
+  const failures: string[] = [];
+
+  if (parsed.data.PAYMENT_PROVIDER === 'mock') {
+    failures.push('PAYMENT_PROVIDER=mock is not allowed in production (use razorpay).');
+  }
+  if (WEAK_AGENT_TOKENS.has(parsed.data.PRINT_AGENT_TOKEN)) {
+    failures.push('PRINT_AGENT_TOKEN must be a strong unique secret in production.');
+  }
+  if (parsed.data.PRINT_AGENT_TOKEN.length < 24) {
+    failures.push('PRINT_AGENT_TOKEN must be at least 24 characters in production.');
+  }
+  try {
+    const corsHost = new URL(parsed.data.CORS_ORIGIN).hostname;
+    if (corsHost === 'localhost' || corsHost === '127.0.0.1') {
+      failures.push('CORS_ORIGIN must not be localhost in production.');
+    }
+  } catch {
+    failures.push('CORS_ORIGIN is invalid.');
+  }
+
+  if (failures.length > 0) {
+    console.error('[env] Production configuration rejected:');
+    for (const failure of failures) {
+      console.error(`  - ${failure}`);
+    }
+    process.exit(1);
+  }
+}
+
 export const env = {
   nodeEnv: parsed.data.NODE_ENV,
   port: parsed.data.PORT,

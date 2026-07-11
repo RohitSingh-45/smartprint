@@ -1,12 +1,24 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { PdfViewer } from '@/components/pdf/PdfViewer';
 import { PdfSkeleton } from '@/components/pdf/PdfSkeleton';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
 import { readUploadSession } from '@/lib/upload-api';
+
+const PdfViewer = dynamic(
+  () => import('@/components/pdf/PdfViewer').then((m) => m.PdfViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div>
+        <PdfSkeleton />
+      </div>
+    ),
+  },
+);
 
 function PreviewContent() {
   const params = useSearchParams();

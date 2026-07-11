@@ -1,11 +1,7 @@
-export const ALLOWED_MIME_TYPES = [
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'image/jpeg',
-  'image/png',
-] as const;
+/** v1.0 print workflow requires PDF end-to-end (preview → agent spooler). */
+export const ALLOWED_MIME_TYPES = ['application/pdf'] as const;
 
-export const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.jpg', '.jpeg', '.png'] as const;
+export const ALLOWED_EXTENSIONS = ['.pdf'] as const;
 
 export type AllowedMimeType = (typeof ALLOWED_MIME_TYPES)[number];
 

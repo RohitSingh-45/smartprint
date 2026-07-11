@@ -8,11 +8,15 @@ import { PAPER_SIZES } from '@/lib/print-config/constants';
 type Props = {
   summary: PrintConfigSummary;
   fileName?: string | null;
+  /** Prefer server draft price when available (authoritative). */
+  authoritativePrice?: number | null;
 };
 
-export function PrintSummaryCard({ summary, fileName }: Props) {
+export function PrintSummaryCard({ summary, fileName, authoritativePrice }: Props) {
   const paperLabel =
     PAPER_SIZES.find((p) => p.id === summary.paperSize)?.label ?? summary.paperSize;
+  const displayPrice =
+    typeof authoritativePrice === 'number' ? authoritativePrice : summary.estimatedCost;
 
   return (
     <section
@@ -51,10 +55,10 @@ export function PrintSummaryCard({ summary, fileName }: Props) {
         <div className="flex items-center justify-between border-t border-[var(--border)] pt-3.5">
           <dt className="font-semibold tracking-tight">Estimated cost</dt>
           <dd
-            key={summary.estimatedCost}
+            key={displayPrice}
             className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight animate-rise"
           >
-            ₹{summary.estimatedCost}
+            ₹{displayPrice}
           </dd>
         </div>
       </dl>

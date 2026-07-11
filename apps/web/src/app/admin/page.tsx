@@ -132,8 +132,8 @@ export default function AdminDashboardPage() {
           <PipelineCard
             href="/admin/printers"
             label="Printers"
-            value={stats?.completedOrders ?? '—'}
-            hint="Agent & jobs"
+            value={stats?.printingOrders ?? '—'}
+            hint="Currently printing"
           />
           <PipelineCard
             href="/admin/orders?status=cancelled"

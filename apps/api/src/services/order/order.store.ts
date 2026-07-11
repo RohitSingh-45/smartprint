@@ -61,6 +61,35 @@ export class LocalOrderStore {
     return orders.find((order) => order.razorpayPaymentId === paymentId) ?? null;
   }
 
+  async listIntents(): Promise<PaymentIntent[]> {
+    await this.ensureReady();
+    const dir = path.join(this.rootDir, 'intents');
+    try {
+      const files = await fs.readdir(dir);
+      const intents: PaymentIntent[] = [];
+      for (const file of files) {
+        if (!file.endsWith('.json')) continue;
+        try {
+          const raw = await fs.readFile(path.join(dir, file), 'utf8');
+          intents.push(JSON.parse(raw) as PaymentIntent);
+        } catch {
+          // skip corrupt
+        }
+      }
+      return intents;
+    } catch {
+      return [];
+    }
+  }
+
+  async findOpenIntentByDraftId(draftId: string): Promise<PaymentIntent | null> {
+    const intents = await this.listIntents();
+    const open = intents
+      .filter((intent) => intent.draftId === draftId && intent.status === 'created')
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return open[0] ?? null;
+  }
+
   async saveIntent(intent: PaymentIntent): Promise<PaymentIntent> {
     await this.ensureReady();
     await fs.writeFile(this.intentPath(intent.razorpayOrderId), JSON.stringify(intent, null, 2), 'utf8');

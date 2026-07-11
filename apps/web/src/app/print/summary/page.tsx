@@ -102,7 +102,11 @@ export default function SummaryPage() {
           }}
         />
 
-        <PrintSummaryCard summary={summary} fileName={config.fileName} />
+        <PrintSummaryCard
+          summary={summary}
+          fileName={config.fileName}
+          authoritativePrice={draft?.estimatedPrice}
+        />
         <ConfigWarnings warnings={summary.warnings} />
 
         <div className="flex flex-col gap-3 sm:flex-row">

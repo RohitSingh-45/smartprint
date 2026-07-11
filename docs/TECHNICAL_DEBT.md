@@ -1,18 +1,19 @@
 # Technical Debt
 
-Captured during Sprints 3–5. Do not implement these here unless a future sprint explicitly schedules them.
+Deferred work for Version 2+. Do not implement unless explicitly scheduled.
 
 ## Upload / storage
 
 - [ ] Swap `STORAGE_DRIVER=local` for AWS S3 or Cloudinary via the `FileStorage` interface
 - [ ] Virus / malware scanning before accepting files
-- [ ] Stronger content sniffing (magic bytes) beyond MIME + extension checks (partially done for PDF `%PDF-` on preview)
+- [x] Rate-limit `/api/uploads`
+- [x] PDF `%PDF-` magic-byte check on upload + preview
+- [x] Origin / agent-token gate on `/api/uploads/:id/content` (signed URLs still deferred)
 - [ ] TTL cleanup job for orphaned temp uploads
 - [ ] Stream uploads to disk instead of buffering entire files in memory (multer memoryStorage)
 - [ ] Authenticated uploads (tie files to a user/session) once auth exists
-- [ ] Rate-limit `/api/uploads` to reduce abuse
 - [ ] Persist upload metadata in MongoDB instead of sidecar `.meta.json` files
-- [ ] Range-request / streaming PDF content for very large files instead of buffering full file in API memory
+- [ ] Range-request / streaming PDF content for very large files
 
 ## PDF preview
 
@@ -38,7 +39,7 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 - [ ] N-up (2-up / 4-up) layout options
 - [ ] Remember last-used settings per student device
 
-## Product flow (later sprints)
+## Product flow
 
 - [x] Real payment capture using draft id + upload id (Sprint 7)
 - [x] Convert draft → paid order atomically (Sprint 7 local store)
@@ -54,19 +55,19 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 ## Print agent (deferred)
 
 - [ ] QR code pairing for print stations / multi-shop agent enrollment
-- [ ] Signed short-lived URLs for PDF download (instead of open upload content)
+- [x] Rate-limit `/api/agent/*` (per-shop token rotation deferred)
+- [ ] Signed short-lived URLs for PDF download (v1 uses Origin/agent gate)
 - [ ] Windows Print Spooler + macOS CUPS parity beyond Linux `lp`
 - [ ] Automatic toner/paper sensors from printer SNMP/IPP
 - [ ] Agent auto-update channel
-- [ ] Rate-limit `/api/agent/*` and rotate agent tokens per shop
 
 ## Queue (deferred)
 
 - [ ] Priority scheduling (field reserved, always 0 today)
-- [ ] Real average waiting-time metrics from historical queue events (replace placeholder ETA)
+- [ ] Real average waiting-time metrics from historical queue events
 - [ ] Multi-station / multi-printer queue shards
 - [ ] Optimistic locking for concurrent reorder
-- [ ] Rate-limit `/api/queue/*`
+- [x] Rate-limit `/api/queue/*`
 
 ## Shop dashboard (deferred)
 
@@ -76,27 +77,28 @@ Captured during Sprints 3–5. Do not implement these here unless a future sprin
 - [ ] Refunds from rejected/cancelled paid orders
 - [ ] Export orders CSV / daily settlement report
 - [ ] Live updates (SSE/WebSocket) when new paid orders arrive
-- [ ] Rate-limit `/api/shop/*`
+- [x] Rate-limit `/api/shop/*`
 
 ## Tracking / pickup (deferred)
 
 - [ ] Authenticated customer order history (replace device-localStorage)
-- [ ] Signed short-lived pickup tokens with expiry enforcement beyond UI flag
+- [x] Pickup expiry enforced on collect (signed short-lived tokens still deferred)
 - [ ] Shop-side pickup scanner camera UI
 - [ ] SMS fallback for pickup code
 
 ## Payments (deferred)
 
-- [ ] Razorpay webhooks for async capture / reconciliation of orphaned gateway payments
+- [ ] Razorpay webhooks for async capture / reconciliation
 - [ ] Move paid orders + payment intents from local JSON to MongoDB
 - [ ] Refunds / partial refunds API
-- [ ] Idempotency keys on checkout to collapse rapid double-clicks into one Razorpay order
-- [ ] Rate-limit `/api/payments/*`
+- [x] Idempotency on checkout (reuse open intent for same draft + amount)
+- [x] Rate-limit `/api/payments/*`
 - [ ] Settlement / receipt PDF download
 - [ ] Multi-currency (currently INR only)
 
 ## Platform
 
-- [ ] CI pipeline (lint, typecheck, build, upload/preview/config smoke tests)
+- [x] CI pipeline (lint, typecheck, build)
+- [ ] Upload/preview/config smoke E2E tests
 - [ ] Structured logging (Pino) with request IDs
-- [ ] Production env fail-closed defaults (no localhost CORS/Mongo fallbacks)
+- [x] Production env fail-closed defaults (mock payment / weak agent token / localhost CORS)
