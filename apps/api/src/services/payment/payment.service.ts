@@ -73,6 +73,26 @@ export async function createCheckoutSession(draftId: string): Promise<CheckoutSe
     throw new PaymentError('Draft amount must be greater than zero.', 400, 'AMOUNT_INVALID');
   }
 
+  // Idempotent checkout: reuse an open intent for the same draft + amount.
+  const openIntent = await getOrderStore().findOpenIntentByDraftId(draft.id);
+  if (openIntent && openIntent.amount === draft.estimatedPrice) {
+    const session: CheckoutSession = {
+      draftId: draft.id,
+      keyId: getPublicKeyId(),
+      razorpayOrderId: openIntent.razorpayOrderId,
+      amount: draft.estimatedPrice,
+      amountPaise: draft.estimatedPrice * 100,
+      currency: 'INR',
+      provider: env.paymentProvider,
+    };
+    if (env.paymentProvider === 'mock') {
+      const mockPaymentId = `pay_mock_${randomUUID().replace(/-/g, '').slice(0, 14)}`;
+      session.mockPaymentId = mockPaymentId;
+      session.mockSignature = buildMockSignature(openIntent.razorpayOrderId, mockPaymentId);
+    }
+    return session;
+  }
+
   const amountPaise = draft.estimatedPrice * 100;
   const receipt = `sp_${draft.id.replace(/-/g, '').slice(0, 20)}`;
 

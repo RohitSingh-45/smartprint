@@ -51,8 +51,6 @@ export default function PaymentProcessingPage() {
         const reason =
           apiErr.message ||
           (err instanceof Error ? err.message : 'Payment verification failed.');
-        setError(reason);
-        setMessage('Verification failed.');
         router.replace(
           `/print/payment/failed?reason=${encodeURIComponent(reason)}${
             apiErr.code ? `&code=${encodeURIComponent(apiErr.code)}` : ''

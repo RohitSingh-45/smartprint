@@ -2,6 +2,42 @@
 
 All notable changes to SmartPrint are documented in this file.
 
+## [1.0.0] — 2026-07-11
+
+### Added
+
+- SmartPrint **v1.0** production release prep
+- Server-authoritative pricing module (`apps/api/src/services/draft/pricing.ts`)
+- In-memory rate limiting on uploads, drafts, payments, shop, queue, tracking, printers, agent
+- PDF content access gate (CORS origin / Referer or print-agent token)
+- Production env fail-closed checks (`PAYMENT_PROVIDER`, `PRINT_AGENT_TOKEN`, `CORS_ORIGIN`)
+- Checkout idempotency (reuse open payment intent for same draft + amount)
+- Pickup expiry enforced on collect (`410 PICKUP_EXPIRED`)
+- Root `typecheck` script; web `typecheck`; CI workflow (lint / typecheck / build)
+- Docs: `RELEASE_NOTES.md`, `QA_CHECKLIST.md`, `KNOWN_LIMITATIONS.md`
+
+### Changed
+
+- Uploads are **PDF-only** with `%PDF-` magic-byte check on create
+- Drafts bind `fileName` / `fileSize` from stored upload metadata
+- Admin pipeline “Printers” card shows `printingOrders`
+- Summary prefers draft `estimatedPrice` when present
+- Tracking / printers polling pauses when the tab is hidden
+- PDF preview route lazy-loads `PdfViewer`
+- Package versions bumped to `1.0.0`
+
+### Removed
+
+- Unused UI components (StatusTimeline, PriceBreakdown, NotificationChannelsStub, PrinterStatusCard, PageThumb, Card)
+- Public `GET /api/queue/jobs/ready` (agent path remains authenticated)
+- Deprecated `MOCK_STATION` alias
+
+### Security
+
+- Mock payment provider blocked in production
+- Weak default print-agent tokens rejected in production
+- Rate-limit headers + `429 RATE_LIMITED` responses
+
 ## [0.11.0] — 2026-07-10
 
 ### Added

@@ -17,6 +17,9 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
   const printable = new Set(printablePages);
   const colorCount = printablePages.filter((p) => (pageModes[p] ?? 'bw') === 'color').length;
   const bwCount = printablePages.length - colorCount;
+  // Large docs: only render printable pages to keep mobile paint cheap.
+  const pagesToRender =
+    totalPages > 48 ? printablePages : Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <section className="space-y-4" aria-label="Page print modes">
@@ -25,6 +28,7 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
           <h2 className="text-sm font-semibold tracking-tight">Page color</h2>
           <p className="mt-0.5 text-xs text-[var(--muted)]">
             Tap a page to switch. {colorCount} color · {bwCount} B&W in range
+            {totalPages > 48 ? ` · showing ${printablePages.length} in range` : ''}
           </p>
         </div>
         <div className="flex gap-1.5">
@@ -41,14 +45,13 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
         <div
           className={cn(
             'grid gap-2.5 px-1',
-            totalPages <= 8
+            pagesToRender.length <= 8
               ? 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8'
               : 'grid-flow-col auto-cols-[4.75rem] sm:auto-cols-[5.25rem]',
           )}
-          style={totalPages > 8 ? { width: 'max-content' } : undefined}
+          style={pagesToRender.length > 8 ? { width: 'max-content' } : undefined}
         >
-          {Array.from({ length: totalPages }, (_, index) => {
-            const page = index + 1;
+          {pagesToRender.map((page) => {
             const mode = pageModes[page] ?? 'bw';
             const inRange = printable.has(page);
             const isColor = mode === 'color';

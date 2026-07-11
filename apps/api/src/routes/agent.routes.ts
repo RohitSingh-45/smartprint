@@ -11,9 +11,13 @@ import {
   updateJobStatusHandler,
 } from '../controllers/agent.controller';
 import { requireAgentToken } from '../middleware/agent-auth.middleware';
+import { rateLimit } from '../middleware/rate-limit.middleware';
 
 const agentRouter = Router();
 
+const agentLimit = rateLimit({ name: 'agent', windowMs: 60_000, max: 240 });
+
+agentRouter.use(agentLimit);
 agentRouter.use(requireAgentToken);
 
 agentRouter.post('/register', registerAgentHandler);

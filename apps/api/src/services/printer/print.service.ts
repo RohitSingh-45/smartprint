@@ -1,5 +1,4 @@
 import { randomBytes, randomUUID } from 'crypto';
-import { env } from '../../config/env';
 import type { PaidOrder } from '../../types/order';
 import type {
   AgentJobStatusUpdate,
@@ -31,10 +30,6 @@ function assertUuid(id: string, label = 'id'): void {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
     throw new PrintError(`Invalid ${label}.`, 400, 'INVALID_ID');
   }
-}
-
-function contentUrl(uploadId: string): string {
-  return `http://127.0.0.1:${env.port}/api/uploads/${uploadId}/content`;
 }
 
 function withPublicContentUrl(uploadId: string): string {
@@ -542,6 +537,3 @@ export async function getPrinterDashboard(): Promise<PrinterDashboard> {
     generatedAt: new Date().toISOString(),
   };
 }
-
-// silence unused helper in case public URL builder is preferred later
-void contentUrl;

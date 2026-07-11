@@ -4,7 +4,7 @@ import { MapPin, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
-import { MOCK_STATION } from '@/lib/mock-data';
+import { DEFAULT_STATION } from '@/lib/mock-data';
 
 export default function QrEntryPage() {
   return (
@@ -42,7 +42,7 @@ export default function QrEntryPage() {
           <div className="space-y-4 p-6">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight">
-                {MOCK_STATION.name}
+                {DEFAULT_STATION.name}
               </h2>
               <Badge tone="success" dot>
                 Online
@@ -50,19 +50,19 @@ export default function QrEntryPage() {
             </div>
             <p className="flex items-start gap-2 text-sm text-[var(--muted)]">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden />
-              {MOCK_STATION.location}
+              {DEFAULT_STATION.location}
             </p>
             <div className="grid grid-cols-2 gap-3 rounded-[var(--radius-md)] bg-[var(--surface-2)]/80 px-3 py-3 text-sm">
               <div>
                 <p className="text-xs text-[var(--muted)]">Queue</p>
                 <p className="mt-0.5 font-semibold tabular-nums">
-                  {MOCK_STATION.queueLength} jobs
+                  {DEFAULT_STATION.queueLength} jobs
                 </p>
               </div>
               <div>
                 <p className="text-xs text-[var(--muted)]">Est. wait</p>
                 <p className="mt-0.5 font-semibold tabular-nums">
-                  ~{MOCK_STATION.queueLength * 3} min
+                  ~{DEFAULT_STATION.queueLength * 3} min
                 </p>
               </div>
             </div>

@@ -1,96 +1,48 @@
 # SmartPrint Roadmap
 
-## Sprint 1 — Project initialization
+## Completed — v1.0 (Sprints 1–11 + release prep)
 
-- [x] Monorepo with npm workspaces
-- [x] Next.js App Router + TypeScript + Tailwind (`apps/web`)
-- [x] Express + TypeScript API (`apps/api`)
-- [x] MongoDB connection (no models)
-- [x] ESLint, Prettier, environment templates
-- [x] Git ignore, README, docs
+- [x] Monorepo (web / api / print-agent)
+- [x] Customer flow: QR → upload → preview → configure → draft → pay → track → pickup
+- [x] Shop dashboard, FIFO queue, Local Print Agent
+- [x] Razorpay + mock payment (mock blocked in production)
+- [x] v1.0 hardening: rate limits, PDF-only uploads, production env guards, CI, release docs
 
-## Sprint 2 — User flow & UI foundation
+---
 
-- [x] Landing page
-- [x] QR entry → upload → preview → color/B&W → price → payment → queue → complete
-- [x] Error state screens (printer / payment / upload)
-- [x] Admin dashboard layout (sidebar + topbar)
-- [x] Dark mode + reusable components (UI only, no backend)
+## Version 2 only
 
-## Sprint 3 — File upload engine
+Do **not** mix these into v1.0 patches unless explicitly scheduled.
 
-- [x] Secure upload API (validate type/size, sanitize names, unique ids)
-- [x] Local temp storage behind a swappable `FileStorage` interface
-- [x] Frontend drag/drop + click upload with progress, details, remove/replace
+### Accounts & tenancy
 
-## Sprint 4 — PDF preview engine
+- [ ] Customer and shop-owner authentication / RBAC
+- [ ] Multi-shop / multi-station tenancy
+- [ ] QR station pairing & enrollment for print agents
 
-- [x] Serve validated PDF content from existing uploads
-- [x] PDF.js viewer with lazy pages, zoom, fit-width, skeletons, errors
-- [x] Auto-open preview after successful PDF upload
+### Reliability & data
 
-## Sprint 5 — Print configuration engine
+- [ ] Move drafts / orders / uploads / printers from JSON files to MongoDB
+- [ ] Razorpay webhooks + settlement reconciliation
+- [ ] Redis-backed rate limiting for multi-instance
+- [ ] Signed short-lived PDF & pickup tokens
+- [ ] Server-side PDF page-count extraction on upload
+- [ ] Stream uploads to disk / object storage (S3)
 
-- [x] Page-wise Color / B&W (default B&W)
-- [x] Copies, page range, paper size, orientation
-- [x] Live print summary + estimated cost + smart warnings
+### Product
 
-## Sprint 6 — Order draft engine
+- [ ] Real waiting-time metrics (replace placeholder ETA)
+- [ ] Browser / email / WhatsApp notification adapters
+- [ ] Receipt PDF download + reprint request
+- [ ] SSE/WebSocket live tracking (replace polling)
+- [ ] DOCX → PDF conversion; image preview gallery
+- [ ] Shop-specific price tables; duplex / finishing; A3+ paper
+- [ ] Priority scheduling; multi-printer queue shards
 
-- [x] Draft CRUD APIs with 15-minute expiration
-- [x] Auto-sync draft from print configuration
-- [x] Restore draft on refresh + countdown UI
-- [x] Architecture ready for payment handoff
+### Ops
 
-## Sprint 7 — Payments
+- [ ] Observability (structured metrics / tracing)
+- [ ] Expanded E2E suite beyond CI lint/typecheck/build
+- [ ] Agent auto-update channel; CUPS/Windows spooler parity extras
 
-- [x] Checkout flow using draft id (Razorpay + local mock provider)
-- [x] Server-side signature verification (never trust frontend status)
-- [x] Convert draft → paid order (`status: PAID`)
-- [x] Payment / processing / success / failed / confirmation screens
-- [x] Reject expired, missing, mismatched, invalid, and duplicate payments
-
-## Sprint 8 — Shop owner dashboard
-
-- [x] Dashboard summary cards (revenue, orders, pending/paid/ready/completed/cancelled)
-- [x] Orders list with search, status filters, and date range
-- [x] Order detail + timeline + shop actions (accept / reject / ready / cancel)
-- [x] Validated status transitions (no invalid jumps)
-- [x] Printer status placeholder widget (UI-only pause/resume)
-
-## Sprint 9 — Queue management engine
-
-- [x] FIFO print queue with hold / resume / reorder
-- [x] Status flow: PAID → ACCEPTED → QUEUED → READY_FOR_PRINT (+ HELD / CANCELLED)
-- [x] Queue summary, search, filters
-- [x] `listReadyForPrintJobs()` intake interface for Sprint 10
-- [x] PRINTING / COMPLETED statuses reserved (no printer I/O)
-
-## Sprint 10 — Local Print Agent & printer integration
-
-- [x] Local Print Agent (`apps/print-agent`) with token auth
-- [x] Printer registration + heartbeat + status model
-- [x] Consume READY_FOR_PRINT → PRINTING → COMPLETED / FAILED
-- [x] Retry / reprint / cancel printing
-- [x] Admin Printers dashboard
-- [ ] QR code generation for print stations (deferred — see TECHNICAL_DEBT)
-
-## Sprint 11 — Customer order tracking & pickup
-
-- [x] Live customer tracking page (polls tracking API)
-- [x] Status map: PAYMENT_RECEIVED → … → READY_FOR_PICKUP → COLLECTED
-- [x] Queue position + placeholder ETA
-- [x] Pickup QR for shop scan; duplicate collect prevented
-- [x] Order history (device-local) with disabled receipt/reprint
-- [x] Notification architecture stub (no integrations)
-- [x] Friendly error states (cancelled / failure / delayed / expired / unknown)
-
-## Sprint 12 — Hardening, notifications & launch prep
-
-- Real waiting-time metrics (replace placeholder ETA)
-- Browser / email / WhatsApp notification adapters (see `docs/NOTIFICATIONS.md`)
-- Observability, rate limiting, security review
-- E2E tests + deployment pipelines
-- Auth foundation when accounts are required
-- Optional: QR station pairing for multi-printer shops
-- Receipt PDF download + reprint request flows
+See `docs/KNOWN_LIMITATIONS.md` and `docs/TECHNICAL_DEBT.md`.

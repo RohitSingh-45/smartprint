@@ -32,11 +32,22 @@ export function toPublicDraft(draft: DraftOrder, now = Date.now()): DraftPublic 
   };
 }
 
-async function assertUploadExists(uploadId: string): Promise<void> {
+async function assertUploadForDraft(uploadId: string): Promise<{
+  originalName: string;
+  size: number;
+}> {
   const upload = await getUpload(uploadId);
   if (!upload) {
     throw new DraftValidationError('Upload not found for this draft.', 400, 'UPLOAD_MISSING');
   }
+  if (upload.mimeType !== 'application/pdf' || upload.extension !== '.pdf') {
+    throw new DraftValidationError(
+      'Only PDF uploads can be drafted for printing.',
+      415,
+      'DRAFT_PDF_ONLY',
+    );
+  }
+  return { originalName: upload.originalName, size: upload.size };
 }
 
 async function markExpiredIfNeeded(draft: DraftOrder): Promise<DraftOrder> {
@@ -53,7 +64,7 @@ async function markExpiredIfNeeded(draft: DraftOrder): Promise<DraftOrder> {
 }
 
 export async function createDraft(input: DraftInput): Promise<DraftPublic> {
-  await assertUploadExists(input.uploadId);
+  const upload = await assertUploadForDraft(input.uploadId);
 
   const now = new Date();
   const expiresAt = new Date(now.getTime() + env.draftTtlSeconds * 1000);
@@ -61,6 +72,9 @@ export async function createDraft(input: DraftInput): Promise<DraftPublic> {
   const draft: DraftOrder = {
     id: randomUUID(),
     ...input,
+    // Never trust client file metadata — bind to stored upload.
+    fileName: upload.originalName.slice(0, 180),
+    fileSize: upload.size,
     status: 'created',
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
@@ -100,8 +114,6 @@ export async function updateDraft(id: string, input: DraftInput): Promise<DraftP
     throw new DraftValidationError('Draft has expired.', 410, 'DRAFT_EXPIRED');
   }
 
-  await assertUploadExists(input.uploadId);
-
   if (input.uploadId !== current.uploadId) {
     throw new DraftValidationError(
       'uploadId cannot change for an existing draft.',
@@ -110,10 +122,14 @@ export async function updateDraft(id: string, input: DraftInput): Promise<DraftP
     );
   }
 
+  const upload = await assertUploadForDraft(input.uploadId);
+
   const next: DraftOrder = {
     ...current,
     ...input,
     id: current.id,
+    fileName: upload.originalName.slice(0, 180),
+    fileSize: upload.size,
     status: 'updated',
     createdAt: current.createdAt,
     expiresAt: current.expiresAt,

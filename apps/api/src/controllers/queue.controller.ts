@@ -6,7 +6,6 @@ import {
   getQueueJob,
   getQueueSummary,
   listQueueJobs,
-  listReadyForPrintJobs,
   type QueueFilter,
 } from '../services/queue/queue.service';
 
@@ -83,16 +82,3 @@ export async function queueActionHandler(
   }
 }
 
-/** Sprint 10 intake preview — READY_FOR_PRINT jobs only. */
-export async function listReadyJobsHandler(
-  _req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const jobs = await listReadyForPrintJobs();
-    res.status(200).json({ jobs, count: jobs.length });
-  } catch (error) {
-    next(error);
-  }
-}

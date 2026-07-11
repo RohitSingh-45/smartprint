@@ -11,9 +11,9 @@ export type UploadedFileDto = {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
-export const UPLOAD_ACCEPT = '.pdf,.docx,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png';
+export const UPLOAD_ACCEPT = '.pdf,application/pdf';
 
-export const UPLOAD_ALLOWED_LABEL = 'PDF, DOCX, JPG, PNG';
+export const UPLOAD_ALLOWED_LABEL = 'PDF';
 
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;

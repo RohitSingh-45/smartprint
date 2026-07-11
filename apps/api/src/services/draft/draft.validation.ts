@@ -5,6 +5,7 @@ import {
   type DraftInput,
   type DraftPageRange,
 } from '../../types/draft';
+import { computeEstimatedPrice } from './pricing';
 
 export class DraftValidationError extends Error {
   status: number;
@@ -100,6 +101,9 @@ export function parseDraftInput(body: unknown): DraftInput {
   if (!Number.isInteger(data.totalPages) || (data.totalPages as number) < 1) {
     throw new DraftValidationError('totalPages must be at least 1.', 400, 'TOTAL_PAGES_INVALID');
   }
+  if ((data.totalPages as number) > 500) {
+    throw new DraftValidationError('totalPages cannot exceed 500.', 400, 'TOTAL_PAGES_TOO_LARGE');
+  }
 
   const totalPages = data.totalPages as number;
   const colorPages = assertIntegerArray('colorPages', data.colorPages);
@@ -136,18 +140,6 @@ export function parseDraftInput(body: unknown): DraftInput {
     !(ORIENTATIONS as readonly string[]).includes(data.orientation)
   ) {
     throw new DraftValidationError('Invalid orientation.', 400, 'ORIENTATION_INVALID');
-  }
-
-  if (
-    typeof data.estimatedPrice !== 'number' ||
-    Number.isNaN(data.estimatedPrice) ||
-    data.estimatedPrice < 0
-  ) {
-    throw new DraftValidationError(
-      'estimatedPrice must be a non-negative number.',
-      400,
-      'PRICE_INVALID',
-    );
   }
 
   const pageRange = parsePageRange(data.pageRange, totalPages);
@@ -194,17 +186,29 @@ export function parseDraftInput(body: unknown): DraftInput {
     }
   }
 
+  const sortedColor = Array.from(colorSet).sort((a, b) => a - b);
+  const sortedBw = Array.from(bwSet).sort((a, b) => a - b);
+  const estimatedPrice = computeEstimatedPrice(sortedColor, sortedBw, copies);
+
+  if (estimatedPrice <= 0) {
+    throw new DraftValidationError(
+      'Estimated price must be greater than zero.',
+      400,
+      'PRICE_INVALID',
+    );
+  }
+
   return {
     uploadId: data.uploadId.trim(),
     fileName: data.fileName.trim().slice(0, 180),
     fileSize: data.fileSize as number,
     totalPages,
-    colorPages: Array.from(colorSet).sort((a, b) => a - b),
-    bwPages: Array.from(bwSet).sort((a, b) => a - b),
+    colorPages: sortedColor,
+    bwPages: sortedBw,
     copies,
     pageRange,
     paperSize: data.paperSize as DraftInput['paperSize'],
     orientation: data.orientation as DraftInput['orientation'],
-    estimatedPrice: Math.round(data.estimatedPrice as number),
+    estimatedPrice,
   };
 }

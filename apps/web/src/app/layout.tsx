@@ -16,8 +16,8 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: 'SmartPrint',
-    template: '%s · SmartPrint',
+    default: process.env.NEXT_PUBLIC_APP_NAME || 'SmartPrint',
+    template: `%s · ${process.env.NEXT_PUBLIC_APP_NAME || 'SmartPrint'}`,
   },
   description: 'QR-based smart printing for students and print shops',
 };

@@ -36,7 +36,7 @@ function assertAllowedFile(originalName: string, mimeType: string, size: number)
   const extension = getExtension(originalName);
   if (!isAllowedExtension(extension)) {
     throw new UploadValidationError(
-      'Unsupported file type. Allowed: PDF, DOCX, JPG, PNG.',
+      'Unsupported file type. Allowed: PDF only.',
       415,
       'FILE_TYPE_UNSUPPORTED',
     );
@@ -44,22 +44,14 @@ function assertAllowedFile(originalName: string, mimeType: string, size: number)
 
   if (!(ALLOWED_MIME_TYPES as readonly string[]).includes(mimeType)) {
     throw new UploadValidationError(
-      'Unsupported media type. Allowed: PDF, DOCX, JPG, PNG.',
+      'Unsupported media type. Allowed: PDF only.',
       415,
       'MIME_TYPE_UNSUPPORTED',
     );
   }
 
-  // Extension ↔ MIME consistency (basic spoofing guard)
   const mime = mimeType as AllowedMimeType;
-  const ok =
-    (mime === 'application/pdf' && extension === '.pdf') ||
-    (mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
-      extension === '.docx') ||
-    (mime === 'image/jpeg' && (extension === '.jpg' || extension === '.jpeg')) ||
-    (mime === 'image/png' && extension === '.png');
-
-  if (!ok) {
+  if (mime !== 'application/pdf' || extension !== '.pdf') {
     throw new UploadValidationError(
       'File extension does not match its content type.',
       415,
@@ -70,6 +62,16 @@ function assertAllowedFile(originalName: string, mimeType: string, size: number)
   return mime;
 }
 
+function assertPdfMagicBytes(buffer: Buffer): void {
+  if (!buffer.length) {
+    throw new UploadValidationError('PDF file is empty.', 422, 'PDF_EMPTY');
+  }
+  const header = buffer.subarray(0, 5).toString('utf8');
+  if (!header.startsWith('%PDF-')) {
+    throw new UploadValidationError('File is not a valid PDF.', 422, 'PDF_INVALID_HEADER');
+  }
+}
+
 export async function createUpload(input: {
   originalName: string;
   mimeType: string;
@@ -77,6 +79,7 @@ export async function createUpload(input: {
   buffer: Buffer;
 }): Promise<UploadedFileMetadata> {
   const mimeType = assertAllowedFile(input.originalName, input.mimeType, input.size);
+  assertPdfMagicBytes(input.buffer);
   const extension = getExtension(input.originalName);
   const id = randomUUID();
   const safeOriginal = sanitizeFilename(input.originalName);

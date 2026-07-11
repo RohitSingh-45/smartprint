@@ -106,6 +106,7 @@ export type DashboardStats = {
   pendingOrders: number;
   paidOrders: number;
   readyOrders: number;
+  printingOrders: number;
   completedOrders: number;
   cancelledOrders: number;
   generatedAt: string;

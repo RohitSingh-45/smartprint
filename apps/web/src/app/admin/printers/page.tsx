@@ -49,10 +49,19 @@ export default function AdminPrintersPage() {
 
   useEffect(() => {
     void load();
-    const timer = window.setInterval(() => {
+    const tick = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       void load();
-    }, 5000);
-    return () => window.clearInterval(timer);
+    };
+    const timer = window.setInterval(tick, 5000);
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void load();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [load]);
 
   async function run(
