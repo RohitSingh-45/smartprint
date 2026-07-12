@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { resolve } from 'path';
+import { isAbsolute, resolve } from 'path';
 import { z } from 'zod';
 
 dotenv.config({ path: resolve(__dirname, '../../.env') });
@@ -74,4 +74,41 @@ export const env = {
   razorpayKeyId: parsed.data.RAZORPAY_KEY_ID,
   razorpayKeySecret: parsed.data.RAZORPAY_KEY_SECRET,
   isProduction: parsed.data.NODE_ENV === 'production',
+  /**
+   * True when running on a serverless platform with a read-only deployment
+   * filesystem (e.g. Vercel's `/var/task`). Detected from Vercel's own `VERCEL`
+   * env var, or from a production `NODE_ENV` (covers other serverless targets
+   * such as AWS Lambda where the same read-only constraint applies).
+   */
+  isServerless: Boolean(process.env.VERCEL) || parsed.data.NODE_ENV === 'production',
 } as const;
+
+/**
+ * Resolve a base directory for local file / JSON storage.
+ *
+ * Why this exists: serverless runtimes like Vercel deploy the application bundle
+ * to a READ-ONLY filesystem (`/var/task`). Creating or writing directories
+ * relative to `process.cwd()` there throws `ENOENT` / `EROFS` and crashes the
+ * process on startup (`LocalFileStorage.ensureReady` -> `fs.mkdir`). The only
+ * writable location in that runtime is the ephemeral `/tmp` volume, so in
+ * serverless/production we root relative storage paths under `/tmp`.
+ *
+ * In development we keep resolving against the project working directory so the
+ * existing local `uploads/`, `drafts/`, `orders/`, `printers/` folders behave
+ * exactly as before.
+ *
+ * Absolute paths are always honored as-is, allowing operators to mount a
+ * persistent volume (or point at durable storage) via the `*_DIR` env vars.
+ *
+ * NOTE: `/tmp` on serverless is ephemeral and not shared across invocations or
+ * instances — it is only safe for transient data. Durable storage should be
+ * backed by an external service (S3/DB) rather than the local filesystem.
+ */
+export function resolveStorageDir(dir: string): string {
+  if (isAbsolute(dir)) {
+    return dir;
+  }
+
+  const baseDir = env.isServerless ? '/tmp' : process.cwd();
+  return resolve(baseDir, dir);
+}
