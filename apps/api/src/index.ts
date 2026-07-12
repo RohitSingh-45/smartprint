@@ -1,61 +1,31 @@
-import cors from 'cors';
-import express from 'express';
 import type { Server } from 'http';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import { connectDatabase, disconnectDatabase } from './config/database';
+import app, { initServices } from './app';
+import { disconnectDatabase, isDatabaseConnected } from './config/database';
 import { env } from './config/env';
-import { errorHandler, notFoundHandler } from './middleware/error.middleware';
-import routes from './routes';
-import { getDraftStore } from './services/draft';
-import { getOrderStore } from './services/order';
-import { getPrinterStore } from './services/printer';
-import { getFileStorage } from './services/storage';
+
+/**
+ * Standalone / long-running server entry point.
+ *
+ * This file is used by `npm run dev:api` (tsx watch) and by traditional
+ * non-serverless deployments (`node dist/index.js`). It owns everything that is
+ * INCOMPATIBLE with a serverless runtime and therefore must NOT live in
+ * `app.ts`: binding a port with `app.listen()`, OS signal handling, and
+ * `process.exit()` for graceful shutdown. Vercel imports `app.ts` instead, so
+ * none of this executes there.
+ */
 
 let server: Server | undefined;
 let isShuttingDown = false;
 
 async function bootstrap(): Promise<void> {
-  const app = express();
+  await initServices();
 
-  app.use(
-    helmet({
-      // Allow the Next.js app (different origin/port) to fetch PDF bytes for preview.
-      crossOriginResourcePolicy: { policy: 'cross-origin' },
-    }),
-  );
-  app.use(cors({ origin: env.corsOrigin }));
-  app.use(morgan(env.isProduction ? 'combined' : 'dev'));
-  app.use(express.json({ limit: env.jsonBodyLimit }));
-
-  await getFileStorage().ensureReady();
-  console.log(`[uploads] Storage ready (${env.storageDriver}) → ${env.uploadDir}`);
-
-  await getDraftStore().ensureReady();
-  console.log(`[drafts] Store ready → ${env.draftDir} (TTL ${env.draftTtlSeconds}s)`);
-
-  await getOrderStore().ensureReady();
-  console.log(`[orders] Store ready → ${env.orderDir} (provider ${env.paymentProvider})`);
-
-  await getPrinterStore().ensureReady();
-  console.log(`[printers] Store ready → ${env.printerDir}`);
-
-  app.use('/api', routes);
-
-  app.use(notFoundHandler);
-  app.use(errorHandler);
-
-  try {
-    await connectDatabase();
-  } catch (error) {
-    console.error('[db] Failed to connect to MongoDB:', error);
-
-    if (env.isProduction) {
-      console.error('[db] Exiting because MongoDB is required in production.');
-      process.exit(1);
-    }
-
-    console.warn('[db] API will start without an active database connection.');
+  // Preserve the original behavior for standalone production servers: if a
+  // database is required but unreachable, exit so an orchestrator can restart
+  // the process. (Serverless never reaches this file, so it is unaffected.)
+  if (env.isProduction && !isDatabaseConnected()) {
+    console.error('[db] Exiting because MongoDB is required in production.');
+    process.exit(1);
   }
 
   await new Promise<void>((resolve, reject) => {
