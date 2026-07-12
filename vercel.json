@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "installCommand": "npm install",
-  "buildCommand": "npm run build:api",
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+  "version": 2,
+  "builds": [{ "src": "apps/api/src/app.ts", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "apps/api/src/app.ts" }]
 }

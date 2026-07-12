@@ -43,6 +43,7 @@ out
 .turbo
 .cache
 .parcel-cache
+.vercel
 
 # TypeScript
 *.tsbuildinfo
