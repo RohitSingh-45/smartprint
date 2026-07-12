@@ -1,0 +1,8 @@
+# Intentionally (near) empty.
+#
+# This directory is the Vercel `outputDirectory`. SmartPrint's API deploys as a
+# Node.js serverless function (see `api/index.ts` + `vercel.json` rewrites), so
+# there are no static frontend assets to serve here. Vercel's build pipeline
+# still requires an output directory to exist; this empty folder satisfies that
+# requirement WITHOUT exposing the repository root as static files. All HTTP
+# traffic is rewritten to the Express serverless function.
