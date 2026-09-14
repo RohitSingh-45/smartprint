@@ -6,6 +6,7 @@ import { RefreshCw } from 'lucide-react';
 import { OrderDetailsCard } from '@/components/tracking/OrderDetailsCard';
 import { PickupQrCard } from '@/components/tracking/PickupQrCard';
 import { QueueInfoCard } from '@/components/tracking/QueueInfoCard';
+import { SmartEtaPredictor } from '@/components/ai/SmartEtaPredictor';
 import { TrackingErrorState } from '@/components/tracking/TrackingErrorState';
 import { TrackingStatusHero } from '@/components/tracking/TrackingStatusHero';
 import { TrackingTimeline } from '@/components/tracking/TrackingTimeline';
@@ -145,6 +146,18 @@ function TrackingContent() {
         <PickupQrCard tracking={tracking} origin={origin} />
 
         <QueueInfoCard queue={tracking.queue} show={showQueue} />
+
+        {/* AI Queue Readiness Predictor */}
+        <SmartEtaPredictor
+          queuePosition={tracking.queue.position}
+          jobsAhead={tracking.queue.remainingJobsBefore}
+          totalPages={tracking.order.pages}
+          colorPages={tracking.order.colorPages}
+          bwPages={tracking.order.bwPages}
+          copies={tracking.order.copies}
+          paperSize={tracking.order.print?.paperSize ?? 'a4'}
+          currentStatus={tracking.customerStatus}
+        />
 
         <section
           aria-label="Live timeline"

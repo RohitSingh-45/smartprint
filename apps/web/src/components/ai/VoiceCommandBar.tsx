@@ -76,6 +76,18 @@ export function VoiceCommandBar() {
     }
   }, [mode]);
 
+  const close = useCallback(() => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.abort(); } catch { /* noop */ }
+      recognitionRef.current = null;
+    }
+    setMode('closed');
+    setText('');
+    setTranscript('');
+    setResult(null);
+    setError(null);
+  }, []);
+
   // Execute result action
   useEffect(() => {
     if (!result || mode !== 'result') return;
@@ -93,19 +105,7 @@ export function VoiceCommandBar() {
       }
     }, 1200);
     return () => clearTimeout(timer);
-  }, [result, mode, router]);
-
-  const close = useCallback(() => {
-    if (recognitionRef.current) {
-      try { recognitionRef.current.abort(); } catch { /* noop */ }
-      recognitionRef.current = null;
-    }
-    setMode('closed');
-    setText('');
-    setTranscript('');
-    setResult(null);
-    setError(null);
-  }, []);
+  }, [result, mode, router, close]);
 
   const processCommand = useCallback(async (command: string) => {
     if (!command.trim()) return;
@@ -233,7 +233,7 @@ export function VoiceCommandBar() {
               {mode === 'processing' && (
                 <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
                   <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-strong)]" />
-                  Interpreting: <span className="font-medium text-[var(--foreground)]">"{text || transcript}"</span>
+                  Interpreting: <span className="font-medium text-[var(--foreground)]">&ldquo;{text || transcript}&rdquo;</span>
                 </div>
               )}
 

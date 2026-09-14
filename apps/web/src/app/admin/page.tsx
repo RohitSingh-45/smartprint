@@ -2,6 +2,7 @@
 
 import {
   Banknote,
+  BarChart3,
   CheckCircle2,
   Clock3,
   RefreshCw,
@@ -115,6 +116,26 @@ export default function AdminDashboardPage() {
 
       {/* AI Insights Panel */}
       <AiInsightsPanel />
+
+      {/* RAG Trends Quick Access Banner */}
+      <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-[var(--radius-xl)] border border-[var(--accent)]/30 bg-gradient-to-r from-[var(--accent-soft)]/40 via-[var(--surface)] to-[var(--surface-2)] p-5 shadow-[var(--shadow-xs)]">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--accent)] text-[var(--accent-ink)] shadow-[var(--shadow-xs)]">
+            <BarChart3 className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-base font-semibold tracking-tight">
+              AI Business Intelligence & Historical Trends
+            </h2>
+            <p className="text-xs text-[var(--muted)]">
+              RAG analysis of order trends, ink demand, and operational efficiency over 7, 30, and 90-day windows.
+            </p>
+          </div>
+        </div>
+        <Button href="/admin/trends" icon={BarChart3} className="shrink-0">
+          Open Analytics
+        </Button>
+      </section>
 
       <section className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)] sm:p-6">
         <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">

@@ -9,6 +9,8 @@ import {
   buildTrendAnalysisPrompt,
   buildPdfVisionPrompt,
   buildCommandInterpreterPrompt,
+  buildEtaPredictionPrompt,
+  type EtaPredictionParams,
   type OrderSummaryForRAG,
 } from './prompts';
 
@@ -560,6 +562,9 @@ const ROUTE_MAP: Record<string, string> = {
   'print queue': '/admin/queue',
   printers: '/admin/printers',
   'printer status': '/admin/printers',
+  trends: '/admin/trends',
+  analytics: '/admin/trends',
+  'business intelligence': '/admin/trends',
   upload: '/print/upload',
 };
 
@@ -620,3 +625,103 @@ export async function interpretCommand(params: {
   }
   return parsed;
 }
+
+// ─────────────────────────────────────────────
+// Feature 8: Smart Pickup ETA & Queue Readiness
+// ─────────────────────────────────────────────
+
+export type EtaPredictionResult = {
+  estimatedMinutesMin: number;
+  estimatedMinutesMax: number;
+  estimatedTimeLabel: string;
+  rushLevel: 'low' | 'moderate' | 'high';
+  rushReason: string;
+  pickupAdvice: string;
+  confidence: number;
+  isMock?: boolean;
+};
+
+function mockEtaPrediction(params: EtaPredictionParams): EtaPredictionResult {
+  const status = params.currentStatus.toUpperCase();
+  if (['COMPLETED', 'COLLECTED'].includes(status)) {
+    return {
+      estimatedMinutesMin: 0,
+      estimatedMinutesMax: 0,
+      estimatedTimeLabel: 'Ready for pickup now!',
+      rushLevel: 'low',
+      rushReason: 'Your print job is finished and safely stored at the pickup counter.',
+      pickupAdvice: 'Head to the shop counter with your Pickup QR code to collect your prints.',
+      confidence: 0.99,
+      isMock: true,
+    };
+  }
+
+  if (['PRINTING'].includes(status)) {
+    return {
+      estimatedMinutesMin: 1,
+      estimatedMinutesMax: 2,
+      estimatedTimeLabel: '1–2 minutes (printing now)',
+      rushLevel: 'low',
+      rushReason: 'Printer active. Your job is currently coming off the tray.',
+      pickupAdvice: 'You can begin walking to the shop counter now.',
+      confidence: 0.95,
+      isMock: true,
+    };
+  }
+
+  const jobsAhead = Math.max(0, params.jobsAhead);
+  const totalSheets = params.totalPages * params.copies;
+
+  // Base computation: 1.5 min per job ahead + job print duration (~0.1 min per sheet)
+  const baseMinutes = Math.round(jobsAhead * 1.5 + totalSheets * 0.1);
+  const minMin = Math.max(1, baseMinutes);
+  const maxMin = minMin + Math.max(2, Math.round(jobsAhead * 0.5) + 1);
+
+  const rushLevel: 'low' | 'moderate' | 'high' =
+    jobsAhead >= 4 ? 'high' : jobsAhead >= 2 ? 'moderate' : 'low';
+
+  const rushReason =
+    rushLevel === 'high'
+      ? `Queue is busy with ${jobsAhead} orders ahead during campus rush.`
+      : rushLevel === 'moderate'
+      ? `Moderate activity with ${jobsAhead} job${jobsAhead > 1 ? 's' : ''} ahead in queue.`
+      : jobsAhead === 0
+      ? 'Queue is clear! Your job is next to be processed.'
+      : `Light queue with only ${jobsAhead} job ahead.`;
+
+  const pickupAdvice =
+    minMin <= 2
+      ? 'Head to the counter shortly — your order will be ready in moments.'
+      : `Best to walk over in about ${minMin - 1}–${minMin} minutes.`;
+
+  return {
+    estimatedMinutesMin: minMin,
+    estimatedMinutesMax: maxMin,
+    estimatedTimeLabel: `${minMin}–${maxMin} minutes`,
+    rushLevel,
+    rushReason,
+    pickupAdvice,
+    confidence: 0.88,
+    isMock: true,
+  };
+}
+
+export async function getEtaPrediction(params: EtaPredictionParams): Promise<EtaPredictionResult> {
+  if (env.aiMode === 'mock') {
+    return mockEtaPrediction(params);
+  }
+  try {
+    const prompt = buildEtaPredictionPrompt(params);
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<EtaPredictionResult>(text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse ETA prediction response:', text);
+      return mockEtaPrediction(params);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] ETA prediction call failed:', err);
+    return mockEtaPrediction(params);
+  }
+}
+

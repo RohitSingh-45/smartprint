@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  BarChart3,
   LayoutDashboard,
   ListOrdered,
   Menu,
@@ -36,6 +37,12 @@ const NAV = [
     label: 'Printers',
     icon: Printer,
     match: (path: string) => path.startsWith('/admin/printers'),
+  },
+  {
+    href: '/admin/trends',
+    label: 'Trends & BI',
+    icon: BarChart3,
+    match: (path: string) => path.startsWith('/admin/trends'),
   },
 ];
 

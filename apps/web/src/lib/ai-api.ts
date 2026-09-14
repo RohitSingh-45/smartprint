@@ -205,3 +205,33 @@ export async function fetchInterpretCommand(params: {
   const data = await post<{ result: CommandResult }>('/command', params);
   return data.result;
 }
+
+// ─────────────────────────────────────────────
+// Smart Pickup ETA & Queue Readiness Predictor
+// ─────────────────────────────────────────────
+
+export type EtaPredictionResult = {
+  estimatedMinutesMin: number;
+  estimatedMinutesMax: number;
+  estimatedTimeLabel: string;
+  rushLevel: 'low' | 'moderate' | 'high';
+  rushReason: string;
+  pickupAdvice: string;
+  confidence: number;
+  isMock?: boolean;
+};
+
+export async function fetchEtaPrediction(params: {
+  queuePosition: number;
+  jobsAhead: number;
+  totalPages: number;
+  colorPages: number;
+  bwPages: number;
+  copies: number;
+  paperSize: string;
+  currentStatus: string;
+}): Promise<EtaPredictionResult> {
+  const data = await post<{ prediction: EtaPredictionResult }>('/eta-prediction', params);
+  return data.prediction;
+}
+

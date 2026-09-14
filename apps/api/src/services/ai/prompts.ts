@@ -387,3 +387,57 @@ Respond with ONLY valid JSON:
 }
 `.trim();
 }
+
+// ─────────────────────────────────────────────
+// Smart Pickup ETA & Queue Readiness Predictor
+// ─────────────────────────────────────────────
+
+export type EtaPredictionParams = {
+  queuePosition: number;
+  jobsAhead: number;
+  totalPages: number;
+  colorPages: number;
+  bwPages: number;
+  copies: number;
+  paperSize: string;
+  currentStatus: string;
+  activePrintersCount?: number;
+};
+
+export function buildEtaPredictionPrompt(params: EtaPredictionParams): string {
+  return `
+You are SmartPrint Queue Intelligence AI. A student is tracking their print job on campus.
+Predict the estimated completion time and pickup readiness advisory based on live print queue conditions.
+
+ORDER & QUEUE CONTEXT:
+- Current Job Status: ${params.currentStatus}
+- Queue Position: ${params.queuePosition}
+- Jobs Ahead in Queue: ${params.jobsAhead}
+- User's Print Job: ${params.totalPages} page(s) (${params.colorPages} color, ${params.bwPages} B&W), ${params.copies} cop(ies), ${params.paperSize.toUpperCase()} paper
+- Active Printers in Shop: ${params.activePrintersCount ?? 1}
+
+PRINT SPEED BENCHMARKS:
+- B&W A4: ~20-30 ppm (pages per minute)
+- Color A4: ~10-15 ppm
+- Job setup & handover overhead: ~30-60s per job
+- Jobs ahead take on average ~1-2 min each unless the queue is clear
+
+YOUR TASK:
+Calculate realistic minimum and maximum wait minutes.
+Classify campus rush level ('low' | 'moderate' | 'high').
+Provide clear pickup advice (when the student should walk to the shop counter).
+
+Respond with ONLY valid JSON:
+
+{
+  "estimatedMinutesMin": <number>,
+  "estimatedMinutesMax": <number>,
+  "estimatedTimeLabel": "<e.g. '3–5 minutes' or 'Under 2 minutes' or 'Ready now'>",
+  "rushLevel": "<'low' | 'moderate' | 'high'>",
+  "rushReason": "<1 sentence explanation of current queue conditions>",
+  "pickupAdvice": "<1 sentence advice on when to head to the campus counter>",
+  "confidence": <0.0-1.0>
+}
+`.trim();
+}
+

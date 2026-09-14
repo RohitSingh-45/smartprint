@@ -9,6 +9,7 @@ import {
   getTrendAnalysis,
   classifyPdfVision,
   interpretCommand,
+  getEtaPrediction,
   type OrderSummaryForRAG,
 } from '../services/ai/aiService';
 import { getDashboardStats } from '../services/shop/shop.service';
@@ -347,3 +348,43 @@ export async function commandHandler(
     next(error);
   }
 }
+
+// ─────────────────────────────────────────────
+// Smart Pickup ETA & Queue Readiness Predictor
+// POST /api/ai/eta-prediction
+// ─────────────────────────────────────────────
+
+export async function etaPredictionHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const {
+      queuePosition,
+      jobsAhead,
+      totalPages,
+      colorPages,
+      bwPages,
+      copies,
+      paperSize,
+      currentStatus,
+    } = req.body as Record<string, unknown>;
+
+    const result = await getEtaPrediction({
+      queuePosition: typeof queuePosition === 'number' ? queuePosition : 1,
+      jobsAhead: typeof jobsAhead === 'number' ? jobsAhead : 0,
+      totalPages: typeof totalPages === 'number' ? totalPages : 1,
+      colorPages: typeof colorPages === 'number' ? colorPages : 0,
+      bwPages: typeof bwPages === 'number' ? bwPages : 1,
+      copies: typeof copies === 'number' ? copies : 1,
+      paperSize: typeof paperSize === 'string' ? paperSize : 'a4',
+      currentStatus: typeof currentStatus === 'string' ? currentStatus : 'QUEUED',
+    });
+
+    res.status(200).json({ prediction: result });
+  } catch (error) {
+    next(error);
+  }
+}
+

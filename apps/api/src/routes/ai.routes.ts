@@ -7,6 +7,7 @@ import {
   trendAnalysisHandler,
   classifyPdfHandler,
   commandHandler,
+  etaPredictionHandler,
 } from '../controllers/ai.controller';
 
 const router = Router();
@@ -52,5 +53,11 @@ router.post('/classify-pdf', classifyPdfHandler);
  * Interprets a voice or text command and maps it to a navigation action.
  */
 router.post('/command', commandHandler);
+
+/**
+ * POST /api/ai/eta-prediction
+ * Predicts dynamic queue completion time and pickup readiness advisory.
+ */
+router.post('/eta-prediction', etaPredictionHandler);
 
 export default router;

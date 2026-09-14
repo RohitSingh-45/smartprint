@@ -7,6 +7,7 @@ import { PdfSkeleton } from '@/components/pdf/PdfSkeleton';
 import { PdfToolbar } from '@/components/pdf/PdfToolbar';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { PdfVisionClassifier } from '@/components/ai/PdfVisionClassifier';
 import { loadPdfFromUrl, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from '@/lib/pdf';
 import { savePdfMetaSession } from '@/lib/print-config/storage';
 import { fetchUploadedFile, getUploadContentUrl, type UploadedFileDto } from '@/lib/upload-api';
@@ -182,6 +183,11 @@ export function PdfViewer({ fileId }: Props) {
         </Badge>
         <Badge>{pageCount} pages</Badge>
         <Badge>{file.sizeLabel}</Badge>
+      </div>
+
+      {/* AI Computer Vision Document Classifier */}
+      <div className="mb-4">
+        <PdfVisionClassifier uploadId={fileId} fileName={file.originalName} autoAnalyze={false} />
       </div>
 
       <PdfToolbar
