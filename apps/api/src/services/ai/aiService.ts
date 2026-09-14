@@ -6,6 +6,10 @@ import {
   buildDashboardInsightsPrompt,
   buildOrderRiskPrompt,
   buildSummaryExplainerPrompt,
+  buildTrendAnalysisPrompt,
+  buildPdfVisionPrompt,
+  buildCommandInterpreterPrompt,
+  type OrderSummaryForRAG,
 } from './prompts';
 
 // ─────────────────────────────────────────────
@@ -340,6 +344,279 @@ export async function getSummaryExplainer(
   if (!parsed) {
     console.error('[ai] Failed to parse summary explainer response:', text);
     return mockSummaryExplainer(params);
+  }
+  return parsed;
+}
+
+// ─────────────────────────────────────────────
+// Feature 5: RAG Trend Analysis
+// ─────────────────────────────────────────────
+
+export type TrendItem = {
+  category: 'revenue' | 'volume' | 'quality' | 'efficiency' | 'demand';
+  title: string;
+  insight: string;
+  direction: 'up' | 'down' | 'stable' | 'concern';
+  recommendation: string;
+};
+
+export type TrendAnalysisResult = {
+  period: string;
+  totalOrders: number;
+  totalRevenue: number;
+  trends: TrendItem[];
+  topInsight: string;
+  forecastNote: string;
+  isMock?: boolean;
+};
+
+export { type OrderSummaryForRAG };
+
+function mockTrendAnalysis(orders: OrderSummaryForRAG[], windowDays: number): TrendAnalysisResult {
+  const totalRevenue = orders.reduce((s, o) => s + o.amountPaid, 0);
+  const completed = orders.filter((o) => ['COMPLETED', 'COLLECTED'].includes(o.status)).length;
+  const cancelled = orders.filter((o) => ['CANCELLED', 'REJECTED'].includes(o.status)).length;
+  const failed = orders.filter((o) => o.status === 'FAILED').length;
+  const completionRate = orders.length ? ((completed / orders.length) * 100).toFixed(1) : '0';
+  const colorPages = orders.reduce((s, o) => s + o.colorPages, 0);
+  const totalPages = orders.reduce((s, o) => s + o.totalPages, 0);
+  const colorPct = totalPages ? Math.round((colorPages / totalPages) * 100) : 0;
+  const avgValue = orders.length ? Math.round(totalRevenue / orders.length) : 0;
+  const retryCount = orders.filter((o) => o.printAttempts > 1).length;
+
+  const trends: TrendItem[] = [];
+
+  trends.push({
+    category: 'revenue',
+    title: `₹${totalRevenue.toLocaleString('en-IN')} in ${windowDays} days`,
+    insight: `Total revenue over the last ${windowDays} days is ₹${totalRevenue.toLocaleString('en-IN')} across ${orders.length} orders. Average order value is ₹${avgValue}.`,
+    direction: totalRevenue > 0 ? 'up' : 'stable',
+    recommendation: avgValue < 50
+      ? 'Consider encouraging multi-copy orders — currently avg order value is low.'
+      : 'Avg order value is healthy. Focus on increasing order frequency.',
+  });
+
+  trends.push({
+    category: 'quality',
+    title: `${completionRate}% completion rate`,
+    insight: `${completed} orders completed, ${cancelled} cancelled, ${failed} failed out of ${orders.length} total. ${retryCount} jobs required a retry, indicating ${retryCount > 2 ? 'recurring' : 'occasional'} printer reliability issues.`,
+    direction: parseFloat(completionRate) > 80 ? 'up' : parseFloat(completionRate) > 60 ? 'stable' : 'concern',
+    recommendation: cancelled > completed
+      ? 'High cancellation rate detected. Review wait times — customers may be abandoning orders.'
+      : retryCount > 0
+      ? `${retryCount} jobs needed retries. Check printer maintenance schedule.`
+      : 'Great completion rate! Keep monitoring printer health.',
+  });
+
+  trends.push({
+    category: 'demand',
+    title: `${colorPct}% color demand`,
+    insight: `${colorPct}% of all printed pages were in color across the last ${windowDays} days. ${colorPct > 50 ? 'Color-heavy orders are the norm — ensure color ink is well-stocked.' : 'Most customers prefer B&W — cost-effective and profitable per page.'}`,
+    direction: colorPct > 60 ? 'up' : 'stable',
+    recommendation: colorPct > 60
+      ? 'Stock extra color ink cartridges — demand is high.'
+      : 'Promote color printing for presentations and marketing materials to boost revenue per order.',
+  });
+
+  trends.push({
+    category: 'efficiency',
+    title: 'Throughput analysis',
+    insight: `Processed an average of ${(orders.length / Math.max(windowDays, 1)).toFixed(1)} orders/day. ${orders.length < 5 ? 'Low volume — early stage or off-peak period.' : orders.length < 20 ? 'Moderate volume. Operational capacity is adequate.' : 'High volume. Consider queue management and printer scaling.'}`,
+    direction: orders.length > 10 ? 'up' : 'stable',
+    recommendation: orders.length < 5
+      ? 'Drive more traffic via QR code placement in high-footfall areas.'
+      : 'Consider batch-acceptance windows to speed up throughput during peak hours.',
+  });
+
+  return {
+    period: `${windowDays} days`,
+    totalOrders: orders.length,
+    totalRevenue,
+    trends,
+    topInsight: orders.length === 0
+      ? 'No order history yet. Start accepting orders to see trend analysis.'
+      : `Revenue of ₹${totalRevenue.toLocaleString('en-IN')} with a ${completionRate}% completion rate over ${windowDays} days.`,
+    forecastNote: orders.length > 5
+      ? `Based on current volume, next ${windowDays} days projected at ₹${Math.round(totalRevenue * 1.1).toLocaleString('en-IN')} with stable growth.`
+      : 'Insufficient data for a reliable forecast — keep tracking orders.',
+    isMock: true,
+  };
+}
+
+export async function getTrendAnalysis(
+  orders: OrderSummaryForRAG[],
+  windowDays = 30,
+): Promise<TrendAnalysisResult> {
+  if (env.aiMode === 'mock') {
+    return mockTrendAnalysis(orders, windowDays);
+  }
+  const prompt = buildTrendAnalysisPrompt({ orders, windowDays });
+  const text = await callGemini(prompt);
+  const parsed = safeParseJson<TrendAnalysisResult>(text);
+  if (!parsed) {
+    console.error('[ai] Failed to parse trend analysis response:', text);
+    return mockTrendAnalysis(orders, windowDays);
+  }
+  return parsed;
+}
+
+// ─────────────────────────────────────────────
+// Feature 6: Computer Vision PDF Classification
+// ─────────────────────────────────────────────
+
+export type PdfClassificationResult = {
+  documentType: string;
+  contentDescription: string;
+  colorRecommendation: 'all_bw' | 'all_color' | 'mixed';
+  colorReason: string;
+  orientationHint: 'portrait' | 'landscape';
+  contentDensity: 'text_heavy' | 'image_heavy' | 'mixed';
+  printQualityTip: string;
+  confidence: number;
+  isMock?: boolean;
+};
+
+function mockPdfVision(fileName: string): PdfClassificationResult {
+  const name = fileName.toLowerCase();
+  const isResume = name.includes('resume') || name.includes('cv');
+  const isSlides = name.includes('slide') || name.includes('ppt') || name.includes('deck');
+  const isInvoice = name.includes('invoice') || name.includes('bill');
+  const isForm = name.includes('form') || name.includes('application');
+  const isReport = name.includes('report') || name.includes('thesis') || name.includes('paper');
+
+  if (isResume) {
+    return { documentType: 'Professional Resume / CV', contentDescription: 'A professional resume with contact information, work experience, and skills sections. Text-heavy with clean single-column layout.', colorRecommendation: 'all_bw', colorReason: 'Resume content is predominantly text; B&W is professional and cost-effective.', orientationHint: 'portrait', contentDensity: 'text_heavy', printQualityTip: 'Use high-quality plain paper for a professional finish.', confidence: 0.92, isMock: true };
+  }
+  if (isSlides) {
+    return { documentType: 'Presentation Slides', contentDescription: 'A slide deck with titled slides, bullet points, and likely charts or visual elements. Multi-column or full-bleed layout.', colorRecommendation: 'all_color', colorReason: 'Slides typically use color themes, charts, and images that lose context in B&W.', orientationHint: 'landscape', contentDensity: 'mixed', printQualityTip: 'Print at highest DPI for sharp chart and image reproduction.', confidence: 0.88, isMock: true };
+  }
+  if (isInvoice) {
+    return { documentType: 'Financial Invoice / Bill', contentDescription: 'A structured invoice document with line items, totals, and company branding. Table-heavy layout.', colorRecommendation: 'all_bw', colorReason: 'Financial documents are table-driven and fully readable in B&W.', orientationHint: 'portrait', contentDensity: 'text_heavy', printQualityTip: 'Ensure all table borders are legible — use standard DPI.', confidence: 0.95, isMock: true };
+  }
+  if (isForm) {
+    return { documentType: 'Official Form / Application', contentDescription: 'A structured form with input fields and labels. May include checkboxes, signature lines, and instructional text.', colorRecommendation: 'all_bw', colorReason: 'Forms are functional documents — B&W prints clearly and saves cost.', orientationHint: 'portrait', contentDensity: 'text_heavy', printQualityTip: 'Verify all checkbox borders are visible before printing multiple copies.', confidence: 0.9, isMock: true };
+  }
+  if (isReport) {
+    return { documentType: 'Academic / Technical Report', contentDescription: 'A multi-page report or paper with abstract, headings, paragraphs, and possibly charts or figures.', colorRecommendation: 'mixed', colorReason: 'Reports often have color charts or figures; mixed mode saves cost on text-only pages.', orientationHint: 'portrait', contentDensity: 'text_heavy', printQualityTip: 'Use mixed color mode — color for figures, B&W for text pages.', confidence: 0.85, isMock: true };
+  }
+  return { documentType: 'General Document', contentDescription: 'A general-purpose document. Content detected but no specific document type pattern identified from filename.', colorRecommendation: 'all_bw', colorReason: 'Default recommendation is B&W for cost savings unless color is essential.', orientationHint: 'portrait', contentDensity: 'mixed', printQualityTip: 'Preview all pages before printing to confirm color needs.', confidence: 0.65, isMock: true };
+}
+
+export async function classifyPdfVision(
+  pdfBuffer: Buffer,
+  fileName: string,
+): Promise<PdfClassificationResult> {
+  if (env.aiMode === 'mock') {
+    return mockPdfVision(fileName);
+  }
+  try {
+    const client = getClient();
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const prompt = buildPdfVisionPrompt();
+    // Send PDF as inline data to Gemini Vision
+    const result = await model.generateContent([
+      prompt,
+      {
+        inlineData: {
+          mimeType: 'application/pdf',
+          data: pdfBuffer.toString('base64'),
+        },
+      },
+    ]);
+    const text = result.response.text();
+    const parsed = safeParseJson<PdfClassificationResult>(text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse PDF vision response:', text);
+      return mockPdfVision(fileName);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] PDF vision call failed:', err);
+    return mockPdfVision(fileName);
+  }
+}
+
+// ─────────────────────────────────────────────
+// Feature 7: Voice / Text Command Interpreter
+// ─────────────────────────────────────────────
+
+export type CommandResult = {
+  understood: boolean;
+  action: 'navigate' | 'filter_orders' | 'refresh' | 'unknown';
+  route: string | null;
+  filter: string | null;
+  response: string;
+  confidence: number;
+  isMock?: boolean;
+};
+
+const ROUTE_MAP: Record<string, string> = {
+  dashboard: '/admin',
+  home: '/admin',
+  overview: '/admin',
+  orders: '/admin/orders',
+  'pending orders': '/admin/orders',
+  queue: '/admin/queue',
+  'print queue': '/admin/queue',
+  printers: '/admin/printers',
+  'printer status': '/admin/printers',
+  upload: '/print/upload',
+};
+
+const STATUS_MAP: Record<string, string> = {
+  pending: 'pending',
+  paid: 'paid',
+  accepted: 'accepted',
+  queued: 'queued',
+  ready: 'ready',
+  printing: 'printing',
+  completed: 'completed',
+  cancelled: 'cancelled',
+  rejected: 'cancelled',
+  failed: 'failed',
+  held: 'held',
+};
+
+function mockCommandInterpreter(command: string): CommandResult {
+  const lower = command.toLowerCase().trim();
+
+  // Check refresh
+  if (lower === 'refresh' || lower === 'reload' || lower.includes('refresh')) {
+    return { understood: true, action: 'refresh', route: null, filter: null, response: "Refreshing the current page.", confidence: 0.95, isMock: true };
+  }
+
+  // Check navigation routes
+  for (const [key, route] of Object.entries(ROUTE_MAP)) {
+    if (lower.includes(key)) {
+      // Check for status filter inside orders commands
+      if (route === '/admin/orders') {
+        for (const [statusKey, statusVal] of Object.entries(STATUS_MAP)) {
+          if (lower.includes(statusKey)) {
+            return { understood: true, action: 'filter_orders', route: '/admin/orders', filter: statusVal, response: `Showing ${statusKey} orders.`, confidence: 0.9, isMock: true };
+          }
+        }
+      }
+      return { understood: true, action: 'navigate', route, filter: null, response: `Navigating to ${route.replace('/admin/', '').replace('/admin', 'dashboard')}.`, confidence: 0.9, isMock: true };
+    }
+  }
+
+  return { understood: false, action: 'unknown', route: null, filter: null, response: "Sorry, I didn't understand that command. Try saying 'show orders', 'go to queue', or 'open printers'.", confidence: 0.1, isMock: true };
+}
+
+export async function interpretCommand(params: {
+  command: string;
+  currentPage: string;
+}): Promise<CommandResult> {
+  if (env.aiMode === 'mock') {
+    return mockCommandInterpreter(params.command);
+  }
+  const availableRoutes = Object.values(ROUTE_MAP);
+  const prompt = buildCommandInterpreterPrompt({ ...params, availableRoutes });
+  const text = await callGemini(prompt);
+  const parsed = safeParseJson<CommandResult>(text);
+  if (!parsed) {
+    console.error('[ai] Failed to parse command response:', text);
+    return mockCommandInterpreter(params.command);
   }
   return parsed;
 }

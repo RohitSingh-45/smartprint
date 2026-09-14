@@ -4,6 +4,9 @@ import {
   dashboardInsightsHandler,
   orderRiskHandler,
   summaryExplainerHandler,
+  trendAnalysisHandler,
+  classifyPdfHandler,
+  commandHandler,
 } from '../controllers/ai.controller';
 
 const router = Router();
@@ -31,5 +34,23 @@ router.post('/order-risk', orderRiskHandler);
  * Generate a plain-English explanation of a print order for customers.
  */
 router.post('/summary-explainer', summaryExplainerHandler);
+
+/**
+ * GET /api/ai/trend-analysis?days=30
+ * RAG over full order history — identifies business trends and patterns.
+ */
+router.get('/trend-analysis', trendAnalysisHandler);
+
+/**
+ * POST /api/ai/classify-pdf
+ * Computer vision: reads the uploaded PDF and classifies its content and print needs.
+ */
+router.post('/classify-pdf', classifyPdfHandler);
+
+/**
+ * POST /api/ai/command
+ * Interprets a voice or text command and maps it to a navigation action.
+ */
+router.post('/command', commandHandler);
 
 export default router;

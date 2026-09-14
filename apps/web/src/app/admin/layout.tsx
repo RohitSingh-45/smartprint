@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { AdminSidebar, AdminTopbar } from '@/components/admin/AdminChrome';
+import { VoiceCommandBar } from '@/components/ai/VoiceCommandBar';
 import { cn } from '@/lib/cn';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="flex min-w-0 flex-1 flex-col">
           <AdminTopbar onMenuClick={() => setOpen(true)} />
           <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+          <VoiceCommandBar />
         </div>
       </div>
     </div>

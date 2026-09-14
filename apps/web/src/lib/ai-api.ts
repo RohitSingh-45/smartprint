@@ -132,3 +132,76 @@ export async function fetchSummaryExplainer(params: {
   const data = await post<{ explanation: SummaryExplainerResult }>('/summary-explainer', params);
   return data.explanation;
 }
+
+// ─────────────────────────────────────────────
+// RAG Trend Analysis
+// ─────────────────────────────────────────────
+
+export type TrendItem = {
+  category: 'revenue' | 'volume' | 'quality' | 'efficiency' | 'demand';
+  title: string;
+  insight: string;
+  direction: 'up' | 'down' | 'stable' | 'concern';
+  recommendation: string;
+};
+
+export type TrendAnalysisResult = {
+  period: string;
+  totalOrders: number;
+  totalRevenue: number;
+  trends: TrendItem[];
+  topInsight: string;
+  forecastNote: string;
+  isMock?: boolean;
+};
+
+export async function fetchTrendAnalysis(days = 30): Promise<TrendAnalysisResult> {
+  const data = await get<{ trends: TrendAnalysisResult }>(`/trend-analysis?days=${days}`);
+  return data.trends;
+}
+
+// ─────────────────────────────────────────────
+// Computer Vision PDF Classification
+// ─────────────────────────────────────────────
+
+export type PdfClassificationResult = {
+  documentType: string;
+  contentDescription: string;
+  colorRecommendation: 'all_bw' | 'all_color' | 'mixed';
+  colorReason: string;
+  orientationHint: 'portrait' | 'landscape';
+  contentDensity: 'text_heavy' | 'image_heavy' | 'mixed';
+  printQualityTip: string;
+  confidence: number;
+  isMock?: boolean;
+};
+
+export async function fetchPdfClassification(params: {
+  uploadId: string;
+  fileName: string;
+}): Promise<PdfClassificationResult> {
+  const data = await post<{ classification: PdfClassificationResult }>('/classify-pdf', params);
+  return data.classification;
+}
+
+// ─────────────────────────────────────────────
+// Voice / Text Command
+// ─────────────────────────────────────────────
+
+export type CommandResult = {
+  understood: boolean;
+  action: 'navigate' | 'filter_orders' | 'refresh' | 'unknown';
+  route: string | null;
+  filter: string | null;
+  response: string;
+  confidence: number;
+  isMock?: boolean;
+};
+
+export async function fetchInterpretCommand(params: {
+  command: string;
+  currentPage: string;
+}): Promise<CommandResult> {
+  const data = await post<{ result: CommandResult }>('/command', params);
+  return data.result;
+}
