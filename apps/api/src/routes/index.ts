@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import agentRouter from './agent.routes';
+import aiRouter from './ai.routes';
 import draftRouter from './draft.routes';
 import healthRouter from './health.routes';
 import paymentRouter from './payment.routes';
@@ -20,5 +21,6 @@ router.use('/queue', queueRouter);
 router.use('/agent', agentRouter);
 router.use('/printers', printerRouter);
 router.use('/tracking', trackingRouter);
+router.use('/ai', aiRouter);
 
 export default router;

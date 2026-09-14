@@ -8,9 +8,11 @@ import { PageModeGrid } from '@/components/print-config/PageModeGrid';
 import { PageRangeControl } from '@/components/print-config/PageRangeControl';
 import { PaperSizeControl } from '@/components/print-config/PaperSizeControl';
 import { DraftStatusCard } from '@/components/draft/DraftStatusCard';
+import { PrintConfigAdvisor } from '@/components/ai/PrintConfigAdvisor';
 import { useOrderDraft } from '@/hooks/useOrderDraft';
 import { usePrintConfig } from '@/hooks/usePrintConfig';
 import { EmptyState } from '@/components/ui/EmptyState';
+import type { ConfigAdvisorResult } from '@/lib/ai-api';
 import { FileText } from 'lucide-react';
 
 export function PrintConfigPanel() {
@@ -60,6 +62,27 @@ export function PrintConfigPanel() {
       ? (summary.warnings.find((w) => w.id === 'range-invalid')?.message ?? null)
       : null;
 
+  // Compute color vs B&W page counts from current config
+  const colorPageCount = Object.values(config.pageModes).filter((m) => m === 'color').length;
+  const bwPageCount = config.totalPages - colorPageCount;
+
+  function handleApplyAiSuggestion(advice: ConfigAdvisorResult) {
+    if (advice.suggestedColorMode === 'all_bw') {
+      setAllPageModes('bw');
+    } else if (advice.suggestedColorMode === 'all_color') {
+      setAllPageModes('color');
+    }
+    if (advice.suggestedCopies >= 1) {
+      setCopies(advice.suggestedCopies);
+    }
+    if (advice.suggestedPaperSize) {
+      setPaperSize(advice.suggestedPaperSize);
+    }
+    if (advice.suggestedOrientation) {
+      setOrientation(advice.suggestedOrientation);
+    }
+  }
+
   return (
     <div className="flex flex-1 flex-col gap-4 pb-24">
       <DraftStatusCard
@@ -72,6 +95,18 @@ export function PrintConfigPanel() {
         onDelete={() => void draftState.removeDraft()}
         onRefresh={() => void draftState.refresh()}
         compact
+      />
+
+      {/* AI Print Config Advisor */}
+      <PrintConfigAdvisor
+        fileName={config.fileName ?? 'document.pdf'}
+        totalPages={config.totalPages}
+        colorPageCount={colorPageCount}
+        bwPageCount={bwPageCount}
+        currentCopies={config.copies}
+        currentPaperSize={config.paperSize}
+        currentOrientation={config.orientation}
+        onApply={handleApplyAiSuggestion}
       />
 
       <section className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-xs)] sm:p-5">

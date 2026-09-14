@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Inbox } from 'lucide-react';
 import { OrderActions } from '@/components/admin/OrderActions';
 import { OrderStatusBadge } from '@/components/admin/OrderStatusBadge';
+import { OrderRiskBadge } from '@/components/ai/OrderRiskBadge';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import {
@@ -46,7 +47,22 @@ export function OrdersTable({ orders, onAction }: Props) {
                 <p className="truncate font-medium">{order.print.fileName}</p>
                 <p className="mt-1 font-mono text-xs text-[var(--muted)]">{order.id.slice(0, 8)}…</p>
               </div>
-              <OrderStatusBadge status={order.status} />
+              <div className="flex flex-col items-end gap-1">
+                <OrderStatusBadge status={order.status} />
+                <OrderRiskBadge
+                  orderId={order.id}
+                  status={order.status}
+                  customerName={order.customerName}
+                  amountPaid={order.amountPaid}
+                  printAttempts={order.printAttempts ?? 0}
+                  lastPrintError={order.lastPrintError ?? null}
+                  queuePosition={order.queuePosition}
+                  totalPages={order.print.totalPages}
+                  copies={order.print.copies}
+                  colorPages={order.print.colorPages.length}
+                  bwPages={order.print.bwPages.length}
+                />
+              </div>
             </div>
             <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
               <div>
@@ -133,7 +149,22 @@ export function OrdersTable({ orders, onAction }: Props) {
                   <p className="text-xs uppercase text-[var(--muted)]">{order.paymentStatus}</p>
                 </td>
                 <td className="px-4 py-3 align-top">
-                  <OrderStatusBadge status={order.status} />
+                  <div className="flex flex-col items-start gap-1">
+                    <OrderStatusBadge status={order.status} />
+                    <OrderRiskBadge
+                      orderId={order.id}
+                      status={order.status}
+                      customerName={order.customerName}
+                      amountPaid={order.amountPaid}
+                      printAttempts={order.printAttempts ?? 0}
+                      lastPrintError={order.lastPrintError ?? null}
+                      queuePosition={order.queuePosition}
+                      totalPages={order.print.totalPages}
+                      copies={order.print.copies}
+                      colorPages={order.print.colorPages.length}
+                      bwPages={order.print.bwPages.length}
+                    />
+                  </div>
                 </td>
                 <td className="px-4 py-3 align-top text-xs text-[var(--muted)]">
                   {formatDateTime(order.createdAt)}

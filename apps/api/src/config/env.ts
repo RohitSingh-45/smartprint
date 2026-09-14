@@ -37,6 +37,10 @@ const envSchema = z.object({
   PAYMENT_PROVIDER: z.enum(['mock', 'razorpay']).default('mock'),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
+  /** Google Gemini API key — optional; required only when AI_MODE=real. */
+  GEMINI_API_KEY: z.string().optional(),
+  /** AI execution mode: 'real' calls Gemini, 'mock' returns deterministic demo responses. */
+  AI_MODE: z.enum(['real', 'mock']).default('mock'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -111,6 +115,8 @@ export const env = {
   paymentProvider: parsed.data.PAYMENT_PROVIDER,
   razorpayKeyId: parsed.data.RAZORPAY_KEY_ID,
   razorpayKeySecret: parsed.data.RAZORPAY_KEY_SECRET,
+  geminiApiKey: parsed.data.GEMINI_API_KEY,
+  aiMode: parsed.data.AI_MODE,
   isProduction: parsed.data.NODE_ENV === 'production',
   /**
    * True when running on a serverless platform with a read-only deployment

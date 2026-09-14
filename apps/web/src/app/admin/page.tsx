@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { StatCard } from '@/components/admin/StatCard';
+import { AiInsightsPanel } from '@/components/ai/AiInsightsPanel';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { fetchDashboardStats, formatMoney } from '@/lib/shop/shop-api';
@@ -111,6 +112,9 @@ export default function AdminDashboardPage() {
           />
         </div>
       )}
+
+      {/* AI Insights Panel */}
+      <AiInsightsPanel />
 
       <section className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-xs)] sm:p-6">
         <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">

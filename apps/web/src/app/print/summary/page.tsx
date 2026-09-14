@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { DraftStatusCard } from '@/components/draft/DraftStatusCard';
 import { PrintSummaryCard } from '@/components/print-config/PrintSummaryCard';
 import { ConfigWarnings } from '@/components/print-config/ConfigWarnings';
+import { PrintSummaryExplainer } from '@/components/ai/PrintSummaryExplainer';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
 import {
@@ -107,6 +108,20 @@ export default function SummaryPage() {
           fileName={config.fileName}
           authoritativePrice={draft?.estimatedPrice}
         />
+
+        {/* AI Summary Explainer */}
+        <PrintSummaryExplainer
+          fileName={config.fileName ?? 'document.pdf'}
+          totalPages={config.totalPages}
+          printablePages={summary.printablePages.length}
+          colorPages={summary.colorPages}
+          bwPages={summary.bwPages}
+          copies={summary.copies}
+          paperSize={summary.paperSize}
+          orientation={summary.orientation}
+          estimatedCost={draft?.estimatedPrice ?? summary.estimatedCost}
+        />
+
         <ConfigWarnings warnings={summary.warnings} />
 
         <div className="flex flex-col gap-3 sm:flex-row">
