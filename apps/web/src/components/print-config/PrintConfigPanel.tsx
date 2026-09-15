@@ -12,6 +12,7 @@ import { PrintConfigAdvisor } from '@/components/ai/PrintConfigAdvisor';
 import { useOrderDraft } from '@/hooks/useOrderDraft';
 import { usePrintConfig } from '@/hooks/usePrintConfig';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { PAPER_SIZES } from '@/lib/print-config/constants';
 import type { ConfigAdvisorResult } from '@/lib/ai-api';
 import { FileText } from 'lucide-react';
 
@@ -76,7 +77,10 @@ export function PrintConfigPanel() {
       setCopies(advice.suggestedCopies);
     }
     if (advice.suggestedPaperSize) {
-      setPaperSize(advice.suggestedPaperSize);
+      const enabledSizes = PAPER_SIZES.filter((s) => s.enabled).map((s) => s.id);
+      if (enabledSizes.includes(advice.suggestedPaperSize)) {
+        setPaperSize(advice.suggestedPaperSize);
+      }
     }
     if (advice.suggestedOrientation) {
       setOrientation(advice.suggestedOrientation);

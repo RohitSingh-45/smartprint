@@ -46,7 +46,7 @@ Respond with ONLY valid JSON, no markdown, no explanation outside the JSON objec
   "recommendation": "<2-3 sentence actionable recommendation>",
   "suggestedColorMode": "<'all_bw' | 'all_color' | 'mixed'>",
   "suggestedCopies": <number>,
-  "suggestedPaperSize": "<'a4' | 'a3' | 'letter' | 'legal'>",
+  "suggestedPaperSize": "<'a4'>",
   "suggestedOrientation": "<'portrait' | 'landscape'>",
   "costSaving": "<brief note on cost, e.g. 'Switching all pages to B&W saves ₹48'>",
   "tips": ["<tip 1>", "<tip 2>"]

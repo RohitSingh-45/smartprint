@@ -153,23 +153,29 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
 
           {/* Chips row */}
           <div className="flex flex-wrap gap-2">
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold',
-                colorBadge[result.colorRecommendation].className,
-              )}
-            >
-              {colorBadge[result.colorRecommendation].label}
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs">
-              {(() => {
-                const Icon = densityIcon[result.contentDensity];
-                return <Icon className="h-3 w-3" />;
-              })()}
-              {result.contentDensity.replace('_', '-')}
-            </span>
+            {(() => {
+              const badge = colorBadge[result.colorRecommendation] ?? colorBadge.all_bw;
+              const Icon = (result.contentDensity && densityIcon[result.contentDensity]) ? densityIcon[result.contentDensity] : FileText;
+              const densityLabel = result.contentDensity ? result.contentDensity.replace('_', '-') : 'standard';
+              return (
+                <>
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold',
+                      badge.className,
+                    )}
+                  >
+                    {badge.label}
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs">
+                    <Icon className="h-3 w-3" />
+                    {densityLabel}
+                  </span>
+                </>
+              );
+            })()}
             <span className="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs">
-              {result.orientationHint}
+              {result.orientationHint || 'portrait'}
             </span>
           </div>
 

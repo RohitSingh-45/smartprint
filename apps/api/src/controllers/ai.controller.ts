@@ -1,6 +1,4 @@
 import type { NextFunction, Request, Response } from 'express';
-import { promises as fs } from 'fs';
-import path from 'path';
 import {
   getConfigAdvisor,
   getDashboardInsights,
@@ -14,7 +12,7 @@ import {
 } from '../services/ai/aiService';
 import { getDashboardStats } from '../services/shop/shop.service';
 import { getOrderStore } from '../services/order';
-import { env, resolveStorageDir } from '../config/env';
+import { getUploadPdfContent, UploadValidationError } from '../services/upload.service';
 
 // ─────────────────────────────────────────────
 // Print Config Advisor
@@ -300,23 +298,35 @@ export async function classifyPdfHandler(
 ): Promise<void> {
   try {
     const { uploadId, fileName } = req.body as { uploadId?: string; fileName?: string };
-    if (!uploadId) {
+    if (!uploadId || typeof uploadId !== 'string') {
       res.status(400).json({ error: 'uploadId is required.', code: 'INVALID_INPUT' });
       return;
     }
 
-    const uploadDir = resolveStorageDir(env.uploadDir);
-    const pdfPath = path.join(uploadDir, `${uploadId}.pdf`);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uploadId)) {
+      res.status(400).json({ error: 'Invalid uploadId format.', code: 'INVALID_ID' });
+      return;
+    }
 
     let pdfBuffer: Buffer;
+    let targetFileName = typeof fileName === 'string' ? fileName : 'document.pdf';
+
     try {
-      pdfBuffer = await fs.readFile(pdfPath);
-    } catch {
+      const content = await getUploadPdfContent(uploadId);
+      pdfBuffer = content.buffer;
+      if (content.metadata?.originalName) {
+        targetFileName = content.metadata.originalName;
+      }
+    } catch (err) {
+      if (err instanceof UploadValidationError) {
+        res.status(err.status).json({ error: err.message, code: err.code });
+        return;
+      }
       res.status(404).json({ error: 'Upload file not found.', code: 'NOT_FOUND' });
       return;
     }
 
-    const result = await classifyPdfVision(pdfBuffer, fileName ?? 'document.pdf');
+    const result = await classifyPdfVision(pdfBuffer, targetFileName);
     res.status(200).json({ classification: result });
   } catch (error) {
     next(error);

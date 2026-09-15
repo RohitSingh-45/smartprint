@@ -21,6 +21,9 @@ type Props = {
   waitingMs?: number | null;
 };
 
+const riskCache = new Map<string, OrderRiskResult>();
+const inFlightPromises = new Map<string, Promise<OrderRiskResult>>();
+
 export function OrderRiskBadge({
   orderId,
   status,
@@ -40,26 +43,39 @@ export function OrderRiskBadge({
   const [showTooltip, setShowTooltip] = useState(false);
 
   const analyze = useCallback(async () => {
+    const cacheKey = `${orderId}:${status}:${printAttempts}:${lastPrintError ?? ''}:${queuePosition ?? ''}`;
+    if (riskCache.has(cacheKey)) {
+      setResult(riskCache.get(cacheKey)!);
+      return;
+    }
+
     setLoading(true);
     try {
-      const risk = await fetchOrderRisk({
-        orderId,
-        status,
-        customerName,
-        amountPaid,
-        printAttempts,
-        lastPrintError,
-        queuePosition,
-        totalPages,
-        copies,
-        colorPages,
-        bwPages,
-        waitingTimeMinutes: waitingMs != null ? Math.round(waitingMs / 60000) : null,
-      });
+      let promise = inFlightPromises.get(cacheKey);
+      if (!promise) {
+        promise = fetchOrderRisk({
+          orderId,
+          status,
+          customerName,
+          amountPaid,
+          printAttempts,
+          lastPrintError,
+          queuePosition,
+          totalPages,
+          copies,
+          colorPages,
+          bwPages,
+          waitingTimeMinutes: waitingMs != null ? Math.round(waitingMs / 60000) : null,
+        });
+        inFlightPromises.set(cacheKey, promise);
+      }
+      const risk = await promise;
+      riskCache.set(cacheKey, risk);
       setResult(risk);
     } catch {
       // silently fail — risk badge is non-critical
     } finally {
+      inFlightPromises.delete(cacheKey);
       setLoading(false);
     }
   }, [orderId, status, customerName, amountPaid, printAttempts, lastPrintError, queuePosition, totalPages, copies, colorPages, bwPages, waitingMs]);

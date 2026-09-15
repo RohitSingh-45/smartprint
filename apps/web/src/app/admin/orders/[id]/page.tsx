@@ -101,7 +101,7 @@ export default function AdminOrderDetailPage() {
             type="button"
             size="sm"
             icon={ExternalLink}
-            onClick={() => window.open(pdfUrl, '_blank', 'noopener,noreferrer')}
+            onClick={() => window.open(pdfUrl, '_blank', 'noopener')}
           >
             View PDF
           </Button>

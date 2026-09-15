@@ -124,7 +124,7 @@ export const env = {
    * env var, or from a production `NODE_ENV` (covers other serverless targets
    * such as AWS Lambda where the same read-only constraint applies).
    */
-  isServerless: Boolean(process.env.VERCEL) || parsed.data.NODE_ENV === 'production',
+  isServerless: Boolean(process.env.VERCEL) || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME),
 } as const;
 
 /**

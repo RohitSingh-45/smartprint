@@ -204,6 +204,10 @@ export async function getShopOrder(id: string): Promise<ShopOrderDto> {
 }
 
 export async function applyOrderAction(id: string, action: OrderAction): Promise<ShopOrderDto> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
+    throw new ShopError('Invalid order id.', 400, 'INVALID_ID');
+  }
+
   if (!(ORDER_ACTIONS as readonly string[]).includes(action)) {
     throw new ShopError('Unknown order action.', 400, 'INVALID_ACTION');
   }

@@ -173,7 +173,7 @@ function TrendCard({ trend }: { trend: TrendItem }) {
   } as const;
 
   const Icon = categoryIcons[trend.category] ?? BarChart3;
-  const dir = directionConfig[trend.direction];
+  const dir = directionConfig[trend.direction] ?? directionConfig.stable;
   const DirIcon = dir.icon;
 
   return (

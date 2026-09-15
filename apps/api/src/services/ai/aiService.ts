@@ -138,7 +138,7 @@ function mockConfigAdvisor(params: {
     recommendation,
     suggestedColorMode,
     suggestedCopies: params.currentCopies,
-    suggestedPaperSize: params.currentPaperSize as ConfigAdvisorResult['suggestedPaperSize'],
+    suggestedPaperSize: 'a4',
     suggestedOrientation: isPresentation ? 'landscape' : 'portrait',
     costSaving: colorSaving > 0 && suggestedColorMode === 'all_bw'
       ? `Switching ${params.colorPageCount} color pages to B&W saves ₹${colorSaving}`
@@ -285,15 +285,20 @@ export async function getConfigAdvisor(params: ConfigAdvisorParams): Promise<Con
     return mockConfigAdvisor(params);
   }
 
-  const prompt = buildConfigAdvisorPrompt(params);
-  const text = await callGemini(prompt);
-  const parsed = safeParseJson<ConfigAdvisorResult>(text);
+  try {
+    const prompt = buildConfigAdvisorPrompt(params);
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<ConfigAdvisorResult>(text);
 
-  if (!parsed) {
-    console.error('[ai] Failed to parse config advisor response:', text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse config advisor response:', text);
+      return mockConfigAdvisor(params);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] Config advisor call failed, falling back to mock:', err);
     return mockConfigAdvisor(params);
   }
-  return parsed;
 }
 
 export async function getDashboardInsights(
@@ -303,15 +308,20 @@ export async function getDashboardInsights(
     return mockDashboardInsights(params);
   }
 
-  const prompt = buildDashboardInsightsPrompt(params);
-  const text = await callGemini(prompt);
-  const parsed = safeParseJson<DashboardInsightsResult>(text);
+  try {
+    const prompt = buildDashboardInsightsPrompt(params);
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<DashboardInsightsResult>(text);
 
-  if (!parsed) {
-    console.error('[ai] Failed to parse dashboard insights response:', text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse dashboard insights response:', text);
+      return mockDashboardInsights(params);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] Dashboard insights call failed, falling back to mock:', err);
     return mockDashboardInsights(params);
   }
-  return parsed;
 }
 
 export async function getOrderRisk(
@@ -321,15 +331,20 @@ export async function getOrderRisk(
     return mockOrderRisk(params);
   }
 
-  const prompt = buildOrderRiskPrompt(params);
-  const text = await callGemini(prompt);
-  const parsed = safeParseJson<OrderRiskResult>(text);
+  try {
+    const prompt = buildOrderRiskPrompt(params);
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<OrderRiskResult>(text);
 
-  if (!parsed) {
-    console.error('[ai] Failed to parse order risk response:', text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse order risk response:', text);
+      return mockOrderRisk(params);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] Order risk call failed, falling back to mock:', err);
     return mockOrderRisk(params);
   }
-  return parsed;
 }
 
 export async function getSummaryExplainer(
@@ -339,15 +354,20 @@ export async function getSummaryExplainer(
     return mockSummaryExplainer(params);
   }
 
-  const prompt = buildSummaryExplainerPrompt(params);
-  const text = await callGemini(prompt);
-  const parsed = safeParseJson<SummaryExplainerResult>(text);
+  try {
+    const prompt = buildSummaryExplainerPrompt(params);
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<SummaryExplainerResult>(text);
 
-  if (!parsed) {
-    console.error('[ai] Failed to parse summary explainer response:', text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse summary explainer response:', text);
+      return mockSummaryExplainer(params);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] Summary explainer call failed, falling back to mock:', err);
     return mockSummaryExplainer(params);
   }
-  return parsed;
 }
 
 // ─────────────────────────────────────────────
@@ -452,14 +472,19 @@ export async function getTrendAnalysis(
   if (env.aiMode === 'mock') {
     return mockTrendAnalysis(orders, windowDays);
   }
-  const prompt = buildTrendAnalysisPrompt({ orders, windowDays });
-  const text = await callGemini(prompt);
-  const parsed = safeParseJson<TrendAnalysisResult>(text);
-  if (!parsed) {
-    console.error('[ai] Failed to parse trend analysis response:', text);
+  try {
+    const prompt = buildTrendAnalysisPrompt({ orders, windowDays });
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<TrendAnalysisResult>(text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse trend analysis response:', text);
+      return mockTrendAnalysis(orders, windowDays);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] Trend analysis call failed, falling back to mock:', err);
     return mockTrendAnalysis(orders, windowDays);
   }
-  return parsed;
 }
 
 // ─────────────────────────────────────────────
@@ -615,15 +640,20 @@ export async function interpretCommand(params: {
   if (env.aiMode === 'mock') {
     return mockCommandInterpreter(params.command);
   }
-  const availableRoutes = Object.values(ROUTE_MAP);
-  const prompt = buildCommandInterpreterPrompt({ ...params, availableRoutes });
-  const text = await callGemini(prompt);
-  const parsed = safeParseJson<CommandResult>(text);
-  if (!parsed) {
-    console.error('[ai] Failed to parse command response:', text);
+  try {
+    const availableRoutes = Object.values(ROUTE_MAP);
+    const prompt = buildCommandInterpreterPrompt({ ...params, availableRoutes });
+    const text = await callGemini(prompt);
+    const parsed = safeParseJson<CommandResult>(text);
+    if (!parsed) {
+      console.error('[ai] Failed to parse command response:', text);
+      return mockCommandInterpreter(params.command);
+    }
+    return parsed;
+  } catch (err) {
+    console.error('[ai] Command interpreter call failed, falling back to mock:', err);
     return mockCommandInterpreter(params.command);
   }
-  return parsed;
 }
 
 // ─────────────────────────────────────────────
@@ -643,6 +673,32 @@ export type EtaPredictionResult = {
 
 function mockEtaPrediction(params: EtaPredictionParams): EtaPredictionResult {
   const status = params.currentStatus.toUpperCase();
+  if (['CANCELLED', 'REJECTED'].includes(status)) {
+    return {
+      estimatedMinutesMin: 0,
+      estimatedMinutesMax: 0,
+      estimatedTimeLabel: 'Order cancelled',
+      rushLevel: 'low',
+      rushReason: 'This order was cancelled and is not being printed.',
+      pickupAdvice: 'Please place a new print order if you still need your document printed.',
+      confidence: 1.0,
+      isMock: true,
+    };
+  }
+
+  if (['FAILED'].includes(status)) {
+    return {
+      estimatedMinutesMin: 0,
+      estimatedMinutesMax: 0,
+      estimatedTimeLabel: 'Printer issue',
+      rushLevel: 'high',
+      rushReason: 'Printing encountered an error at the shop.',
+      pickupAdvice: 'Please check with the shop counter staff for assistance.',
+      confidence: 0.95,
+      isMock: true,
+    };
+  }
+
   if (['COMPLETED', 'COLLECTED'].includes(status)) {
     return {
       estimatedMinutesMin: 0,

@@ -87,7 +87,7 @@ export function OrdersTable({ orders, onAction }: Props) {
               <a
                 href={`${API_URL}/api/uploads/${order.print.uploadId}/content`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener"
                 className="inline-flex h-9 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 text-sm font-medium"
               >
                 View PDF
@@ -177,7 +177,7 @@ export function OrdersTable({ orders, onAction }: Props) {
                     <a
                       href={`${API_URL}/api/uploads/${order.print.uploadId}/content`}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener"
                       className="inline-flex h-9 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 text-sm font-medium"
                     >
                       PDF

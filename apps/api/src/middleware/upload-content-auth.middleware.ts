@@ -17,7 +17,11 @@ export function requireUploadContentAccess(
     req.header('x-agent-token') ||
     req.header('authorization')?.replace(/^Bearer\s+/i, '');
 
-  if (header && header === env.printAgentToken) {
+  const queryToken = req.query['token'];
+  if (
+    (header && header === env.printAgentToken) ||
+    (typeof queryToken === 'string' && queryToken === env.printAgentToken)
+  ) {
     next();
     return;
   }
