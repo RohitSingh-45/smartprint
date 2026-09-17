@@ -6,13 +6,7 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
 
 export type PrintMode = 'mock' | 'system';
 export type SimulateFault =
-  | 'PAPER_JAM'
-  | 'OUT_OF_PAPER'
-  | 'LOW_TONER'
-  | 'ERROR'
-  | 'OFFLINE'
-  | 'FAIL'
-  | '';
+  'PAPER_JAM' | 'OUT_OF_PAPER' | 'LOW_TONER' | 'ERROR' | 'OFFLINE' | 'FAIL' | '';
 
 export const agentEnv = {
   apiUrl: (process.env.SMARTPRINT_API_URL || 'http://localhost:4000').replace(/\/$/, ''),

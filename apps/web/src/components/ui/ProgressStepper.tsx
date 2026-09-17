@@ -1,7 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, FileText, MapPin, CreditCard, Settings2, Upload, QrCode, ListOrdered, Package } from 'lucide-react';
+import {
+  Check,
+  FileText,
+  MapPin,
+  CreditCard,
+  Settings2,
+  Upload,
+  QrCode,
+  ListOrdered,
+  Package,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { FLOW_STEPS } from '@/lib/mock-data';
 import { cn } from '@/lib/cn';
@@ -57,7 +67,8 @@ export function ProgressStepper({ current }: Props) {
                 <span
                   className={cn(
                     'inline-flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-semibold transition-colors',
-                    active && 'bg-[var(--accent)] text-[var(--accent-ink)] shadow-[var(--shadow-xs)]',
+                    active &&
+                      'bg-[var(--accent)] text-[var(--accent-ink)] shadow-[var(--shadow-xs)]',
                     done && !active && 'bg-[var(--success)] text-white',
                     upcoming && 'bg-[var(--surface-2)] text-[var(--muted)]',
                   )}
@@ -87,7 +98,8 @@ export function ProgressStepper({ current }: Props) {
       </ol>
       <p className="mt-2 flex items-center justify-center gap-1.5 text-[11px] text-[var(--muted)] sm:hidden">
         <MapPin className="h-3 w-3" strokeWidth={1.75} aria-hidden />
-        {FLOW_STEPS[currentIndex]?.label ?? 'Print'} · Step {currentIndex + 1} of {FLOW_STEPS.length}
+        {FLOW_STEPS[currentIndex]?.label ?? 'Print'} · Step {currentIndex + 1} of{' '}
+        {FLOW_STEPS.length}
       </p>
     </nav>
   );

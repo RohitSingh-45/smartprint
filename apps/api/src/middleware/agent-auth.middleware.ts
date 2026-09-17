@@ -8,7 +8,8 @@ export type AgentRequest = Request & { agentTokenVerified?: boolean };
  * Browser clients never receive this token.
  */
 export function requireAgentToken(req: AgentRequest, res: Response, next: NextFunction): void {
-  const header = req.header('x-agent-token') || req.header('authorization')?.replace(/^Bearer\s+/i, '');
+  const header =
+    req.header('x-agent-token') || req.header('authorization')?.replace(/^Bearer\s+/i, '');
   if (!env.printAgentToken) {
     res.status(503).json({
       error: 'Print agent token is not configured on the server.',

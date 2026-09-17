@@ -10,7 +10,6 @@ export function computeEstimatedPrice(
   bwPages: number[],
   copies: number,
 ): number {
-  const pageTotal =
-    colorPages.length * PRICE_PER_COLOR + bwPages.length * PRICE_PER_BW;
+  const pageTotal = colorPages.length * PRICE_PER_COLOR + bwPages.length * PRICE_PER_BW;
   return Math.max(0, Math.round(pageTotal * copies));
 }

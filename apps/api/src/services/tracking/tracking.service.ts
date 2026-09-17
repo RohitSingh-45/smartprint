@@ -158,10 +158,17 @@ function buildCustomerTimeline(order: PaidOrder): CustomerTimelineStep[] {
       description: 'Shop accepted your order.',
       icon: 'check',
       at: order.acceptedAt ?? null,
-      done: Boolean(order.acceptedAt) ||
-        ['ACCEPTED', 'QUEUED', 'HELD', 'READY_FOR_PRINT', 'PRINTING', 'COMPLETED', 'COLLECTED'].includes(
-          order.status,
-        ),
+      done:
+        Boolean(order.acceptedAt) ||
+        [
+          'ACCEPTED',
+          'QUEUED',
+          'HELD',
+          'READY_FOR_PRINT',
+          'PRINTING',
+          'COMPLETED',
+          'COLLECTED',
+        ].includes(order.status),
     },
     {
       id: 'queued',
@@ -169,8 +176,11 @@ function buildCustomerTimeline(order: PaidOrder): CustomerTimelineStep[] {
       description: 'Waiting in the print queue.',
       icon: 'queue',
       at: order.queuedAt ?? null,
-      done: Boolean(order.queuedAt) ||
-        ['QUEUED', 'HELD', 'READY_FOR_PRINT', 'PRINTING', 'COMPLETED', 'COLLECTED'].includes(order.status),
+      done:
+        Boolean(order.queuedAt) ||
+        ['QUEUED', 'HELD', 'READY_FOR_PRINT', 'PRINTING', 'COMPLETED', 'COLLECTED'].includes(
+          order.status,
+        ),
     },
     {
       id: 'printing',
@@ -178,8 +188,8 @@ function buildCustomerTimeline(order: PaidOrder): CustomerTimelineStep[] {
       description: 'Sent to the Local Print Agent.',
       icon: 'print',
       at: order.printingAt ?? null,
-      done: Boolean(order.printingAt) ||
-        ['PRINTING', 'COMPLETED', 'COLLECTED'].includes(order.status),
+      done:
+        Boolean(order.printingAt) || ['PRINTING', 'COMPLETED', 'COLLECTED'].includes(order.status),
     },
     {
       id: 'finished',
@@ -226,9 +236,7 @@ function buildCustomerTimeline(order: PaidOrder): CustomerTimelineStep[] {
 
   if (customer === 'PRINTER_FAILURE') {
     return [
-      ...steps
-        .filter((s) => s.done)
-        .map((s) => ({ ...s, state: 'done' as const })),
+      ...steps.filter((s) => s.done).map((s) => ({ ...s, state: 'done' as const })),
       {
         id: 'failed',
         title: 'Printer failure',
@@ -280,8 +288,7 @@ async function buildQueueInfo(order: PaidOrder): Promise<CustomerQueueInfo> {
 
   const index = active.findIndex((o) => o.id === order.id);
   const position =
-    order.queuePosition ??
-    (index >= 0 ? index + 1 : active.length > 0 ? active.length : 1);
+    order.queuePosition ?? (index >= 0 ? index + 1 : active.length > 0 ? active.length : 1);
   const remainingJobsBefore = Math.max(0, position - 1);
   const estimatedWaitMinutes = Math.max(1, remainingJobsBefore * MINUTES_PER_JOB + MINUTES_PER_JOB);
 
@@ -367,8 +374,8 @@ export async function getCustomerTracking(orderId: string): Promise<CustomerTrac
     },
     pickup: {
       ready: pickupReady,
-      code: pickupReady || order.status === 'COLLECTED' ? order.pickupCode ?? null : null,
-      token: pickupReady ? order.pickupToken ?? null : null,
+      code: pickupReady || order.status === 'COLLECTED' ? (order.pickupCode ?? null) : null,
+      token: pickupReady ? (order.pickupToken ?? null) : null,
       collectPath: pickupReady && order.pickupToken ? `/admin/pickup/${order.pickupToken}` : null,
       collectedAt: order.collectedAt ?? null,
     },

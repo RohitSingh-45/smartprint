@@ -126,8 +126,14 @@ export default function AdminOrderDetailPage() {
               <h2 className="text-sm font-semibold tracking-tight">Print job</h2>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Metric label="Pages" value={`${print.pageRange.pages.length} · ${print.pageRange.mode}`} />
-              <Metric label="Color / B&W" value={`${print.colorPages.length} / ${print.bwPages.length}`} />
+              <Metric
+                label="Pages"
+                value={`${print.pageRange.pages.length} · ${print.pageRange.mode}`}
+              />
+              <Metric
+                label="Color / B&W"
+                value={`${print.colorPages.length} / ${print.bwPages.length}`}
+              />
               <Metric label="Copies" value={String(print.copies)} />
               <Metric
                 label="Paper"
@@ -191,7 +197,9 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
   return (
     <div className="flex items-start justify-between gap-4">
       <dt className="text-[var(--muted)]">{label}</dt>
-      <dd className={`max-w-[65%] break-all text-right font-medium ${mono ? 'font-mono text-xs' : ''}`}>
+      <dd
+        className={`max-w-[65%] break-all text-right font-medium ${mono ? 'font-mono text-xs' : ''}`}
+      >
         {value}
       </dd>
     </div>

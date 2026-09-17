@@ -86,8 +86,9 @@ function CompleteContent() {
           <PickupQrCard tracking={tracking} origin={origin} />
         ) : (
           <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-sm text-[var(--muted)]">
-            Current status: <strong className="text-[var(--foreground)]">{tracking.customerStatusTitle}</strong>
-            . Pickup QR appears when printing finishes.
+            Current status:{' '}
+            <strong className="text-[var(--foreground)]">{tracking.customerStatusTitle}</strong>.
+            Pickup QR appears when printing finishes.
           </div>
         )}
 

@@ -249,7 +249,10 @@ export function buildTrendAnalysisPrompt(params: {
   const colorRatio = orders.length
     ? (
         orders.reduce((s, o) => s + o.colorPages, 0) /
-        Math.max(1, orders.reduce((s, o) => s + o.totalPages, 0))
+        Math.max(
+          1,
+          orders.reduce((s, o) => s + o.totalPages, 0),
+        )
       ).toFixed(2)
     : '0';
   const avgRevenue = orders.length ? (totalRevenue / orders.length).toFixed(2) : '0';
@@ -440,4 +443,3 @@ Respond with ONLY valid JSON:
 }
 `.trim();
 }
-

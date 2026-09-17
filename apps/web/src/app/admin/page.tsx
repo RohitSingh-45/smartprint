@@ -128,7 +128,8 @@ export default function AdminDashboardPage() {
               AI Business Intelligence & Historical Trends
             </h2>
             <p className="text-xs text-[var(--muted)]">
-              RAG analysis of order trends, ink demand, and operational efficiency over 7, 30, and 90-day windows.
+              RAG analysis of order trends, ink demand, and operational efficiency over 7, 30, and
+              90-day windows.
             </p>
           </div>
         </div>

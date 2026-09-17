@@ -57,8 +57,7 @@ export function TrackingErrorState({ tracking, onRefresh }: Props) {
     copy.tone === 'danger'
       ? 'border-[var(--danger)]/30 bg-[var(--danger-soft)]'
       : 'border-[var(--warning)]/30 bg-[var(--warning-soft)]';
-  const eyebrowColor =
-    copy.tone === 'danger' ? 'text-[var(--danger)]' : 'text-[var(--warning)]';
+  const eyebrowColor = copy.tone === 'danger' ? 'text-[var(--danger)]' : 'text-[var(--warning)]';
 
   return (
     <div className={`rounded-xl border p-5 ${border}`} role="alert">

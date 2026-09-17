@@ -102,7 +102,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  font-feature-settings: 'ss01' on, 'cv11' on;
+  font-feature-settings:
+    'ss01' on,
+    'cv11' on;
   letter-spacing: -0.011em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -123,8 +125,16 @@ a {
 
 .hero-plane {
   background:
-    radial-gradient(1100px 560px at 12% -8%, color-mix(in srgb, #99f6e4 55%, transparent) 0%, transparent 55%),
-    radial-gradient(900px 480px at 92% 8%, color-mix(in srgb, #cbd5e1 70%, transparent) 0%, transparent 50%),
+    radial-gradient(
+      1100px 560px at 12% -8%,
+      color-mix(in srgb, #99f6e4 55%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 480px at 92% 8%,
+      color-mix(in srgb, #cbd5e1 70%, transparent) 0%,
+      transparent 50%
+    ),
     linear-gradient(165deg, #e8eef3 0%, #f4f6f8 42%, #fafbfc 100%);
 }
 

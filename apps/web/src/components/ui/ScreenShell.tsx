@@ -29,7 +29,9 @@ export function ScreenShell({
           compact ? 'pb-8 pt-3' : 'pb-10 pt-4',
         )}
       >
-        <header className={cn('flex items-center justify-between gap-3', compact ? 'mb-5' : 'mb-6')}>
+        <header
+          className={cn('flex items-center justify-between gap-3', compact ? 'mb-5' : 'mb-6')}
+        >
           {showBrand ? (
             <Link
               href="/"

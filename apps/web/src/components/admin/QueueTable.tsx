@@ -153,7 +153,10 @@ export function QueueTable({
           </thead>
           <tbody>
             {jobs.map((job) => (
-              <tr key={job.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-2)]/50">
+              <tr
+                key={job.id}
+                className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface-2)]/50"
+              >
                 <td className="px-4 py-3 align-top font-[family-name:var(--font-display)] text-lg font-semibold">
                   {job.queuePosition ?? '—'}
                 </td>

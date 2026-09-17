@@ -5,11 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { OrderConfirmationCard } from '@/components/payment/OrderConfirmationCard';
 import { Button } from '@/components/ui/Button';
 import { ScreenShell } from '@/components/ui/ScreenShell';
-import {
-  getPaidOrder,
-  readOrderIdSession,
-  saveOrderIdSession,
-} from '@/lib/payment/payment-api';
+import { getPaidOrder, readOrderIdSession, saveOrderIdSession } from '@/lib/payment/payment-api';
 import type { PaidOrderDto } from '@/lib/payment/types';
 import { rememberOrder } from '@/lib/tracking/history';
 

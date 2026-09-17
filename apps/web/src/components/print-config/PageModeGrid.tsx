@@ -32,10 +32,22 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
           </p>
         </div>
         <div className="flex gap-1.5">
-          <Button type="button" size="sm" variant="secondary" onClick={() => onSetAll('bw')} icon={Contrast}>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => onSetAll('bw')}
+            icon={Contrast}
+          >
             All B&W
           </Button>
-          <Button type="button" size="sm" variant="secondary" onClick={() => onSetAll('color')} icon={Droplets}>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => onSetAll('color')}
+            icon={Droplets}
+          >
             All color
           </Button>
         </div>
@@ -106,7 +118,10 @@ export function PageModeGrid({ totalPages, pageModes, printablePages, onToggle, 
                       <span className="h-2 w-2 rounded-full bg-sky-400/80" />
                     </div>
                   ) : (
-                    <Contrast className="absolute bottom-2 right-2 h-3.5 w-3.5 text-[var(--muted)] opacity-60" strokeWidth={1.75} />
+                    <Contrast
+                      className="absolute bottom-2 right-2 h-3.5 w-3.5 text-[var(--muted)] opacity-60"
+                      strokeWidth={1.75}
+                    />
                   )}
                 </div>
                 <div className="flex items-center justify-between gap-1 border-t border-[var(--border)]/80 bg-[var(--surface)] px-2 py-1.5">

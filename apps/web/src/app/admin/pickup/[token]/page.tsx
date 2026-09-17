@@ -122,7 +122,12 @@ export default function AdminPickupPage() {
           >
             <p className="font-medium text-[var(--danger)]">{error}</p>
             <div className="mt-4 flex gap-2">
-              <Button type="button" variant="secondary" onClick={() => void load()} icon={RefreshCw}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => void load()}
+                icon={RefreshCw}
+              >
                 Try again
               </Button>
               <Button href="/admin/orders" variant="ghost">
@@ -154,11 +159,7 @@ export default function AdminPickupPage() {
                   <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--accent-soft)] text-[var(--accent-strong)]">
                     <PackageCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                   </div>
-                  <Badge
-                    tone={tracking.pickup.ready ? 'accent' : 'warning'}
-                    dot
-                    className="mb-3"
-                  >
+                  <Badge tone={tracking.pickup.ready ? 'accent' : 'warning'} dot className="mb-3">
                     {humanOrderStatus(tracking.customerStatus)}
                   </Badge>
                   <p className="text-xs text-[var(--muted)]">Pickup code</p>

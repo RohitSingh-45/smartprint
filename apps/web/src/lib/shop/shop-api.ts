@@ -12,13 +12,7 @@ import type {
 
 // Re-export printer types from shop types file after we extend it
 export type PrinterStatus =
-  | 'ONLINE'
-  | 'OFFLINE'
-  | 'PRINTING'
-  | 'PAPER_JAM'
-  | 'OUT_OF_PAPER'
-  | 'LOW_TONER'
-  | 'ERROR';
+  'ONLINE' | 'OFFLINE' | 'PRINTING' | 'PAPER_JAM' | 'OUT_OF_PAPER' | 'LOW_TONER' | 'ERROR';
 
 export type RegisteredPrinter = {
   id: string;
@@ -62,8 +56,7 @@ async function parseJson(res: Response): Promise<Record<string, unknown>> {
 }
 
 function throwApiError(res: Response, body: Record<string, unknown>, fallback: string): never {
-  const message =
-    (typeof body.error === 'string' && body.error) || `${fallback} (${res.status})`;
+  const message = (typeof body.error === 'string' && body.error) || `${fallback} (${res.status})`;
   const error = new Error(message) as ShopApiError;
   error.status = res.status;
   error.code = typeof body.code === 'string' ? body.code : undefined;

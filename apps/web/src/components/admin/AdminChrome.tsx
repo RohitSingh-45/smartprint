@@ -2,14 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  BarChart3,
-  LayoutDashboard,
-  ListOrdered,
-  Menu,
-  Printer,
-  ShoppingBag,
-} from 'lucide-react';
+import { BarChart3, LayoutDashboard, ListOrdered, Menu, Printer, ShoppingBag } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { cn } from '@/lib/cn';
 
@@ -80,7 +73,9 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
               <Icon
                 className={cn(
                   'h-4 w-4 shrink-0',
-                  active ? 'text-[var(--accent-strong)]' : 'text-[var(--muted)] group-hover:text-[var(--foreground)]',
+                  active
+                    ? 'text-[var(--accent-strong)]'
+                    : 'text-[var(--muted)] group-hover:text-[var(--foreground)]',
                 )}
                 strokeWidth={1.75}
                 aria-hidden

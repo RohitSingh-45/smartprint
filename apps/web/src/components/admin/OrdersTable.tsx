@@ -7,11 +7,7 @@ import { OrderStatusBadge } from '@/components/admin/OrderStatusBadge';
 import { OrderRiskBadge } from '@/components/ai/OrderRiskBadge';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
-import {
-  formatBytes,
-  formatDateTime,
-  formatMoney,
-} from '@/lib/shop/shop-api';
+import { formatBytes, formatDateTime, formatMoney } from '@/lib/shop/shop-api';
 import type { OrderAction, ShopOrder } from '@/lib/shop/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -45,7 +41,9 @@ export function OrdersTable({ orders, onAction }: Props) {
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="truncate font-medium">{order.print.fileName}</p>
-                <p className="mt-1 font-mono text-xs text-[var(--muted)]">{order.id.slice(0, 8)}…</p>
+                <p className="mt-1 font-mono text-xs text-[var(--muted)]">
+                  {order.id.slice(0, 8)}…
+                </p>
               </div>
               <div className="flex flex-col items-end gap-1">
                 <OrderStatusBadge status={order.status} />

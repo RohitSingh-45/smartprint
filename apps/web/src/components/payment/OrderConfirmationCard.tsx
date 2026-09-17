@@ -74,15 +74,7 @@ export function OrderConfirmationCard({ order }: Props) {
   );
 }
 
-function Row({
-  label,
-  value,
-  mono,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
+function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex items-start justify-between gap-4">
       <dt className="text-[var(--muted)]">{label}</dt>

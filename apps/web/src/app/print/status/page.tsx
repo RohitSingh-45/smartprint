@@ -15,10 +15,7 @@ import { ScreenShell } from '@/components/ui/ScreenShell';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { readOrderIdSession, saveOrderIdSession } from '@/lib/payment/payment-api';
 import { rememberOrder } from '@/lib/tracking/history';
-import {
-  getOrderTracking,
-  isTerminalTrackingStatus,
-} from '@/lib/tracking/tracking-api';
+import { getOrderTracking, isTerminalTrackingStatus } from '@/lib/tracking/tracking-api';
 import type { CustomerTrackingView } from '@/lib/tracking/types';
 
 const POLL_MS = 4000;

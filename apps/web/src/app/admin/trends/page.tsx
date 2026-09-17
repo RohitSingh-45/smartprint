@@ -39,9 +39,7 @@ export default function AdminTrendsPage() {
           <Button href="/admin/orders" variant="secondary">
             View All Orders
           </Button>
-          <Button href="/admin/queue">
-            Inspect Queue
-          </Button>
+          <Button href="/admin/queue">Inspect Queue</Button>
         </div>
       </div>
 

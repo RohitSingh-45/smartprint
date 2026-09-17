@@ -4,10 +4,7 @@ import { Badge } from '@/components/ui/Badge';
 import { humanOrderStatus } from '@/lib/labels';
 import type { OrderStatus } from '@/lib/shop/types';
 
-const toneByStatus: Record<
-  OrderStatus,
-  'neutral' | 'accent' | 'success' | 'warning' | 'danger'
-> = {
+const toneByStatus: Record<OrderStatus, 'neutral' | 'accent' | 'success' | 'warning' | 'danger'> = {
   PAID: 'accent',
   ACCEPTED: 'warning',
   QUEUED: 'accent',

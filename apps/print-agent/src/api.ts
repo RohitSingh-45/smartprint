@@ -26,11 +26,7 @@ export type RegisteredPrinterDto = {
   supportsColor: boolean;
 };
 
-async function api<T>(
-  method: string,
-  path: string,
-  body?: unknown,
-): Promise<T> {
+async function api<T>(method: string, path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${agentEnv.apiUrl}${path}`, {
     method,
     headers: {
@@ -42,7 +38,8 @@ async function api<T>(
   const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
   if (!res.ok) {
     const message =
-      (typeof json.error === 'string' && json.error) || `Agent API ${method} ${path} failed (${res.status})`;
+      (typeof json.error === 'string' && json.error) ||
+      `Agent API ${method} ${path} failed (${res.status})`;
     const error = new Error(message) as Error & { status?: number; code?: string };
     error.status = res.status;
     error.code = typeof json.code === 'string' ? json.code : undefined;
@@ -105,18 +102,20 @@ export async function reportJobStatus(input: {
   status: 'PRINTING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
   error?: string;
 }) {
-  return api<{ order: { id: string; status: string } }>('POST', `/api/agent/jobs/${input.orderId}/status`, {
-    agentId: input.agentId,
-    printerId: input.printerId,
-    status: input.status,
-    error: input.error,
-  });
+  return api<{ order: { id: string; status: string } }>(
+    'POST',
+    `/api/agent/jobs/${input.orderId}/status`,
+    {
+      agentId: input.agentId,
+      printerId: input.printerId,
+      status: input.status,
+      error: input.error,
+    },
+  );
 }
 
 export async function downloadJobPdf(contentUrl: string): Promise<Buffer> {
-  const url = contentUrl.startsWith('http')
-    ? contentUrl
-    : `${agentEnv.apiUrl}${contentUrl}`;
+  const url = contentUrl.startsWith('http') ? contentUrl : `${agentEnv.apiUrl}${contentUrl}`;
   const res = await fetch(url, {
     headers: { 'X-Agent-Token': agentEnv.token },
   });

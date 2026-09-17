@@ -8,14 +8,9 @@ import { env } from '../config/env';
  *
  * UUID obscurity alone is not enough for production.
  */
-export function requireUploadContentAccess(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function requireUploadContentAccess(req: Request, res: Response, next: NextFunction): void {
   const header =
-    req.header('x-agent-token') ||
-    req.header('authorization')?.replace(/^Bearer\s+/i, '');
+    req.header('x-agent-token') || req.header('authorization')?.replace(/^Bearer\s+/i, '');
 
   const queryToken = req.query['token'];
   if (

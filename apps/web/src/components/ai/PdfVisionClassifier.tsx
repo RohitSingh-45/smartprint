@@ -50,8 +50,14 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
   } as const;
 
   const colorBadge = {
-    all_bw: { label: 'B&W recommended', className: 'bg-[var(--surface-2)] text-[var(--foreground)]' },
-    all_color: { label: 'Color recommended', className: 'bg-[var(--accent-soft)] text-[var(--accent-strong)]' },
+    all_bw: {
+      label: 'B&W recommended',
+      className: 'bg-[var(--surface-2)] text-[var(--foreground)]',
+    },
+    all_color: {
+      label: 'Color recommended',
+      className: 'bg-[var(--accent-soft)] text-[var(--accent-strong)]',
+    },
     mixed: { label: 'Mixed mode', className: 'bg-[var(--warning-soft)] text-[var(--warning)]' },
   } as const;
 
@@ -73,7 +79,9 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
           <div
             className={cn(
               'flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)]',
-              state === 'success' ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'bg-[var(--accent-soft)] text-[var(--accent-strong)]',
+              state === 'success'
+                ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
+                : 'bg-[var(--accent-soft)] text-[var(--accent-strong)]',
             )}
           >
             <Eye className="h-4 w-4" />
@@ -135,7 +143,9 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-[var(--success)]" />
-              <p className="text-sm font-semibold text-[var(--foreground)]">{result.documentType}</p>
+              <p className="text-sm font-semibold text-[var(--foreground)]">
+                {result.documentType}
+              </p>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="h-1.5 w-16 overflow-hidden rounded-full bg-[var(--surface-2)]">
@@ -144,7 +154,9 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
                   style={{ width: `${confidenceBar}%` }}
                 />
               </div>
-              <span className="text-[10px] font-medium text-[var(--muted)]">{confidenceBar}% confident</span>
+              <span className="text-[10px] font-medium text-[var(--muted)]">
+                {confidenceBar}% confident
+              </span>
             </div>
           </div>
 
@@ -155,8 +167,13 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
           <div className="flex flex-wrap gap-2">
             {(() => {
               const badge = colorBadge[result.colorRecommendation] ?? colorBadge.all_bw;
-              const Icon = (result.contentDensity && densityIcon[result.contentDensity]) ? densityIcon[result.contentDensity] : FileText;
-              const densityLabel = result.contentDensity ? result.contentDensity.replace('_', '-') : 'standard';
+              const Icon =
+                result.contentDensity && densityIcon[result.contentDensity]
+                  ? densityIcon[result.contentDensity]
+                  : FileText;
+              const densityLabel = result.contentDensity
+                ? result.contentDensity.replace('_', '-')
+                : 'standard';
               return (
                 <>
                   <span
@@ -187,7 +204,9 @@ export function PdfVisionClassifier({ uploadId, fileName, autoAnalyze = true }: 
 
           {/* Print tip */}
           <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)]">Print tip</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--muted)]">
+              Print tip
+            </p>
             <p className="mt-0.5 text-xs text-[var(--foreground)]">{result.printQualityTip}</p>
           </div>
 

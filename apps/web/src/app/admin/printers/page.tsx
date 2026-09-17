@@ -18,9 +18,7 @@ import {
   type PrinterDashboard,
 } from '@/lib/shop/shop-api';
 
-function toneForPrinter(
-  status: string,
-): 'neutral' | 'accent' | 'success' | 'warning' | 'danger' {
+function toneForPrinter(status: string): 'neutral' | 'accent' | 'success' | 'warning' | 'danger' {
   if (status === 'ONLINE') return 'success';
   if (status === 'PRINTING') return 'accent';
   if (status === 'LOW_TONER') return 'warning';
@@ -64,10 +62,7 @@ export default function AdminPrintersPage() {
     };
   }, [load]);
 
-  async function run(
-    id: string,
-    action: 'retry' | 'reprint' | 'cancel',
-  ): Promise<void> {
+  async function run(id: string, action: 'retry' | 'reprint' | 'cancel'): Promise<void> {
     setBusyId(id);
     try {
       if (action === 'retry') await retryPrintJob(id);
@@ -110,10 +105,7 @@ export default function AdminPrintersPage() {
           value={String(dashboard?.printers.filter((p) => p.status !== 'OFFLINE').length ?? '—')}
           tone="accent"
         />
-        <StatCard
-          label="Printing now"
-          value={String(dashboard?.currentPrinting.length ?? '—')}
-        />
+        <StatCard label="Printing now" value={String(dashboard?.currentPrinting.length ?? '—')} />
         <StatCard
           label="Failed jobs"
           value={String(dashboard?.failedJobs.length ?? '—')}

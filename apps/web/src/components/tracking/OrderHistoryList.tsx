@@ -75,9 +75,7 @@ function HistorySection({
                   </p>
                   <p className="mt-1 text-xs text-[var(--muted)]">
                     {formatTrackingTime(item.paidAt || item.savedAt)}
-                    {typeof item.amountPaid === 'number'
-                      ? ` · ${formatInr(item.amountPaid)}`
-                      : ''}
+                    {typeof item.amountPaid === 'number' ? ` · ${formatInr(item.amountPaid)}` : ''}
                   </p>
                   {statusById?.[item.id] ? (
                     <p className="mt-1.5 text-xs font-medium text-[var(--accent-strong)]">

@@ -7,8 +7,7 @@ async function parseJson(res: Response): Promise<Record<string, unknown>> {
 }
 
 function throwApiError(res: Response, body: Record<string, unknown>, fallback: string): never {
-  const message =
-    (typeof body.error === 'string' && body.error) || `${fallback} (${res.status})`;
+  const message = (typeof body.error === 'string' && body.error) || `${fallback} (${res.status})`;
   const error = new Error(message) as TrackingApiError;
   error.status = res.status;
   error.code = typeof body.code === 'string' ? body.code : undefined;
@@ -36,14 +35,11 @@ export async function lookupPickup(token: string): Promise<CustomerTrackingView>
 }
 
 export async function collectPickup(token: string): Promise<CustomerTrackingView> {
-  const res = await fetch(
-    `${API_URL}/api/tracking/pickup/${encodeURIComponent(token)}/collect`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
-    },
-  );
+  const res = await fetch(`${API_URL}/api/tracking/pickup/${encodeURIComponent(token)}/collect`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token }),
+  });
   const body = await parseJson(res);
   if (!res.ok || !body.tracking) {
     throwApiError(res, body, 'Collect failed');

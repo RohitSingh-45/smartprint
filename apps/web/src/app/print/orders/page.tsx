@@ -11,9 +11,7 @@ import type { CustomerTrackingStatus, OrderHistoryEntry } from '@/lib/tracking/t
 
 export default function OrderHistoryPage() {
   const [entries, setEntries] = useState<OrderHistoryEntry[]>([]);
-  const [statusById, setStatusById] = useState<Record<string, CustomerTrackingStatus | string>>(
-    {},
-  );
+  const [statusById, setStatusById] = useState<Record<string, CustomerTrackingStatus | string>>({});
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {

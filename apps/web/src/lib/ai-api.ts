@@ -234,4 +234,3 @@ export async function fetchEtaPrediction(params: {
   const data = await post<{ prediction: EtaPredictionResult }>('/eta-prediction', params);
   return data.prediction;
 }
-

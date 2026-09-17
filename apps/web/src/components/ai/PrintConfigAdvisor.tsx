@@ -1,6 +1,14 @@
 'use client';
 
-import { Sparkles, ChevronDown, ChevronUp, Lightbulb, TrendingDown, Loader2, AlertCircle } from 'lucide-react';
+import {
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Lightbulb,
+  TrendingDown,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
 import { useState, useCallback } from 'react';
 import { fetchConfigAdvisor, type ConfigAdvisorResult } from '@/lib/ai-api';
 import { cn } from '@/lib/cn';
@@ -54,7 +62,15 @@ export function PrintConfigAdvisor({
       setError(err instanceof Error ? err.message : 'AI analysis failed.');
       setState('error');
     }
-  }, [fileName, totalPages, colorPageCount, bwPageCount, currentCopies, currentPaperSize, currentOrientation]);
+  }, [
+    fileName,
+    totalPages,
+    colorPageCount,
+    bwPageCount,
+    currentCopies,
+    currentPaperSize,
+    currentOrientation,
+  ]);
 
   const colorModeLabel = (mode: ConfigAdvisorResult['suggestedColorMode']) => {
     if (mode === 'all_bw') return 'All Black & White';
@@ -88,7 +104,7 @@ export function PrintConfigAdvisor({
           <p className="text-sm font-semibold text-[var(--foreground)]">AI Print Advisor</p>
           <p className="text-xs text-[var(--muted)]">
             {state === 'success'
-              ? result?.documentType ?? 'Analysis complete'
+              ? (result?.documentType ?? 'Analysis complete')
               : 'Get smart recommendations for your document'}
           </p>
         </div>

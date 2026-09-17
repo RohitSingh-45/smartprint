@@ -73,7 +73,11 @@ export async function registerOrTouchAgent(input: {
     const existing = await store.getAgent(input.agentId);
     if (existing) {
       const next = markAgentPresence(
-        { ...existing, name: input.name || existing.name, hostname: input.hostname || existing.hostname },
+        {
+          ...existing,
+          name: input.name || existing.name,
+          hostname: input.hostname || existing.hostname,
+        },
         now,
       );
       return store.saveAgent(next);
@@ -380,7 +384,11 @@ export async function updateJobStatus(input: {
     };
   } else if (input.status === 'CANCELLED') {
     if (current.status !== 'PRINTING') {
-      throw new PrintError('Only printing jobs can be cancelled mid-print.', 409, 'INVALID_TRANSITION');
+      throw new PrintError(
+        'Only printing jobs can be cancelled mid-print.',
+        409,
+        'INVALID_TRANSITION',
+      );
     }
     next = {
       ...next,
@@ -522,9 +530,7 @@ export async function getPrinterDashboard(): Promise<PrinterDashboard> {
   const currentPrinting = normalized.filter((o) => o.status === 'PRINTING');
   const failedJobs = normalized.filter((o) => o.status === 'FAILED');
   const recentJobs = normalized
-    .filter((o) =>
-      ['PRINTING', 'COMPLETED', 'FAILED', 'READY_FOR_PRINT'].includes(o.status),
-    )
+    .filter((o) => ['PRINTING', 'COMPLETED', 'FAILED', 'READY_FOR_PRINT'].includes(o.status))
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
     .slice(0, 20);
 

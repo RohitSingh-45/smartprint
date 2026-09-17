@@ -68,7 +68,7 @@ export function verifyPaymentSignature(input: {
 }): boolean {
   const secret =
     env.paymentProvider === 'mock'
-      ? (env.razorpayKeySecret || 'smartprint_mock_secret')
+      ? env.razorpayKeySecret || 'smartprint_mock_secret'
       : env.razorpayKeySecret;
 
   if (!secret) return false;

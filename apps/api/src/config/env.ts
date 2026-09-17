@@ -55,7 +55,9 @@ if (!parsed.success) {
 
 if (parsed.data.PAYMENT_PROVIDER === 'razorpay') {
   if (!parsed.data.RAZORPAY_KEY_ID || !parsed.data.RAZORPAY_KEY_SECRET) {
-    console.error('[env] RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are required when PAYMENT_PROVIDER=razorpay');
+    console.error(
+      '[env] RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are required when PAYMENT_PROVIDER=razorpay',
+    );
     process.exit(1);
   }
 }

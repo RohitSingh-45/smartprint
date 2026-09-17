@@ -35,15 +35,7 @@ export function OrderDetailsCard({ tracking }: Props) {
   );
 }
 
-function Row({
-  label,
-  value,
-  mono,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
+function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex flex-col gap-0.5 border-b border-[var(--border)]/70 pb-2.5 last:border-0 last:pb-0 sm:flex-row sm:justify-between sm:gap-4">
       <dt className="shrink-0 text-[var(--muted)]">{label}</dt>

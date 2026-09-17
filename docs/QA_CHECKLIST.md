@@ -2,7 +2,7 @@
 
 Use this before tagging a production release. Mark each item Pass / Fail / N/A.
 
-Environment: Web URL ________  API URL ________  Agent mode: mock / cups
+Environment: Web URL ________ API URL ________ Agent mode: mock / cups
 
 ---
 

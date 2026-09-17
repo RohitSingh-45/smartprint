@@ -74,7 +74,9 @@ export function TrackingTimeline({ steps }: Props) {
                   {formatTrackingTime(step.at)}
                 </time>
               </div>
-              <p className="mt-0.5 text-sm leading-relaxed text-[var(--muted)]">{step.description}</p>
+              <p className="mt-0.5 text-sm leading-relaxed text-[var(--muted)]">
+                {step.description}
+              </p>
               <span className="sr-only">Status: {step.state}</span>
             </div>
           </li>

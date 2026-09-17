@@ -1,9 +1,4 @@
-import type {
-  OrderAction,
-  OrderStatus,
-  OrderTimelineEvent,
-  PaidOrder,
-} from '../../types/order';
+import type { OrderAction, OrderStatus, OrderTimelineEvent, PaidOrder } from '../../types/order';
 import { ORDER_ACTIONS, ORDER_TRANSITIONS } from '../../types/order';
 import { getOrderStore } from '../order';
 import { enqueueAcceptedOrder, QueueError } from '../queue/queue.service';
@@ -22,14 +17,7 @@ export class ShopError extends Error {
 }
 
 export type ShopOrderFilter =
-  | 'all'
-  | 'pending'
-  | 'paid'
-  | 'accepted'
-  | 'queued'
-  | 'ready'
-  | 'completed'
-  | 'cancelled';
+  'all' | 'pending' | 'paid' | 'accepted' | 'queued' | 'ready' | 'completed' | 'cancelled';
 
 export type ShopOrderQuery = {
   q?: string;

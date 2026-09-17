@@ -66,7 +66,11 @@ export async function createCheckoutSession(draftId: string): Promise<CheckoutSe
   }
 
   if (isExpired(draft) || draft.isExpired) {
-    throw new PaymentError('Draft has expired. Reconfigure and create a new draft.', 410, 'DRAFT_EXPIRED');
+    throw new PaymentError(
+      'Draft has expired. Reconfigure and create a new draft.',
+      410,
+      'DRAFT_EXPIRED',
+    );
   }
 
   if (draft.estimatedPrice <= 0) {
@@ -149,10 +153,16 @@ export async function verifyAndCapturePayment(input: {
   assertUuid(input.draftId, 'draft id');
 
   if (!input.razorpayOrderId || !input.razorpayPaymentId || !input.razorpaySignature) {
-    throw new PaymentError('Payment verification fields are required.', 400, 'VERIFY_FIELDS_REQUIRED');
+    throw new PaymentError(
+      'Payment verification fields are required.',
+      400,
+      'VERIFY_FIELDS_REQUIRED',
+    );
   }
 
-  const duplicatePayment = await getOrderStore().findOrderByRazorpayPaymentId(input.razorpayPaymentId);
+  const duplicatePayment = await getOrderStore().findOrderByRazorpayPaymentId(
+    input.razorpayPaymentId,
+  );
   if (duplicatePayment) {
     return duplicatePayment;
   }
@@ -209,7 +219,11 @@ export async function verifyAndCapturePayment(input: {
   }
 
   if (draft.estimatedPrice !== intent.amount) {
-    throw new PaymentError('Amount mismatch between draft and payment intent.', 400, 'AMOUNT_MISMATCH');
+    throw new PaymentError(
+      'Amount mismatch between draft and payment intent.',
+      400,
+      'AMOUNT_MISMATCH',
+    );
   }
 
   const now = new Date().toISOString();

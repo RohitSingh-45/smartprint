@@ -52,7 +52,17 @@ export function PrintSummaryExplainer({
       setError(err instanceof Error ? err.message : 'AI explanation failed.');
       setState('error');
     }
-  }, [fileName, totalPages, printablePages, colorPages, bwPages, copies, paperSize, orientation, estimatedCost]);
+  }, [
+    fileName,
+    totalPages,
+    printablePages,
+    colorPages,
+    bwPages,
+    copies,
+    paperSize,
+    orientation,
+    estimatedCost,
+  ]);
 
   if (state === 'idle') {
     return (
@@ -65,9 +75,7 @@ export function PrintSummaryExplainer({
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold text-[var(--foreground)]">What does this mean?</p>
-          <p className="text-xs text-[var(--muted)]">
-            Let AI explain your order in plain English
-          </p>
+          <p className="text-xs text-[var(--muted)]">Let AI explain your order in plain English</p>
         </div>
         <span className="text-xs font-semibold text-[var(--accent-strong)] opacity-0 transition-opacity group-hover:opacity-100">
           Ask AI →

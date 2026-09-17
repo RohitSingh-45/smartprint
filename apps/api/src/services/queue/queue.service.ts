@@ -151,9 +151,7 @@ async function renumberQueued(orders: PaidOrder[]): Promise<PaidOrder[]> {
 }
 
 async function nextQueuePosition(orders: PaidOrder[]): Promise<number> {
-  const positions = orders
-    .filter((o) => o.status === 'QUEUED')
-    .map((o) => o.queuePosition ?? 0);
+  const positions = orders.filter((o) => o.status === 'QUEUED').map((o) => o.queuePosition ?? 0);
   return positions.length === 0 ? 1 : Math.max(...positions) + 1;
 }
 
@@ -280,7 +278,11 @@ export async function applyQueueAction(id: string, action: QueueAction): Promise
   }
 
   if (current.status === 'PRINTING' && action === 'cancel') {
-    throw new QueueError('Cannot cancel a job that has started printing.', 409, 'INVALID_TRANSITION');
+    throw new QueueError(
+      'Cannot cancel a job that has started printing.',
+      409,
+      'INVALID_TRANSITION',
+    );
   }
 
   if (current.status === 'COMPLETED') {
@@ -304,7 +306,9 @@ export async function applyQueueAction(id: string, action: QueueAction): Promise
     const swapWith = action === 'move_up' ? index - 1 : index + 1;
     if (swapWith < 0 || swapWith >= queued.length) {
       throw new QueueError(
-        action === 'move_up' ? 'Job is already at the front of the queue.' : 'Job is already at the end of the queue.',
+        action === 'move_up'
+          ? 'Job is already at the front of the queue.'
+          : 'Job is already at the end of the queue.',
         409,
         'QUEUE_BOUNDARY',
       );
@@ -358,9 +362,7 @@ export async function applyQueueAction(id: string, action: QueueAction): Promise
   }
 
   if (action === 'resume') {
-    const position = await nextQueuePosition(
-      orders.map(normalizeOrder).filter((o) => o.id !== id),
-    );
+    const position = await nextQueuePosition(orders.map(normalizeOrder).filter((o) => o.id !== id));
     next = {
       ...next,
       queuedAt: next.queuedAt || now,

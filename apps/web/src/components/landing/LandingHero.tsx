@@ -84,7 +84,10 @@ export function LandingHero() {
 
         <footer className="flex items-center justify-between gap-4 border-t border-[var(--border)]/60 py-5 text-xs text-[var(--muted)]">
           <span>SmartPrint</span>
-          <Link href="/admin" className="hover:text-[var(--foreground)] underline-offset-2 hover:underline">
+          <Link
+            href="/admin"
+            className="hover:text-[var(--foreground)] underline-offset-2 hover:underline"
+          >
             Shop console
           </Link>
         </footer>

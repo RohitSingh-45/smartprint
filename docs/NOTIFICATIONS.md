@@ -4,11 +4,11 @@ Sprint 11 prepares notification hooks for customer order tracking. **No browser,
 
 ## Intended channels
 
-| Channel   | Trigger examples                                      | Delivery target        |
-| --------- | ----------------------------------------------------- | ---------------------- |
-| Browser   | Status change, ready for pickup                       | Same device session    |
-| Email     | Payment received, ready for pickup, cancelled         | Customer email (future)|
-| WhatsApp  | Ready for pickup, delayed, collected confirmation     | Customer phone (future)|
+| Channel  | Trigger examples                                  | Delivery target         |
+| -------- | ------------------------------------------------- | ----------------------- |
+| Browser  | Status change, ready for pickup                   | Same device session     |
+| Email    | Payment received, ready for pickup, cancelled     | Customer email (future) |
+| WhatsApp | Ready for pickup, delayed, collected confirmation | Customer phone (future) |
 
 ## Proposed event bus (future)
 

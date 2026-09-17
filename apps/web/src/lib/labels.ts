@@ -44,7 +44,10 @@ export function humanOrderStatus(status: string): string {
     case 'UNKNOWN':
       return 'Status unavailable';
     default:
-      return status.replace(/_/g, ' ').toLowerCase().replace(/^\w/, (c) => c.toUpperCase());
+      return status
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/^\w/, (c) => c.toUpperCase());
   }
 }
 

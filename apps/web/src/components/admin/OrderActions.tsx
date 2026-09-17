@@ -48,9 +48,7 @@ export function OrderActions(props: Props) {
   }
 
   if (actions.length === 0) {
-    return (
-      <p className="text-xs text-[var(--muted)]">No further actions for this status.</p>
-    );
+    return <p className="text-xs text-[var(--muted)]">No further actions for this status.</p>;
   }
 
   return (

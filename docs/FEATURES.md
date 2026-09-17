@@ -76,57 +76,57 @@ Users upload documents, choose Color or Black & White per page, pay online, and 
 
 ## Sprint 8 (delivered — shop owner dashboard)
 
-| Feature                                              | Status |
-| ---------------------------------------------------- | ------ |
-| Dashboard home with revenue & order summary cards    | Done   |
-| Orders list with search, filters, date range         | Done   |
-| Order detail (file, print, payment, timeline)        | Done   |
-| Accept / reject / enqueue / cancel with transition rules | Done |
-| Printer status placeholder (UI-only)                 | Done   |
-| Dark mode + responsive shop shell                    | Done   |
+| Feature                                                  | Status |
+| -------------------------------------------------------- | ------ |
+| Dashboard home with revenue & order summary cards        | Done   |
+| Orders list with search, filters, date range             | Done   |
+| Order detail (file, print, payment, timeline)            | Done   |
+| Accept / reject / enqueue / cancel with transition rules | Done   |
+| Printer status placeholder (UI-only)                     | Done   |
+| Dark mode + responsive shop shell                        | Done   |
 
 ## Sprint 9 (delivered — queue management)
 
-| Feature                                           | Status |
-| ------------------------------------------------- | ------ |
-| FIFO print queue with positions                    | Done   |
-| Hold / resume / move up / move down               | Done   |
-| QUEUED → READY_FOR_PRINT                          | Done   |
-| Queue summary + search/filters                    | Done   |
-| Duplicate / invalid transition guards             | Done   |
-| `listReadyForPrintJobs()` for Sprint 10 intake    | Done   |
+| Feature                                        | Status |
+| ---------------------------------------------- | ------ |
+| FIFO print queue with positions                | Done   |
+| Hold / resume / move up / move down            | Done   |
+| QUEUED → READY_FOR_PRINT                       | Done   |
+| Queue summary + search/filters                 | Done   |
+| Duplicate / invalid transition guards          | Done   |
+| `listReadyForPrintJobs()` for Sprint 10 intake | Done   |
 
 ## Sprint 10 (delivered — Local Print Agent)
 
-| Feature                                              | Status |
-| ---------------------------------------------------- | ------ |
-| Local Print Agent with shared-secret token           | Done   |
-| Printer register + heartbeat + status model          | Done   |
-| Claim READY_FOR_PRINT → PRINTING → COMPLETED/FAILED  | Done   |
-| Retry / reprint / cancel printing                    | Done   |
-| Admin Printers dashboard                             | Done   |
-| Mock + CUPS (`lp`) spooler modes                     | Done   |
+| Feature                                             | Status |
+| --------------------------------------------------- | ------ |
+| Local Print Agent with shared-secret token          | Done   |
+| Printer register + heartbeat + status model         | Done   |
+| Claim READY_FOR_PRINT → PRINTING → COMPLETED/FAILED | Done   |
+| Retry / reprint / cancel printing                   | Done   |
+| Admin Printers dashboard                            | Done   |
+| Mock + CUPS (`lp`) spooler modes                    | Done   |
 
 ## Sprint 11 (delivered — customer tracking & pickup)
 
-| Feature                                              | Status |
-| ---------------------------------------------------- | ------ |
-| Live tracking page with status timeline              | Done   |
-| Queue position + placeholder ETA                     | Done   |
-| Pickup QR + shop collect (`COLLECTED`)               | Done   |
-| Duplicate collection prevention                      | Done   |
-| Order history (device-local) + disabled future actions | Done |
-| Notification architecture stub (no sends)            | Done   |
-| Error UIs: cancelled / failure / delayed / expired   | Done   |
+| Feature                                                | Status |
+| ------------------------------------------------------ | ------ |
+| Live tracking page with status timeline                | Done   |
+| Queue position + placeholder ETA                       | Done   |
+| Pickup QR + shop collect (`COLLECTED`)                 | Done   |
+| Duplicate collection prevention                        | Done   |
+| Order history (device-local) + disabled future actions | Done   |
+| Notification architecture stub (no sends)              | Done   |
+| Error UIs: cancelled / failure / delayed / expired     | Done   |
 
 ## Planned
 
-| Feature                         | Sprint |
-| ------------------------------- | ------ |
-| Real notification adapters      | 12     |
-| Receipt PDF + reprint request   | 12     |
-| Hardening / auth foundation     | 12     |
-| QR station pairing              | 12     |
+| Feature                       | Sprint |
+| ----------------------------- | ------ |
+| Real notification adapters    | 12     |
+| Receipt PDF + reprint request | 12     |
+| Hardening / auth foundation   | 12     |
+| QR station pairing            | 12     |
 
 ## Explicitly out of scope for Sprint 11
 

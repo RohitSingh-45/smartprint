@@ -78,11 +78,32 @@ export function OrderRiskBadge({
       inFlightPromises.delete(cacheKey);
       setLoading(false);
     }
-  }, [orderId, status, customerName, amountPaid, printAttempts, lastPrintError, queuePosition, totalPages, copies, colorPages, bwPages, waitingMs]);
+  }, [
+    orderId,
+    status,
+    customerName,
+    amountPaid,
+    printAttempts,
+    lastPrintError,
+    queuePosition,
+    totalPages,
+    copies,
+    colorPages,
+    bwPages,
+    waitingMs,
+  ]);
 
   useEffect(() => {
     // Only analyze if order is in an active / potentially risky state
-    const activeStatuses = ['QUEUED', 'HELD', 'READY_FOR_PRINT', 'PRINTING', 'FAILED', 'PAID', 'ACCEPTED'];
+    const activeStatuses = [
+      'QUEUED',
+      'HELD',
+      'READY_FOR_PRINT',
+      'PRINTING',
+      'FAILED',
+      'PAID',
+      'ACCEPTED',
+    ];
     if (activeStatuses.includes(status)) {
       void analyze();
     }
@@ -140,8 +161,19 @@ export function OrderRiskBadge({
       {showTooltip && (
         <div className="absolute bottom-full left-0 z-50 mb-1.5 w-64 animate-fade rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-lg)]">
           <div className="flex items-center gap-1.5">
-            <Icon className={cn('h-3.5 w-3.5', result.riskLevel === 'high' ? 'text-[var(--danger)]' : result.riskLevel === 'medium' ? 'text-[var(--warning)]' : 'text-[var(--success)]')} />
-            <p className="text-xs font-semibold capitalize">{result.riskLevel} Risk · Score {result.riskScore}/100</p>
+            <Icon
+              className={cn(
+                'h-3.5 w-3.5',
+                result.riskLevel === 'high'
+                  ? 'text-[var(--danger)]'
+                  : result.riskLevel === 'medium'
+                    ? 'text-[var(--warning)]'
+                    : 'text-[var(--success)]',
+              )}
+            />
+            <p className="text-xs font-semibold capitalize">
+              {result.riskLevel} Risk · Score {result.riskScore}/100
+            </p>
           </div>
           <p className="mt-1 text-xs text-[var(--muted)]">{result.reason}</p>
           {result.suggestedAction && (

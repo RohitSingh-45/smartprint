@@ -43,7 +43,8 @@ export async function registerPrinterHandler(
       agentId: String(body.agentId ?? ''),
       name: String(body.name ?? ''),
       systemPrinterName: String(body.systemPrinterName ?? ''),
-      defaultPaperSize: typeof body.defaultPaperSize === 'string' ? body.defaultPaperSize : undefined,
+      defaultPaperSize:
+        typeof body.defaultPaperSize === 'string' ? body.defaultPaperSize : undefined,
       supportsColor: typeof body.supportsColor === 'boolean' ? body.supportsColor : undefined,
       status:
         typeof body.status === 'string' &&

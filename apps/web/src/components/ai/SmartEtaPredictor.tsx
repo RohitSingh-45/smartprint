@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Sparkles,
-  Clock,
-  Zap,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Users,
-} from 'lucide-react';
+import { Sparkles, Clock, Zap, CheckCircle2, AlertCircle, Loader2, Users } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
 import { fetchEtaPrediction, type EtaPredictionResult } from '@/lib/ai-api';
 import { cn } from '@/lib/cn';
@@ -65,9 +57,24 @@ export function SmartEtaPredictor({
   }, [predict]);
 
   const rushColors = {
-    low: { label: 'Low Queue Wait', bg: 'bg-[var(--success-soft)]', text: 'text-[var(--success)]', border: 'border-[var(--success)]/20' },
-    moderate: { label: 'Moderate Rush', bg: 'bg-[var(--warning-soft)]', text: 'text-[var(--warning)]', border: 'border-[var(--warning)]/20' },
-    high: { label: 'Campus Peak Rush', bg: 'bg-[var(--danger-soft)]', text: 'text-[var(--danger)]', border: 'border-[var(--danger)]/20' },
+    low: {
+      label: 'Low Queue Wait',
+      bg: 'bg-[var(--success-soft)]',
+      text: 'text-[var(--success)]',
+      border: 'border-[var(--success)]/20',
+    },
+    moderate: {
+      label: 'Moderate Rush',
+      bg: 'bg-[var(--warning-soft)]',
+      text: 'text-[var(--warning)]',
+      border: 'border-[var(--warning)]/20',
+    },
+    high: {
+      label: 'Campus Peak Rush',
+      bg: 'bg-[var(--danger-soft)]',
+      text: 'text-[var(--danger)]',
+      border: 'border-[var(--danger)]/20',
+    },
   } as const;
 
   const isTerminal = ['COMPLETED', 'COLLECTED'].includes(currentStatus.toUpperCase());
@@ -81,8 +88,8 @@ export function SmartEtaPredictor({
         isTerminal
           ? 'border-[var(--success)]/30 bg-gradient-to-br from-[var(--success-soft)]/30 via-[var(--surface)] to-[var(--surface-2)]'
           : isPrinting
-          ? 'border-[var(--accent)]/30 bg-gradient-to-br from-[var(--accent-soft)]/25 via-[var(--surface)] to-[var(--surface-2)]'
-          : 'border-[var(--border)] bg-[var(--surface)]',
+            ? 'border-[var(--accent)]/30 bg-gradient-to-br from-[var(--accent-soft)]/25 via-[var(--surface)] to-[var(--surface-2)]'
+            : 'border-[var(--border)] bg-[var(--surface)]',
       )}
     >
       {/* Header */}

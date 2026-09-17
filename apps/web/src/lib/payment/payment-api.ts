@@ -15,8 +15,7 @@ async function parseJson(res: Response): Promise<Record<string, unknown>> {
 }
 
 function throwApiError(res: Response, body: Record<string, unknown>, fallback: string): never {
-  const message =
-    (typeof body.error === 'string' && body.error) || `${fallback} (${res.status})`;
+  const message = (typeof body.error === 'string' && body.error) || `${fallback} (${res.status})`;
   const error = new Error(message) as PaymentApiError;
   error.status = res.status;
   error.code = typeof body.code === 'string' ? body.code : undefined;

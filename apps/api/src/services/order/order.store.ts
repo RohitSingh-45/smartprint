@@ -92,7 +92,11 @@ export class LocalOrderStore {
 
   async saveIntent(intent: PaymentIntent): Promise<PaymentIntent> {
     await this.ensureReady();
-    await fs.writeFile(this.intentPath(intent.razorpayOrderId), JSON.stringify(intent, null, 2), 'utf8');
+    await fs.writeFile(
+      this.intentPath(intent.razorpayOrderId),
+      JSON.stringify(intent, null, 2),
+      'utf8',
+    );
     return intent;
   }
 

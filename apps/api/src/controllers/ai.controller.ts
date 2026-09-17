@@ -224,9 +224,10 @@ async function getQueueSummaryForAI(): Promise<{
       .filter((o) => o.queuedAt)
       .map((o) => Date.now() - new Date(o.queuedAt!).getTime());
 
-    const avgMs = queuedWithTime.length > 0
-      ? queuedWithTime.reduce((a, b) => a + b, 0) / queuedWithTime.length
-      : null;
+    const avgMs =
+      queuedWithTime.length > 0
+        ? queuedWithTime.reduce((a, b) => a + b, 0) / queuedWithTime.length
+        : null;
 
     let label = 'N/A';
     if (avgMs !== null) {
@@ -303,7 +304,9 @@ export async function classifyPdfHandler(
       return;
     }
 
-    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uploadId)) {
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uploadId)
+    ) {
       res.status(400).json({ error: 'Invalid uploadId format.', code: 'INVALID_ID' });
       return;
     }
@@ -397,4 +400,3 @@ export async function etaPredictionHandler(
     next(error);
   }
 }
-

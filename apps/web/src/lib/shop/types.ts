@@ -25,14 +25,7 @@ export type QueueAction =
   | 'mark_ready_for_print';
 
 export type ShopOrderFilter =
-  | 'all'
-  | 'pending'
-  | 'paid'
-  | 'accepted'
-  | 'queued'
-  | 'ready'
-  | 'completed'
-  | 'cancelled';
+  'all' | 'pending' | 'paid' | 'accepted' | 'queued' | 'ready' | 'completed' | 'cancelled';
 
 export type QueueFilter = 'all' | 'queued' | 'held' | 'ready' | 'cancelled';
 

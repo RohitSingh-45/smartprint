@@ -11,12 +11,7 @@ import {
   sendHeartbeat,
   type RegisteredPrinterDto,
 } from './api';
-import {
-  discoverPrinters,
-  ensureJobDir,
-  faultToPrinterStatus,
-  sendToSpooler,
-} from './spooler';
+import { discoverPrinters, ensureJobDir, faultToPrinterStatus, sendToSpooler } from './spooler';
 
 const STATE_FILE = 'agent-state.json';
 

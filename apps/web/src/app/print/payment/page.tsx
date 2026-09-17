@@ -12,11 +12,7 @@ import {
   readDraftIdSession,
   type DraftDto,
 } from '@/lib/draft/draft-api';
-import {
-  createCheckout,
-  readOrderIdSession,
-  savePaymentPending,
-} from '@/lib/payment/payment-api';
+import { createCheckout, readOrderIdSession, savePaymentPending } from '@/lib/payment/payment-api';
 import { openRazorpayCheckout } from '@/lib/payment/razorpay-checkout';
 import type { CheckoutSession, PaymentApiError } from '@/lib/payment/types';
 import { cn } from '@/lib/cn';
@@ -211,7 +207,10 @@ export default function PaymentPage() {
             className="flex gap-3 rounded-[var(--radius-lg)] border border-[var(--danger)]/25 bg-[var(--danger-soft)] px-4 py-3 text-sm"
             role="alert"
           >
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[var(--danger)]" strokeWidth={1.75} />
+            <AlertCircle
+              className="mt-0.5 h-4 w-4 shrink-0 text-[var(--danger)]"
+              strokeWidth={1.75}
+            />
             <p className="text-[var(--danger)]">
               This draft expired. Reconfigure your print job before paying.
             </p>
@@ -223,7 +222,10 @@ export default function PaymentPage() {
             className="flex gap-3 rounded-[var(--radius-lg)] border border-[var(--danger)]/25 bg-[var(--danger-soft)] px-4 py-3 text-sm"
             role="alert"
           >
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[var(--danger)]" strokeWidth={1.75} />
+            <AlertCircle
+              className="mt-0.5 h-4 w-4 shrink-0 text-[var(--danger)]"
+              strokeWidth={1.75}
+            />
             <p className="text-[var(--danger)]">{actionError}</p>
           </div>
         ) : null}

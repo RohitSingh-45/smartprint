@@ -36,12 +36,7 @@ export function PageRangeControl({
         ) : null}
       </div>
 
-      <div
-        className={cn(
-          'grid gap-1.5',
-          compact ? 'grid-cols-4' : 'grid-cols-2 gap-2',
-        )}
-      >
+      <div className={cn('grid gap-1.5', compact ? 'grid-cols-4' : 'grid-cols-2 gap-2')}>
         {OPTIONS.map((option) => (
           <button
             key={option.id}

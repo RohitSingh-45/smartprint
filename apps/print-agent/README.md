@@ -21,10 +21,10 @@ npm run dev
 
 ## Modes
 
-| `PRINT_MODE` | Behavior |
-|--------------|----------|
+| `PRINT_MODE`     | Behavior                                          |
+| ---------------- | ------------------------------------------------- |
 | `mock` (default) | Writes PDF to `agent-jobs/` and pretends to print |
-| `system` | Uses CUPS `lp` / `lpstat` when available |
+| `system`         | Uses CUPS `lp` / `lpstat` when available          |
 
 ## Simulate faults
 

@@ -11,7 +11,11 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
-import { fetchDashboardInsights, type DashboardInsightsResult, type DashboardInsight } from '@/lib/ai-api';
+import {
+  fetchDashboardInsights,
+  type DashboardInsightsResult,
+  type DashboardInsight,
+} from '@/lib/ai-api';
 import { cn } from '@/lib/cn';
 
 export function AiInsightsPanel() {
@@ -81,7 +85,9 @@ export function AiInsightsPanel() {
               AI Insights
             </h2>
             <p className="text-xs text-[var(--muted)]">
-              {state === 'loading' ? 'Analyzing your operations…' : result?.headline ?? 'Real-time operational analysis'}
+              {state === 'loading'
+                ? 'Analyzing your operations…'
+                : (result?.headline ?? 'Real-time operational analysis')}
             </p>
           </div>
         </div>

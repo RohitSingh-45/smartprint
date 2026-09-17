@@ -42,9 +42,14 @@ function PaymentSuccessContent() {
         </div>
         <div className="w-full rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] px-6 py-8 shadow-[var(--shadow-sm)]">
           <p className="text-sm text-[var(--muted)]">Order</p>
-          <p className="mt-2 font-mono text-sm font-medium tracking-tight">{shortId(orderId, 12)}</p>
+          <p className="mt-2 font-mono text-sm font-medium tracking-tight">
+            {shortId(orderId, 12)}
+          </p>
           <div className="mx-auto mt-6 h-1 w-24 overflow-hidden rounded-full bg-[var(--surface-2)]">
-            <div className="h-full w-1/2 rounded-full bg-[var(--accent)]" style={{ animation: 'progress-indeterminate 1.1s ease-in-out infinite' }} />
+            <div
+              className="h-full w-1/2 rounded-full bg-[var(--accent)]"
+              style={{ animation: 'progress-indeterminate 1.1s ease-in-out infinite' }}
+            />
           </div>
         </div>
         <div className="mt-8 w-full">

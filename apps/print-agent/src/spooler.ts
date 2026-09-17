@@ -15,8 +15,7 @@ export type LocalPrinter = {
 };
 
 export type PrintResult =
-  | { ok: true }
-  | { ok: false; fault: Exclude<SimulateFault, ''> | 'FAIL'; message: string };
+  { ok: true } | { ok: false; fault: Exclude<SimulateFault, ''> | 'FAIL'; message: string };
 
 /** Discover printers — mock list or CUPS `lpstat -a`. */
 export async function discoverPrinters(): Promise<LocalPrinter[]> {
@@ -119,9 +118,7 @@ export async function sendToSpooler(
   }
 }
 
-export function faultToPrinterStatus(
-  fault: Exclude<SimulateFault, ''> | 'FAIL',
-): string {
+export function faultToPrinterStatus(fault: Exclude<SimulateFault, ''> | 'FAIL'): string {
   switch (fault) {
     case 'PAPER_JAM':
       return 'PAPER_JAM';

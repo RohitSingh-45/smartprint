@@ -30,7 +30,9 @@ export function readOrderHistory(): OrderHistoryEntry[] {
   return readRaw().sort((a, b) => (b.savedAt || '').localeCompare(a.savedAt || ''));
 }
 
-export function rememberOrder(entry: Omit<OrderHistoryEntry, 'savedAt'> & { savedAt?: string }): void {
+export function rememberOrder(
+  entry: Omit<OrderHistoryEntry, 'savedAt'> & { savedAt?: string },
+): void {
   const existing = readRaw().filter((item) => item.id !== entry.id);
   const next: OrderHistoryEntry = {
     id: entry.id,

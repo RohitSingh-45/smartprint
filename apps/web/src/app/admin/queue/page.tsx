@@ -81,16 +81,8 @@ function QueuePageContent() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Total jobs" value={summary ? String(summary.totalJobs) : '—'} />
-        <StatCard
-          label="Queued"
-          value={summary ? String(summary.queuedJobs) : '—'}
-          tone="accent"
-        />
-        <StatCard
-          label="Held"
-          value={summary ? String(summary.heldJobs) : '—'}
-          tone="warning"
-        />
+        <StatCard label="Queued" value={summary ? String(summary.queuedJobs) : '—'} tone="accent" />
+        <StatCard label="Held" value={summary ? String(summary.heldJobs) : '—'} tone="warning" />
         <StatCard
           label="Ready for print"
           value={summary ? String(summary.readyJobs) : '—'}

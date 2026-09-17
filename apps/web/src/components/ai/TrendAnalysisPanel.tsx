@@ -113,7 +113,10 @@ export function TrendAnalysisPanel() {
       {state === 'error' && error && (
         <div className="mt-4 rounded-[var(--radius-lg)] border border-[var(--danger)]/20 bg-[var(--danger-soft)] p-4">
           <p className="text-sm text-[var(--danger)]">{error}</p>
-          <button onClick={() => void load(days)} className="mt-2 text-xs font-medium text-[var(--danger)] underline">
+          <button
+            onClick={() => void load(days)}
+            className="mt-2 text-xs font-medium text-[var(--danger)] underline"
+          >
             Retry
           </button>
         </div>
@@ -134,8 +137,17 @@ export function TrendAnalysisPanel() {
           {/* Stats row */}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             <StatPill label="Orders" value={String(result.totalOrders)} icon={ShoppingBag} />
-            <StatPill label="Revenue" value={`₹${result.totalRevenue.toLocaleString('en-IN')}`} icon={TrendingUp} />
-            <StatPill label="Period" value={result.period} icon={Activity} className="col-span-2 sm:col-span-1" />
+            <StatPill
+              label="Revenue"
+              value={`₹${result.totalRevenue.toLocaleString('en-IN')}`}
+              icon={TrendingUp}
+            />
+            <StatPill
+              label="Period"
+              value={result.period}
+              icon={Activity}
+              className="col-span-2 sm:col-span-1"
+            />
           </div>
 
           {/* Trend cards grid */}
@@ -166,10 +178,30 @@ function TrendCard({ trend }: { trend: TrendItem }) {
   } as const;
 
   const directionConfig = {
-    up: { icon: TrendingUp, color: 'text-[var(--success)]', bg: 'bg-[var(--success-soft)]', label: 'Trending up' },
-    down: { icon: TrendingDown, color: 'text-[var(--danger)]', bg: 'bg-[var(--danger-soft)]', label: 'Trending down' },
-    stable: { icon: Minus, color: 'text-[var(--muted)]', bg: 'bg-[var(--surface-2)]', label: 'Stable' },
-    concern: { icon: AlertTriangle, color: 'text-[var(--warning)]', bg: 'bg-[var(--warning-soft)]', label: 'Needs attention' },
+    up: {
+      icon: TrendingUp,
+      color: 'text-[var(--success)]',
+      bg: 'bg-[var(--success-soft)]',
+      label: 'Trending up',
+    },
+    down: {
+      icon: TrendingDown,
+      color: 'text-[var(--danger)]',
+      bg: 'bg-[var(--danger-soft)]',
+      label: 'Trending down',
+    },
+    stable: {
+      icon: Minus,
+      color: 'text-[var(--muted)]',
+      bg: 'bg-[var(--surface-2)]',
+      label: 'Stable',
+    },
+    concern: {
+      icon: AlertTriangle,
+      color: 'text-[var(--warning)]',
+      bg: 'bg-[var(--warning-soft)]',
+      label: 'Needs attention',
+    },
   } as const;
 
   const Icon = categoryIcons[trend.category] ?? BarChart3;

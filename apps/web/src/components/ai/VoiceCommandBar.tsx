@@ -78,7 +78,11 @@ export function VoiceCommandBar() {
 
   const close = useCallback(() => {
     if (recognitionRef.current) {
-      try { recognitionRef.current.abort(); } catch { /* noop */ }
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        /* noop */
+      }
       recognitionRef.current = null;
     }
     setMode('closed');
@@ -107,19 +111,22 @@ export function VoiceCommandBar() {
     return () => clearTimeout(timer);
   }, [result, mode, router, close]);
 
-  const processCommand = useCallback(async (command: string) => {
-    if (!command.trim()) return;
-    setMode('processing');
-    setError(null);
-    try {
-      const res = await fetchInterpretCommand({ command, currentPage: pathname });
-      setResult(res);
-      setMode('result');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Command failed.');
-      setMode('text');
-    }
-  }, [pathname]);
+  const processCommand = useCallback(
+    async (command: string) => {
+      if (!command.trim()) return;
+      setMode('processing');
+      setError(null);
+      try {
+        const res = await fetchInterpretCommand({ command, currentPage: pathname });
+        setResult(res);
+        setMode('result');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Command failed.');
+        setMode('text');
+      }
+    },
+    [pathname],
+  );
 
   const startVoice = useCallback(() => {
     const SR = window.SpeechRecognition ?? window.webkitSpeechRecognition;
@@ -189,12 +196,17 @@ export function VoiceCommandBar() {
                 {mode === 'listening'
                   ? '🎙 Listening…'
                   : mode === 'processing'
-                  ? '⚡ Processing…'
-                  : mode === 'result' && result
-                  ? result.understood ? '✅ Got it' : '❓ Not understood'
-                  : 'Voice / Text Command'}
+                    ? '⚡ Processing…'
+                    : mode === 'result' && result
+                      ? result.understood
+                        ? '✅ Got it'
+                        : '❓ Not understood'
+                      : 'Voice / Text Command'}
               </span>
-              <button onClick={close} className="rounded-[var(--radius-md)] p-0.5 text-[var(--muted)] hover:text-[var(--foreground)]">
+              <button
+                onClick={close}
+                className="rounded-[var(--radius-md)] p-0.5 text-[var(--muted)] hover:text-[var(--foreground)]"
+              >
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -233,7 +245,10 @@ export function VoiceCommandBar() {
               {mode === 'processing' && (
                 <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
                   <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-strong)]" />
-                  Interpreting: <span className="font-medium text-[var(--foreground)]">&ldquo;{text || transcript}&rdquo;</span>
+                  Interpreting:{' '}
+                  <span className="font-medium text-[var(--foreground)]">
+                    &ldquo;{text || transcript}&rdquo;
+                  </span>
                 </div>
               )}
 
@@ -247,21 +262,25 @@ export function VoiceCommandBar() {
                       : 'border-[var(--warning)]/25 bg-[var(--warning-soft)]',
                   )}
                 >
-                  <p className={cn('text-sm font-medium', result.understood ? 'text-[var(--success)]' : 'text-[var(--warning)]')}>
+                  <p
+                    className={cn(
+                      'text-sm font-medium',
+                      result.understood ? 'text-[var(--success)]' : 'text-[var(--warning)]',
+                    )}
+                  >
                     {result.response}
                   </p>
                   {result.route && (
                     <p className="mt-1 text-xs text-[var(--muted)]">
-                      → {result.route}{result.filter ? `?status=${result.filter}` : ''}
+                      → {result.route}
+                      {result.filter ? `?status=${result.filter}` : ''}
                     </p>
                   )}
                 </div>
               )}
 
               {/* Error */}
-              {error && (
-                <p className="text-xs text-[var(--danger)]">{error}</p>
-              )}
+              {error && <p className="text-xs text-[var(--danger)]">{error}</p>}
 
               {/* Example commands */}
               {mode === 'text' && !text && (
@@ -269,7 +288,10 @@ export function VoiceCommandBar() {
                   {['show orders', 'go to queue', 'pending orders', 'open printers'].map((cmd) => (
                     <button
                       key={cmd}
-                      onClick={() => { setText(cmd); void processCommand(cmd); }}
+                      onClick={() => {
+                        setText(cmd);
+                        void processCommand(cmd);
+                      }}
                       className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-[11px] text-[var(--muted)] hover:border-[var(--accent)]/40 hover:text-[var(--foreground)]"
                     >
                       {cmd}
@@ -305,14 +327,14 @@ export function VoiceCommandBar() {
         {/* Main trigger button */}
         <button
           id="voice-command-trigger"
-          onClick={() => mode === 'closed' ? setMode('text') : close()}
+          onClick={() => (mode === 'closed' ? setMode('text') : close())}
           className={cn(
             'flex h-12 w-12 items-center justify-center rounded-full shadow-[var(--shadow-lg)] transition-all duration-200 hover:scale-105 active:scale-95',
             mode === 'listening'
               ? 'animate-pulse-soft bg-[var(--danger)] text-white'
               : mode !== 'closed'
-              ? 'bg-[var(--foreground)] text-[var(--background)]'
-              : 'bg-[var(--accent)] text-[var(--accent-ink)]',
+                ? 'bg-[var(--foreground)] text-[var(--background)]'
+                : 'bg-[var(--accent)] text-[var(--accent-ink)]',
           )}
           aria-label="Open voice commands (Ctrl+K)"
           title="Voice commands (Ctrl+K)"
