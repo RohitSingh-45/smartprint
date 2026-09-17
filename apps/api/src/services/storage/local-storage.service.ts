@@ -13,12 +13,25 @@ export class LocalFileStorage implements FileStorage {
     await fs.mkdir(this.rootDir, { recursive: true });
   }
 
+  /**
+   * Resolve a path and assert it stays inside rootDir.
+   * Guards against path traversal attacks (e.g. storedName = "../../etc/passwd").
+   */
+  private safeResolvePath(subPath: string, label: string): string {
+    const resolved = path.resolve(this.rootDir, subPath);
+    const normalizedRoot = path.resolve(this.rootDir);
+    if (!resolved.startsWith(normalizedRoot + path.sep) && resolved !== normalizedRoot) {
+      throw new Error(`[storage] Path traversal attempt blocked for ${label}: "${subPath}"`);
+    }
+    return resolved;
+  }
+
   private metaPath(id: string): string {
-    return path.join(this.rootDir, `${id}.meta.json`);
+    return this.safeResolvePath(`${id}.meta.json`, 'id');
   }
 
   private filePath(storedName: string): string {
-    return path.join(this.rootDir, storedName);
+    return this.safeResolvePath(storedName, 'storedName');
   }
 
   async save(input: StorageSaveInput): Promise<UploadedFileMetadata> {

@@ -163,15 +163,38 @@ export async function getQueueSummary(): Promise<QueueSummary> {
   let cancelledJobs = 0;
   let pipeline = 0;
 
+  const now = Date.now();
+  const waitingMsValues: number[] = [];
+
   for (const order of orders) {
     const status = canonicalizeStatus(order.status);
     if (['QUEUED', 'HELD', 'READY_FOR_PRINT', 'PRINTING', 'ACCEPTED', 'PAID'].includes(status)) {
       pipeline += 1;
     }
-    if (status === 'QUEUED') queuedJobs += 1;
+    if (status === 'QUEUED') {
+      queuedJobs += 1;
+      if (order.queuedAt) {
+        const start = new Date(order.queuedAt).getTime();
+        if (!Number.isNaN(start)) {
+          waitingMsValues.push(Math.max(0, now - start));
+        }
+      }
+    }
     if (status === 'HELD') heldJobs += 1;
     if (status === 'READY_FOR_PRINT') readyJobs += 1;
     if (status === 'CANCELLED' || status === 'REJECTED') cancelledJobs += 1;
+  }
+
+  const averageWaitingTimeMs =
+    waitingMsValues.length > 0
+      ? waitingMsValues.reduce((a, b) => a + b, 0) / waitingMsValues.length
+      : null;
+
+  let averageWaitingTimeLabel = 'N/A';
+  if (averageWaitingTimeMs !== null) {
+    const minutes = Math.round(averageWaitingTimeMs / 60_000);
+    averageWaitingTimeLabel =
+      minutes < 1 ? 'Under 1 minute' : `${minutes} minute${minutes !== 1 ? 's' : ''}`;
   }
 
   return {
@@ -180,8 +203,8 @@ export async function getQueueSummary(): Promise<QueueSummary> {
     heldJobs,
     readyJobs,
     cancelledJobs,
-    averageWaitingTimeMs: null,
-    averageWaitingTimeLabel: '— (placeholder)',
+    averageWaitingTimeMs,
+    averageWaitingTimeLabel,
     generatedAt: new Date().toISOString(),
   };
 }

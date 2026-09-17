@@ -37,7 +37,7 @@ export async function listQueueJobsHandler(
     }
 
     const jobs = await listQueueJobs({
-      q: typeof req.query.q === 'string' ? req.query.q : undefined,
+      q: typeof req.query.q === 'string' ? req.query.q.slice(0, 100) : undefined,
       status: statusRaw as QueueFilter,
     });
     res.status(200).json({ jobs, count: jobs.length });

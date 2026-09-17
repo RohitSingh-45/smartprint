@@ -3,6 +3,21 @@
  * Centralised here so prompts are easy to audit, version, and iterate on.
  */
 
+/**
+ * Strip characters that are commonly used in prompt injection attacks before
+ * embedding user-supplied text into an LLM prompt.
+ * Removes: control chars (\r,\n,\t within values), triple-quotes, triple-backticks,
+ * and horizontal-rule separators that could break prompt structure.
+ */
+export function sanitizeForPrompt(value: string, maxLength = 200): string {
+  return value
+    .slice(0, maxLength)
+    .replace(/[\r\n\t]+/g, ' ')     // collapse whitespace
+    .replace(/"""|```|---/g, '')    // strip common injection markers
+    .replace(/[\x00-\x1f\x7f]+/g, '') // strip control chars
+    .trim();
+}
+
 // ─────────────────────────────────────────────
 // Print Config Advisor
 // ─────────────────────────────────────────────
@@ -16,18 +31,22 @@ export function buildConfigAdvisorPrompt(params: {
   currentPaperSize: string;
   currentOrientation: string;
 }): string {
+  const safeFileName = sanitizeForPrompt(params.fileName);
+  const safePaperSize = sanitizeForPrompt(params.currentPaperSize, 20);
+  const safeOrientation = sanitizeForPrompt(params.currentOrientation, 20);
+
   return `
 You are SmartPrint AI, a smart printing assistant for a QR-based print shop platform in India.
 A customer has uploaded a PDF and is about to configure their print settings.
 
 FILE CONTEXT:
-- File name: ${params.fileName}
+- File name: ${safeFileName}
 - Total pages: ${params.totalPages}
 - Pages detected as color: ${params.colorPageCount}
 - Pages detected as black-and-white: ${params.bwPageCount}
 - Current copies: ${params.currentCopies}
-- Current paper size: ${params.currentPaperSize}
-- Current orientation: ${params.currentOrientation}
+- Current paper size: ${safePaperSize}
+- Current orientation: ${safeOrientation}
 
 YOUR JOB:
 Analyze the file name and page-color distribution and give smart, practical printing recommendations.
@@ -134,17 +153,21 @@ export function buildOrderRiskPrompt(params: {
   colorPages: number;
   bwPages: number;
 }): string {
+  const safeCustomer = sanitizeForPrompt(params.customerName, 80);
+  const safeError = params.lastPrintError ? sanitizeForPrompt(params.lastPrintError, 200) : 'None';
+  const safeStatus = sanitizeForPrompt(params.status, 30);
+
   return `
 You are SmartPrint AI, a print job risk assessment system.
 Evaluate the risk level of this print job and provide a brief explanation.
 
 JOB DETAILS:
 - Order ID: ${params.orderId}
-- Status: ${params.status}
-- Customer: ${params.customerName}
+- Status: ${safeStatus}
+- Customer: ${safeCustomer}
 - Amount paid: ₹${params.amountPaid}
 - Print attempts: ${params.printAttempts}
-- Last print error: ${params.lastPrintError ?? 'None'}
+- Last print error: ${safeError}
 - Time in current state: ${params.waitingTimeMinutes != null ? `${params.waitingTimeMinutes} minutes` : 'Unknown'}
 - Queue position: ${params.queuePosition ?? 'Not in queue'}
 - Total pages: ${params.totalPages}
@@ -185,18 +208,22 @@ export function buildSummaryExplainerPrompt(params: {
   orientation: string;
   estimatedCost: number;
 }): string {
+  const safeFileName = sanitizeForPrompt(params.fileName);
+  const safePaperSize = sanitizeForPrompt(params.paperSize, 20);
+  const safeOrientation = sanitizeForPrompt(params.orientation, 20);
+
   return `
 You are SmartPrint AI helping a customer understand their print order before payment.
 
 PRINT ORDER:
-- File: ${params.fileName}
+- File: ${safeFileName}
 - Total pages in file: ${params.totalPages}
 - Pages being printed: ${params.printablePages}
 - Color pages: ${params.colorPages}
 - B&W pages: ${params.bwPages}
 - Copies: ${params.copies}
-- Paper size: ${params.paperSize.toUpperCase()}
-- Orientation: ${params.orientation}
+- Paper size: ${safePaperSize.toUpperCase()}
+- Orientation: ${safeOrientation}
 - Estimated cost: ₹${params.estimatedCost}
 
 Write a friendly, plain-English explanation of what this order means.
@@ -261,6 +288,7 @@ export function buildTrendAnalysisPrompt(params: {
     return acc;
   }, {});
   const topPaperSize = Object.entries(paperSizeCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'a4';
+  const safeTopPaperSize = sanitizeForPrompt(topPaperSize, 20).toUpperCase();
   const retryOrders = orders.filter((o) => o.printAttempts > 1);
 
   // Build order-by-order context (RAG document) — last 20 orders for token efficiency
@@ -282,7 +310,7 @@ AGGREGATE STATS (last ${windowDays} days, ${orders.length} orders):
 - Completion rate: ${orders.length ? ((completed.length / orders.length) * 100).toFixed(1) : 0}%
 - Average pages per order: ${avgPages}
 - Color/total page ratio: ${colorRatio} (${Math.round(parseFloat(colorRatio) * 100)}% color)
-- Most used paper size: ${topPaperSize.toUpperCase()}
+- Most used paper size: ${safeTopPaperSize}
 - Orders with retry (print failures): ${retryOrders.length}
 
 RECENT ORDER LOG (RAG context):
@@ -354,13 +382,16 @@ export function buildCommandInterpreterPrompt(params: {
   currentPage: string;
   availableRoutes: string[];
 }): string {
+  const safeCommand = sanitizeForPrompt(params.command, 300);
+  const safeCurrentPage = sanitizeForPrompt(params.currentPage, 100);
+
   return `
 You are SmartPrint Voice/Text Command AI. A shop operator has spoken or typed a command.
 Interpret it and map it to a supported action.
 
 CONTEXT:
-- Current page: ${params.currentPage}
-- Command spoken/typed: "${params.command}"
+- Current page: ${safeCurrentPage}
+- Command spoken/typed: "${safeCommand}"
 
 SUPPORTED NAVIGATION ROUTES:
 ${params.availableRoutes.map((r) => `  - ${r}`).join('\n')}

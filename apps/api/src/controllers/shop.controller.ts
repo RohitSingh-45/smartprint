@@ -46,7 +46,7 @@ export async function listOrdersHandler(
     }
 
     const orders = await listShopOrders({
-      q: typeof req.query.q === 'string' ? req.query.q : undefined,
+      q: typeof req.query.q === 'string' ? req.query.q.slice(0, 100) : undefined,
       status: statusRaw as ShopOrderFilter,
       from: typeof req.query.from === 'string' ? req.query.from : undefined,
       to: typeof req.query.to === 'string' ? req.query.to : undefined,

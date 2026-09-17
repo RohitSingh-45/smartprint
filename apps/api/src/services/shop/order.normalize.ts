@@ -5,7 +5,16 @@ function isOrderStatus(value: unknown): value is OrderStatus {
   return typeof value === 'string' && (ORDER_STATUSES as readonly string[]).includes(value);
 }
 
-/** Map legacy Sprint 8 READY → READY_FOR_PRINT. */
+/**
+ * Map legacy Sprint 8 `READY` status → canonical `READY_FOR_PRINT`.
+ *
+ * Sprint 8 used the shorter `READY` string before it was renamed to
+ * `READY_FOR_PRINT` in Sprint 9. Orders already persisted in the JSON store
+ * may still carry the old value. This shim ensures the rest of the codebase
+ * never needs to handle both strings.
+ *
+ * ⚠️  Do NOT create new orders with status `READY` — use `READY_FOR_PRINT`.
+ */
 export function canonicalizeStatus(status: OrderStatus): OrderStatus {
   if (status === 'READY') return 'READY_FOR_PRINT';
   return status;

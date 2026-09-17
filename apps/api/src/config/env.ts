@@ -100,6 +100,19 @@ if (parsed.data.NODE_ENV === 'production') {
   }
 }
 
+// Warn loudly (any env) when real AI mode is requested without a key.
+// In production this is a hard failure; in dev it's a warning so mock fallback still works.
+if (parsed.data.AI_MODE === 'real' && !parsed.data.GEMINI_API_KEY) {
+  if (parsed.data.NODE_ENV === 'production') {
+    console.error('[env] GEMINI_API_KEY is required when AI_MODE=real in production.');
+    process.exit(1);
+  } else {
+    console.warn(
+      '[env] WARNING: AI_MODE=real but GEMINI_API_KEY is not set — AI calls will fall back to mock.',
+    );
+  }
+}
+
 export const env = {
   nodeEnv: parsed.data.NODE_ENV,
   port: parsed.data.PORT,
